@@ -1,0 +1,6 @@
+[submodule "ktc"]
+	path = ktc
+	url = https://github.com/timed-c/ktc.git
+[submodule "timed-c-e2e-sched-analysis"]
+	path = timed-c-e2e-sched-analysis
+	url = https://github.com/brandenburg/timed-c-e2e-sched-analysis.git

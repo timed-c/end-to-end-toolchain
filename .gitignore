@@ -1,0 +1,15 @@
+.#*
+#*
+temp/
+_build/
+bin/
+oldsrc/
+doc/api
+doc/user/manual.html
+*.elf
+*.out
+*.o
+*.native
+*.byte
+*.ll
+*~
