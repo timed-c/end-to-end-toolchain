@@ -13,6 +13,7 @@ RUN echo $(opam config env)
 
 COPY ktc /opt/e2e/ktc
 COPY timed-c-e2e-sched-analysis /opt/e2e/timed-c-e2e-sched-analysis
+COPY tbb /opt/e2e/timed-c-e2e-sched-analysis/include
 COPY sensitivity-analysis /opt/e2e/sensitivity-analysis
 WORKDIR /opt/e2e/ktc
 RUN ocaml -version
@@ -33,7 +34,8 @@ RUN make -j4
 RUN make install
 RUN /opt/cmake-3.14.0-rc4/bin/cmake --version
 WORKDIR /opt/e2e/timed-c-e2e-sched-analysis/build
-RUN /opt/cmake-3.14.0-rc4/bin/cmake /opt/e2e/timed-c-e2e-sched-analysis/
+RUN /opt/cmake-3.14.0-rc4/bin/cmake -S /opt/e2e/timed-c-e2e-sched-analysis/ -B /opt/e2e/timed-c-e2e-sched-analysis/build
+RUN rm /opt/e2e/timed-c-e2e-sched-analysis/build/CMakeCache.txt
 RUN make -j
 WORKDIR /opt/e2e/sensitivity-analysis
 RUN make
