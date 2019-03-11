@@ -1,0 +1,35 @@
+digraph CFG_tsk_far {
+48 [label="48: instr"]
+	48 -> 49
+49 [label="49: instr"]
+	49 -> 50
+50 [label="50: instr"]
+	50 -> 51
+51 [label="51: instr"]
+	51 -> 52
+52 [label="52: loop"]
+	52 -> 53
+53 [label="53: if"]
+	53 -> 55
+	53 -> 54
+54 [label="54: break"]
+	54 -> 62
+55 [label="55: block"]
+	55 -> 56
+56 [label="56: instr"]
+	56 -> 57
+57 [label="57: block"]
+	57 -> 58
+58 [label="58: block"]
+	58 -> 59
+59 [label="59: instr"]
+	59 -> 60
+60 [label="60: instr"]
+	60 -> 61
+61 [label="61: instr"]
+	61 -> 52
+62 [label="62: instr"]
+	62 -> 63
+63 [label="63: return"]
+	
+}
