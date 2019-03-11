@@ -24,6 +24,9 @@ WORKDIR /opt/e2e/ktc/test
 RUN eval $(opam config env) && bash run-test.sh
 #WORKDIR /opt/ktc/profile-test
 #RUN eval $(opam config env) && bash run-end-docker.sh test1.c
+WORKDIR /opt/e2e/sensitivity-analysis
+RUN eval $(opam config env) && make
+
 
 WORKDIR /opt
 RUN wget https://cmake.org/files/v3.14/cmake-3.14.0-rc4.tar.gz
@@ -33,12 +36,11 @@ RUN ./bootstrap
 RUN make -j4
 RUN make install
 RUN /opt/cmake-3.14.0-rc4/bin/cmake --version
+RUN rm -r /opt/e2e/timed-c-e2e-sched-analysis/build
+RUN mkdir /opt/e2e/timed-c-e2e-sched-analysis/build
 WORKDIR /opt/e2e/timed-c-e2e-sched-analysis/build
-RUN /opt/cmake-3.14.0-rc4/bin/cmake -S /opt/e2e/timed-c-e2e-sched-analysis/ -B /opt/e2e/timed-c-e2e-sched-analysis/build
-RUN rm /opt/e2e/timed-c-e2e-sched-analysis/build/CMakeCache.txt
+RUN /opt/cmake-3.14.0-rc4/bin/cmake -DUSE_JE_MALLOC=no -DUSE_TBB_MALLOC=no -S /opt/e2e/timed-c-e2e-sched-analysis/ -B /opt/e2e/timed-c-e2e-sched-analysis/build
 RUN make -j
-WORKDIR /opt/e2e/sensitivity-analysis
-RUN make
 
 
 
