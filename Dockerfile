@@ -46,7 +46,10 @@ RUN rm -r /opt/e2e/timed-c-e2e-sched-analysis/build
 RUN mkdir /opt/e2e/timed-c-e2e-sched-analysis/build
 WORKDIR /opt/e2e/timed-c-e2e-sched-analysis/build
 RUN /opt/cmake-3.14.0-rc4/bin/cmake -DUSE_JE_MALLOC=no -DUSE_TBB_MALLOC=no -S /opt/e2e/timed-c-e2e-sched-analysis/ -B /opt/e2e/timed-c-e2e-sched-analysis/build
-#RUN make -j
+RUN make -j
+
+COPY profile-test /opt/e2e/profile-test
+
 
 
 
