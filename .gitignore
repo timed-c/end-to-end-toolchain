@@ -12,4 +12,5 @@ doc/user/manual.html
 *.native
 *.byte
 *.ll
+*.swp
 *~
