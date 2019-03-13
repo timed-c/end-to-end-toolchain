@@ -146,6 +146,7 @@ let rec binary_search low high =
 let sensitivity =
     let high = initial_high () in
     let low = 1.0 in
+    let _ = Sys.command pwd in
     let _ = Sys.command "/home/saranya/Dokument/tools/analysis_tool/timed-c-e2e-sched-analysis/build/nptest -r job.csv > output" in
     let is = findSchedulable () in
     let _ = uprint_endline (ustring_of_float high) in

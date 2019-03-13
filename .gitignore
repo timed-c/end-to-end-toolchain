@@ -14,3 +14,13 @@ doc/user/manual.html
 *.ll
 *.swp
 *~
+*.cil.c
+*.cil.i
+profile-test/output
+profile-test/check
+profile-test/input
+*.json
+*.csv
+tsk_*
+*.rta
+*.dot

@@ -8,6 +8,7 @@ all:   utils ustring sensitivity native
 
 # Compile native version.
 utils:
+	@rm -f -r bin
 	@mkdir bin
 	@ocamlbuild -no-hygiene -cflags '-w -a' -use-ocamlfind -pkgs 'cil,yojson,csv' -Is $(DIRS) utils.cmx
 	@ocamlbuild   -no-hygiene -cflags '-w -a' -use-ocamlfind -pkgs 'cil,yojson,csv' -Is $(DIRS) utils.cmxa

@@ -133,7 +133,7 @@ let rec binary_search low high =
         let _ = uprint_endline (ustring_of_float high) in
         let _ = uprint_endline (ustring_of_float value) in
         let _ = scale_input value in
-        let _ = Sys.command "/opt/e2e/timed-c-e2e-sched-analysis/build/nptest -r input_scaled.csv > output" in
+        let _ = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r input_scaled.csv > output" in
         let is = findSchedulable () in
         if (is = "0") then
             binary_search low value
@@ -146,11 +146,11 @@ let rec binary_search low high =
 let sensitivity =
     let high = initial_high () in
     let low = 1.0 in
-    let _ = Sys.command "/opt/e2e/timed-c-e2e-sched-analysis/build/nptest -r job.csv > output" in
+    let _ = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r job.csv > output" in
     let is = findSchedulable () in
     let _ = uprint_endline (ustring_of_float high) in
     let _ = scale_input high in
-    let _ = Sys.command "/opt/e2e/timed-c-e2e-sched-analysis/build/nptest -r input_scaled.csv > output" in
+    let _ = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r input_scaled.csv > output" in
     let ist = findSchedulable () in
     if (is = "1") then (uprint_endline (ustring_of_float (binary_search low high)))
 
