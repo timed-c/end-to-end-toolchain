@@ -8,6 +8,7 @@ all:   utils ustring sensitivity native
 
 # Compile native version.
 utils:
+	@mkdir bin
 	@ocamlbuild -no-hygiene -cflags '-w -a' -use-ocamlfind -pkgs 'cil,yojson,csv' -Is $(DIRS) utils.cmx
 	@ocamlbuild   -no-hygiene -cflags '-w -a' -use-ocamlfind -pkgs 'cil,yojson,csv' -Is $(DIRS) utils.cmxa
 	@rm -f bytes.ml
@@ -33,7 +34,6 @@ native:
 clean:
 	@rm -f -r libs
 	@rm -f -r _build
-	@rm -f bin/sensitivity
-	@rm -f bin/*.csv
+	@rm -f -r bin
 
 
