@@ -35,6 +35,7 @@ Completed
 
 ### Updating e2e Docker
 Note : do this only after your intial installation is done successfully.
+Otherwise, follow steps listed above in installing e2e using docker.
 
     git pull
     docker build --tag=e2e .

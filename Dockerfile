@@ -50,9 +50,6 @@ RUN make -j
 
 COPY profile-test /opt/e2e/profile-test
 
-
-
-
 # `opam config env`
 ENV CAML_LD_LIBRARY_PATH="/root/.opam/system/lib/stublibs:/usr/lib/ocaml/stublibs"
 ENV MANPATH="/root/.opam/system/man:"
