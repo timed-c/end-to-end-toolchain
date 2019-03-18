@@ -55,13 +55,34 @@ Note : do this only after your intial installation is done successfully.
     docker build --tag=e2e .
 
 #### Running your program on E2E Docker Image
-The following steps takes you into the e2e container folder. Hence, you do not have access to your host machine's file system. All files are created inside the container and lost when you exit the conatiner. You will have to install an editor of your choice.
+The following steps takes you into the e2e container folder. Hence, you do not have access to your host machine's file system. All files are created inside the container and lost when you exit the conatiner. You will have to install an editor of your choice. See next section for copying files between local host and container.
+
+Step 1 : Running the docker container
 
     docker run -it e2e
+
+Step 2 : Creating new file with e2e headers included
+
     cd profile-test
-    cp test1.c <filename>
+    cp template.c <filename>
     <keep the headers write your program and save>
-    ./run-end.sh filename.c
+
+Step 3 : Runing the e2e toolchain
+
+    ./run-end.sh <filename>
+
+Note, the e2e docker comes with preinstalled vim editor. To install other editors follow the Linux installation instruction for editor your choice.
+
+#### Copying Files Between Docker Container and Local Machine
+
+Open new shell. Run the following command to find <container_id>
+
+    docker ps
+
+To copy from local machine to docker
+
+    docker cp <container_id>:<path_on_container> <path_on_local_machine>
+
 
 
 

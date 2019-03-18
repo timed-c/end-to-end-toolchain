@@ -278,7 +278,7 @@ let sensitivity =
     (us ", ") ^. (ustring_of_float high) ^. (us "]"))) in
     let _ = print_string "Enter the value of k: " in
     let k = read_int () in
-    let _ = mk_binary_search alpha high 3 in
+    let _ = mk_binary_search alpha high k in
     ()
 
 
