@@ -7,4 +7,4 @@ void log_trace_arrival(FILE* fp, int tp, int interval, int res, long *last_arriv
 void log_trace_release(FILE* fp, long last_arrival, struct timespec itime, struct timespec* stime, int interval);
 void log_trace_execution(FILE* fp, struct timespec stime);
 void log_trace_end_id(FILE* fp, int id, struct timespec stime);
-void log_trace_abort_time(FILE* fp, long last_arrival, struct timespec stime, int interval, int id);
+void log_trace_abort_time(FILE* fp);

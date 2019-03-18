@@ -15,40 +15,31 @@ void musqrt(int k);
 
 FILE dfile;
 
-task tsk_foo(){
+task tsk_a(){
     int i;
     for(i=0;i<50;i++){
-        mrad2deg(50);
-        sdelay(300, ms);
+        mrad2deg(5);
+        sdelay(100, ms);
     }
 }
 
 
-task tsk_bar(){
+task tsk_b(){
 
     int i;
     for(i=0; i<50;i++){
         basicmath_small();
-        sdelay(200, ms);
+        sdelay(100, ms);
     }
 
 }
 
-
-task tsk_far(){
-    int i;
-    for(i=0; i<50;i++){
-         rad2deg(100);
-        sdelay(600, ms);
-    }
-}
 
 
 
 int main(){
     long unsigned int targ = 10;
-    tsk_foo();
-    tsk_bar();
-    tsk_far();
+    tsk_a();
+    tsk_b();
     printf("main--end\n");
 }
