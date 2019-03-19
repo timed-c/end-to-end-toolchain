@@ -1,0 +1,14 @@
+rm *.csv
+rm *.rta
+rm output
+rm input
+rm *.out
+rm *.cil.*
+rm *.dot
+rm *.o
+rm *.i
+rm *.json
+rm tsk_*
+rm check
+rm trace
+rm *.mk

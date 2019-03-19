@@ -60,25 +60,25 @@ let read_data_output fname =
   |> List.map (function [file; is_schedulable; jobs; state; edges; expl; cpu;
   mem; timeout; processor] -> {file; is_schedulable; jobs; state; edges; expl; cpu;
   mem; timeout; processor}
-                      | _ -> failwith "read_data: incorrect file output")
+                      | _ -> failwith "read_data_output: incorrect file output")
 
 let read_data_input fname =
   Csv.load fname
   |> List.map (function [tskid; jobid; rmin; rmax; cmin; cmax; dl; priority] ->
           {tskid; jobid; rmin; rmax; cmin; cmax; dl; priority}
-                      | _ -> failwith "read_data: incorrect file input")
+                      | _ -> failwith "read_data_input: incorrect file input")
 
 let read_data_mk fname =
   Csv.load fname
   |> List.map (function [task_id; job_id; completion_time; deadline; miss] ->
           {task_id; job_id; completion_time; deadline; miss}
-                      | _ -> failwith "read_data: incorrect file input")
+                      | _ -> failwith "read_data_mk: incorrect file input")
 
 let read_data_rta fname =
   Csv.load fname
   |> List.map (function [tid; jid; bcct; wcct; bcrt; wcrt] ->
           {tid; jid; bcct; wcct; bcrt; wcrt}
-                      | _ -> failwith "read_data: incorrect file rta")
+                      | _ -> failwith "read_data_rta: incorrect file rta")
 
 let calculate_leeway l1 l2 =
     let lway = (float_of_string l1.dl) -. (float_of_string l2.wcct) in
@@ -144,7 +144,7 @@ let initial_high () =
     let t = List.map (function [ti; ji; lw] -> {ti; ji; lw}) lst in
     let minlw = List.fold_right min (List.map (fun a -> a.lw) t)
     1000000000000.0 in
-    minlw
+    if (minlw <= 1.0) then 1.0 else minlw
 
 let findSchedulable ()  =
     let op = read_data_output "output" in
@@ -188,8 +188,11 @@ let rec binary_search low high =
             binary_search low value
         else
             binary_search value high)
-    else
-        low
+    else (
+        let _ = uprint_string (us "Maximum scaling factor is : ") in
+        let _ = uprint_float low in
+        let _ = uprint_endline (us "") in
+        low )
 
 let create_list_from_mk_csv () =
     let lst_from_file = List.tl (read_data_mk "job.mk") in
@@ -245,16 +248,21 @@ let rec compute_mk_each_task original_list k =
     | [] -> ( )
 
 
+let findSchedulable_mk ()  =
+    let op = read_data_output "output" in
+    let elem = List.hd op in
+    elem.is_schedulable
 
 let rec mk_binary_search low high k =
     if ((high -. low) > 0.05) then (
         let value = (low +. high) /. 2.0 in
         (*let _ = uprint_endline (ustring_of_float low) in
         let _ = uprint_endline (ustring_of_float high) in *)
-        let _ = uprint_string (ustring_of_float value) in
+        let _ = uprint_string ((us "Scaling Factor :") ^. (ustring_of_float
+        value)); uprint_endline (us " ") in
         let _ = scale_input value in
         let _ = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r -c  job.csv > output" in
-        let is = findSchedulable () in
+        let is = findSchedulable_mk () in
         let _ =  create_mk_analysis_csv () in
         let mlst = create_list_from_mk_csv () in
         let _ = compute_mk_each_task mlst k in
@@ -274,12 +282,41 @@ let sensitivity =
     let _ = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r -c job.csv > output" in
     let ist = findSchedulable () in
     let alpha  = if (is = "1") then (binary_search low high) else 1.0 in
-    let _ = (uprint_string ((us "Range : [") ^. (ustring_of_float (alpha)) ^.
+    let _ = (uprint_string ((us "Range of Scaling factor for (n, k) analysis: [") ^. (ustring_of_float (alpha)) ^.
     (us ", ") ^. (ustring_of_float high) ^. (us "]"))) in
-    let _ = print_string "Enter the value of k: " in
-    let k = read_int () in
+    let _ = uprint_endline (us "") in
+    let _ = uprint_string (us "(n, k) analysis") in
+    let _ = uprint_endline (us "") in
+    let k = if ((Array.length Sys.argv - 1) = 0) then 3 else (int_of_string
+    Sys.argv.(1)) in
+    let _ = mk_binary_search alpha high k in
+()
+
+(*
+
+let sensitivity =
+    let high = initial_high () in
+    let low = 1.0 in
+    let _ = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r -c job.csv > output" in
+    let _ = uprint_string (us "1") in
+    let is = findSchedulable () in
+    let _ = uprint_string (ustring_of_float high) in
+    let _ = scale_input high in
+    let _ = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r -c job.csv > output" in
+    let is = findSchedulable () in
+    let alpha  = if (is = "1") then (binary_search low high) else 1.0 in
+    (*let _ = uprint_string (us "Maximum scaling factor is :"); uprint_float alpha;
+    uprint_endline (us "") in*)
+    let _ = uprint_endline (us "(n,k) analysis") in
+    let _ = (uprint_string ((us "Range : [") ^. (ustring_of_float (alpha +. 0.05)) ^.
+    (us ", ") ^. (ustring_of_float high) ^. (us "]"))); uprint_endline (us "") in
+   (* let _ = print_string "Enter the value of k: " in
+    let k = read_int () in*)
+    let k = if ((Array.length Sys.argv - 1) = 0) then 3 else (int_of_string
+    Sys.argv.(1)) in
     let _ = mk_binary_search alpha high k in
     ()
+    *)
 
 
 (*

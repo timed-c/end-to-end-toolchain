@@ -18,6 +18,7 @@ COPY tbb44_20160128oss/include/tbb /opt/e2e/timed-c-e2e-sched-analysis/include/t
 COPY sensitivity-analysis /opt/e2e/sensitivity-analysis
 COPY  CMakeLists.txt  /opt/e2e/CMakeLists.txt
 COPY tbb44_20160128oss/lib/intel64/gcc4.4 /opt/tbb44_20160128oss/lib/intel64/gcc4.4/
+COPY script-files/ opt/e2e/project/
 WORKDIR /opt/e2e/ktc
 RUN ocaml -version
 RUN opam --version
@@ -26,7 +27,7 @@ WORKDIR /opt/e2e/ktc
 RUN pwd
 RUN eval $(opam config env) && make
 WORKDIR /opt/e2e/ktc/test
-RUN eval $(opam config env) && bash run-test.sh
+#RUN eval $(opam config env) && bash run-test.sh
 #WORKDIR /opt/ktc/profile-test
 #RUN eval $(opam config env) && bash run-end-docker.sh test1.c
 WORKDIR /opt/e2e/sensitivity-analysis
@@ -57,7 +58,7 @@ ENV PERL5LIB="/root/.opam/system/lib/perl5"
 ENV OCAML_TOPLEVEL_PATH="/root/.opam/system/lib/toplevel"
 ENV PATH="/root/.opam/system/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
-WORKDIR /opt/e2e/
+WORKDIR /opt/e2e/project
 
-#ENTRYPOINT [ "/opt/e2e/" ]
+#ENTRYPOINT [ "/opt/e2e/profile-test/run-end.sh" ]
 #CMD [ "--help" ]
