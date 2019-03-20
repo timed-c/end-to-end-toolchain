@@ -1,80 +1,93 @@
-## The E2E Toolchain
- E2E is pragmatic tool that takes as input a Timed C program, performs a measurement-based WCET estimation, uses this estimates to perform schedulability test, and performs temporal sensitivity analysis to calculate the number of deadline met (_n_) in any _k_ consecutive execution of a task when the WCET is increased by a certain scaling factor.
+## The Timed C E2E Toolchain
+The Timed C E2E is a pragmatic toolchain that takes as input a Timed C program and performs temporal (schedulability and sensitivity) analysis on the program.  The Timed C E2E  toolchain integrates :
 
- The various steps in e2e are:
- (i) KTC Instrumentation : This is a measurement-based WCET profiler. It takes as input a Timed C program and generates an instrumented C program. It also automatically compiles this instrumented C code and calculates the WCET. Finally, it uses this information to generate input to the schedulability test (next step). The KTC profiler is an extension of the KTC compiler. KTC is a source-to-source compiler for the Timed C programming language.
- (ii) Schedulability Test : It performs schedulability tests for sets of non-preemptive jobs.
- (iii) (m, k) - Sensitivity Analysis :   This is a temporal sensiticty analysis tool that scales up the current WCET and reports the number of deadline met for a given k.
+1. [KTC source-to-source compiler](https://github.com/timed-c/ktc): A source to source compiler for compiling Timed C program to target specific C code.
+2. [Schedulability test tool ](https://github.com/brandenburg/np-schedulability-analysis): A tool that performs  schedulability tests for sets of non-preemptive jobs.
+3. [Temporal sensitivity analysis tool ](https://github.com/saranya-natarajan/end-to-end-toolchain/tree/master/sensitivity-analysis): A tool that computes the maximum scaling factor by which the WCET of all tasks in a program can be scaled up and still be schedulable. The tool also computes the number of deadlines met for a given number of consecutive of the task. The term _n_ and _k_ are used to represent the number of deadlines met and consecutive windows, respectively.
+ 
+ The Timed C E2E toolchain takes as input a Timed C program and does the following steps in order: 
+ 
+  1.	_KTC Profiling_ : performs measurement-based WCET estimations using the KTC profiler. The KTC profiler is an extension of the KTC compiler.  It takes as input a Timed C program and generates an instrumented C program. It then automatically compiles this instrumented C code and calculates the WCET.  It uses this information to generate input for the next step. 
+  2.   _Schedulability Test_ : uses this estimates to perform schedulability test.  The  tool also supports uniprocessor analysis with abort actions, which forcefully stops and discards a job's execution at its deadline. 
+  3.  _Sensitivity Analysis_ : based on the ouput from the previous step it performs temporal sensitivity analysis. It calculates the maximum scaling factor and _n_ for a given _k_
 
- For further details refer to
- KTC : [Github](https://github.com/timed-c/ktc)
- Schedulability Test (older version): [Github](https://github.com/brandenburg/np-schedulability-analysis)
- Timed C: S. Natarajan and D. Broman, [“Timed C : An Extension to the C Programming Language for Real-Time System”](https://people.kth.se/~dbro/papers/natarajan-broman-2018-timed-c.pdf), In 2018 IEEE Real-Time and Embedded Technology and Applications Symposium (RTAS). IEEE, 2018.
+References:
 
-## Installing e2e toolchain
-The e2e toolchain is packed as an docker image. This makes the e2e toochain portable across different OSes. This document describe how to install the e2e toolchain as a docker container image. This e2e docker container image is known to work on Ubuntu, Linux, and Windows machines.
-Prerequisite : Docker Software
+ 1. _Timed C _ ::  S. Natarajan and D. Broman, [“Timed C : An Extension to the C Programming Language for Real-Time System”](https://people.kth.se/~dbro/papers/natarajan-broman-2018-timed-c.pdf), In 2018 IEEE Real-Time and Embedded Technology and Applications Symposium (RTAS). IEEE, 2018.
+ 2. _Schedulability Test_ :: M. Nasri and B. Brandenburg, [“An Exact and Sustainable Analysis of Non-Preemptive Scheduling”](https://people.mpi-sws.org/~bbb/papers/pdf/rtss17.pdf) , Proceedings of the 38th IEEE Real-Time Systems Symposium (RTSS 2017), pp. 12–23, December 2017.
+    M. Nasri, G. Nelissen, and B. Brandenburg, [“A Response-Time Analysis for Non-Preemptive Job Sets under Global Scheduling”](http://drops.dagstuhl.de/opus/volltexte/2018/8994/pdf/LIPIcs-ECRTS-2018-9.pdf), Proceedings of the 30th Euromicro Conference on Real-Time Systems (ECRTS 2018), pp. 9:1–9:23, July 2018.
+
+
+## Installing Timed C E2E toolchain
+The Timed C e2e toolchain is packed as an docker image. This makes the e2e toochain portable across different operating systems. This document describe how to install the e2e toolchain as a docker  image. This  docker container  is known to work on Ubuntu, Linux, and Windows machines.
+
 
 ### Step 1: Installing Docker
-If the docker sofware is installed on your machine you can go to step 2.
-##### Windows
-For windows follow instruction at
+If the docker sofware is installed on your machine you can go to step 2.  Follow instruction at
+
+##### For Windows
+
 https://docs.docker.com/docker-for-windows/install/
 
-##### Ubuntu
-For Ubuntu follow instruction at
+##### For Ubuntu
+
 https://docs.docker.com/install/linux/docker-ce/ubuntu/
 
-##### Installing Docker on Mac OS
-For Mac OS follow instruction at
+##### For Mac OS
+
 https://docs.docker.com/docker-for-mac/install/
 
-### Step 2: Installing the E2E Docker Container Image
+### Step 2: Installing the Timed C E2E Docker  Image
 
-    git clone https://github.com/saranya-natarajan/end-to-end-toolchain.git
-    cd end-to-end-toolchain
-    git submodule init
-    git submodule update
-    docker build --tag=e2e .
+1. Clone from the Timed C E2E repo
+		
+		git clone https://github.com/saranya-natarajan/end-to-end-toolchain.git
+		
+2. Enter the working directory  and fetch submodules
+	
+		cd end-to-end-toolchain
+		git submodule init
+		git submodule update
+		
+3. Build the E2E docker image. This will take few minutes. 
+		
+		docker build --tag=e2e .
 
-#### Step 3: Testing the Installation
-    docker run -it e2e
-    cd profile-test
-    ./run-end.sh test1.c
+#### Updating E2E Docker  Image
+Note : do this only after your initial installation is done successfully.
 
-Output:
-...
-Completed
+1. Pull from the Timed C E2E repo
 
-Note, that the above execution takes place within a docker container. You can exit the docker container by typing the command _exit_ .
+		git pull
 
-#### Updating E2E Docker Container Image
-Note : do this only after your intial installation is done successfully.
+2. Re-build the E2E docker image
 
-    git pull
-    docker build --tag=e2e .
+		docker build --tag=e2e .
 
-#### Running the e2e tool
+#### Running the Timed C E2E tool
 
-Step 1: Writing Timed C program
-The file _template.c_ in the end-to-end-toolchain folder contains all the required header to compile a Timed C program. Copy this file to your working directory. Make a copy of this file to <filename.c>. Write your Timed C program and save.
+1.  Writing Timed C program
+The file _template.c_ in the end-to-end-toolchain folder contains all the required header to compile a Timed C program. Copy this file to your working directory. Make a copy of this file to <filename.c>. Write your Timed C program and save. A number of program examples can be found at  
+		
+		<path-to-end-to-end-toolchain>/profile-test
 
-Step 2: Intializing the e2e tool.
-This step is required because the e2e tool runs as a docker container. This command is only executed once at the begining.
+2.  Intializing the Timed C E2E tool.
+This step is required because the tool runs as a docker container.  This command starts the docker container in the background that is used to run the tool. Noe that this command is only executed once at the begining.
 
-    <path_to_end_to_end_toolchain>/end2end --init
+		 <path-to-end-to-end-toolchain>/end2end --init
 
-Step 3: Running the e2e toolchain.
+3. Running the Timed C E2E toolchain.
 This command runs the e2e toolchain. The input is a timed C program and a number _k_.
 
-    <path_to_end_to_end_toolchain>/end2end --run <filename.c> -k <number>
+  
+  		  <path-to-end-to-end-toolchain>/end2end --run <filename.c> -k <number>
 
-The option --run takes as argument a timed C program. It ouputs a file called <filename.c.output>. The option -k takes a number as an argument, where _k_ is the size of the consecutive window. THe default value of _k_ is 3. The contents of <filename.c.output> is described later.
+The option --run takes as argument a timed C program. It ouputs a file called `<filename.c.output>`. The option -k takes a number as an argument, where _k_ is the size of the consecutive window. The default value of _k_ is 3. The contents of  `<filename.c.output>` is described later.
 
-Step 4: Terminating the e2e toolchain.
-This command kills and removes the e2e docker image. It is recommended to run this command only once after finish all work on the e2e toolchain. Note, it is not required to run this command between every execution. This command is executed at the very end after completing the e2e session. This helps in cleaning up the memory used by the e2e container.
+4. Terminating the e2e toolchain.
+This command kills and removes the Timed C E2E docker container (created using --init). It is recommended to run this command only after finish all work on the  toolchain. Note, it is not required to run this command between every execution. This helps in cleaning up the memory used by the  docker container.
 
-    <path_to_end_to_end_toolchain>/end2end --e
+		<path_to_end_to_end_toolchain>/end2end --end
 
 #### The Format of the Output File
 Below is an example of an output file
@@ -98,7 +111,7 @@ Below is an example of an output file
 ...
 ```
 
-(i) Line 1 to 10 in this file displays all the scaling factor that sensitivity analysis uses to iteratively derive a maximum value. Information about whether this scalin factor is schedulable is displayed.
-(ii) Line 10 is the maximum computed scaling factor.
-(ii) Line 11 displays a range of scaling factor that the (_n,k_) analysis considers.
-(iv) Line 13 to Line 16 describes the scaling factor and the (_n,k_) values for the different tasks.
+1. Line 1 to 10 in this file displays all the scaling factor that sensitivity analysis uses to iteratively derive a maximum value. Information about whether this scaling factor is schedulable is displayed.
+2.  Line 10 in this file is the maximum computed scaling factor.
+3. Line 11 displays a range of scaling factor that the (_n,k_) analysis considers.
+(iv) Line 13 to Line 16 in this file describes  (_n,k_) values for the different tasks for the given scaling factor.
