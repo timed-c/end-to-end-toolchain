@@ -1,4 +1,4 @@
-## The Timed C E2E Toolchain
+# The Timed C E2E Toolchain
 The Timed C E2E is a pragmatic toolchain that takes as input a Timed C program and performs temporal (schedulability and sensitivity) analysis on the program.  The Timed C E2E  toolchain integrates :
 
 1. [KTC source-to-source compiler](https://github.com/timed-c/ktc): A source to source compiler for compiling Timed C program to target specific C code.
@@ -12,8 +12,7 @@ The Timed C E2E is a pragmatic toolchain that takes as input a Timed C program a
   3.  _Sensitivity Analysis_ : based on the ouput from the previous step it performs temporal sensitivity analysis. It calculates the maximum scaling factor and _n_ for a given _k_
 
 References:
-
- 1. _Timed C _ ::  S. Natarajan and D. Broman, [“Timed C : An Extension to the C Programming Language for Real-Time System”](https://people.kth.se/~dbro/papers/natarajan-broman-2018-timed-c.pdf), In 2018 IEEE Real-Time and Embedded Technology and Applications Symposium (RTAS). IEEE, 2018.
+ 1. _Timed C_ ::  S. Natarajan and D. Broman, [“Timed C : An Extension to the C Programming Language for Real-Time System”](https://people.kth.se/~dbro/papers/natarajan-broman-2018-timed-c.pdf), In 2018 IEEE Real-Time and Embedded Technology and Applications Symposium (RTAS). IEEE, 2018.
  2. _Schedulability Test_ :: M. Nasri and B. Brandenburg, [“An Exact and Sustainable Analysis of Non-Preemptive Scheduling”](https://people.mpi-sws.org/~bbb/papers/pdf/rtss17.pdf) , Proceedings of the 38th IEEE Real-Time Systems Symposium (RTSS 2017), pp. 12–23, December 2017.
     M. Nasri, G. Nelissen, and B. Brandenburg, [“A Response-Time Analysis for Non-Preemptive Job Sets under Global Scheduling”](http://drops.dagstuhl.de/opus/volltexte/2018/8994/pdf/LIPIcs-ECRTS-2018-9.pdf), Proceedings of the 30th Euromicro Conference on Real-Time Systems (ECRTS 2018), pp. 9:1–9:23, July 2018.
 
@@ -22,8 +21,8 @@ References:
 The Timed C e2e toolchain is packed as an docker image. This makes the e2e toochain portable across different operating systems. This document describe how to install the e2e toolchain as a docker  image. This  docker container  is known to work on Ubuntu, Linux, and Windows machines.
 
 
-### Step 1: Installing Docker
-If the docker sofware is installed on your machine you can go to step 2.  Follow instruction at
+### Installing Docker
+If the docker sofware is installed on your machine please skip this step. Otherwise, follow the instruction below
 
 ##### For Windows
 
@@ -37,7 +36,7 @@ https://docs.docker.com/install/linux/docker-ce/ubuntu/
 
 https://docs.docker.com/docker-for-mac/install/
 
-### Step 2: Installing the Timed C E2E Docker  Image
+### Installing the Timed C E2E Docker  Image
 
 1. Clone from the Timed C E2E repo
 		
@@ -53,7 +52,7 @@ https://docs.docker.com/docker-for-mac/install/
 		
 		docker build --tag=e2e .
 
-#### Updating E2E Docker  Image
+## Updating the Timed C E2E Toolchain
 Note : do this only after your initial installation is done successfully.
 
 1. Pull from the Timed C E2E repo
@@ -64,7 +63,7 @@ Note : do this only after your initial installation is done successfully.
 
 		docker build --tag=e2e .
 
-#### Running the Timed C E2E tool
+## Running the Timed C E2E tool
 
 1.  Writing Timed C program
 The file _template.c_ in the end-to-end-toolchain folder contains all the required header to compile a Timed C program. Copy this file to your working directory. Make a copy of this file to <filename.c>. Write your Timed C program and save. A number of program examples can be found at  
@@ -88,8 +87,9 @@ The option --run takes as argument a timed C program. It ouputs a file called `<
 This command kills and removes the Timed C E2E docker container (created using --init). It is recommended to run this command only after finish all work on the  toolchain. Note, it is not required to run this command between every execution. This helps in cleaning up the memory used by the  docker container.
 
 		<path_to_end_to_end_toolchain>/end2end --end
+		
 
-#### The Format of the Output File
+## The Format of the Output File
 Below is an example of an output file
 ```
 1   1 : SCHEDULABLE
@@ -113,5 +113,5 @@ Below is an example of an output file
 
 1. Line 1 to 10 in this file displays all the scaling factor that sensitivity analysis uses to iteratively derive a maximum value. Information about whether this scaling factor is schedulable is displayed.
 2.  Line 10 in this file is the maximum computed scaling factor.
-3. Line 11 displays a range of scaling factor that the (_n,k_) analysis considers.
-(iv) Line 13 to Line 16 in this file describes  (_n,k_) values for the different tasks for the given scaling factor.
+3. Line 11 displays a range of scaling factor that the (_n,k_) analysis considers
+4.  Line 13 to Line 16 in this file describes  (_n,k_) values for the different tasks for the given scaling factor.
