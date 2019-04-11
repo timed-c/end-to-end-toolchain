@@ -2,12 +2,8 @@
 name=$1
 k=$2
 j=$3
-echo "Instrumentation"
-../ktc/bin/ktc --enable-ext2 --save-temps $name -L. -llogs -lmbench  -w --link -g
-echo "Generating Trace"
-./a.out > trace
 echo "Generating Input to Schedulability Test"
-../ktc/bin/ktc --enable-ext3 --save-temps $name -L. -llogs -lmbench -w --link -g
+../ktc/bin/ktc --enable-ext3 --save-temps $name -L. -llogs -lmbench -w -g
 echo "Schedulability Test"
 ../timed-c-e2e-sched-analysis/build/nptest -r -c job.csv > output
 cp job.rta.csv output.rta
@@ -24,6 +20,5 @@ rm *.dot
 rm *.o
 rm *.i
 rm *.json
-rm tsk_*
 rm trace
 echo "Completed"

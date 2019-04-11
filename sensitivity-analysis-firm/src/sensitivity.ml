@@ -188,20 +188,21 @@ let rec binary_search value low high init_high =
 let rec binary_search low high =
     if ((high -. low) > 0.5) then (
         let value = (low +. high) /. 2.0 in
-        (*let _ = uprint_endline (ustring_of_float low) in
+        let _ = uprint_endline (ustring_of_float low) in
         let _ = uprint_endline (ustring_of_float high) in
-        let _ = uprint_string (ustring_of_float value) in*)
+        let _ = uprint_string (ustring_of_float value) in
         let _ = scale_input value in
-        let _ = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r job.csv > output" in
+        let _ = Sys.command
+        "/home/saranya/Dokument/e2e/timed-c-e2e-sched-analysis/build/nptest -r job.csv -a action.csv > output" in
         let is = findSchedulable () in
         if (is = "0") then
             binary_search low value
         else
             binary_search value high)
     else (
-        (*let _ = uprint_string (us "Maximum scaling factor is : ") in
+        let _ = uprint_string (us "Maximum scaling factor is : ") in
         let _ = uprint_float low in
-        let _ = uprint_endline (us "") in *)
+        let _ = uprint_endline (us "") in
         low )
 
 
@@ -273,7 +274,8 @@ let rec mk_binary_search low high k =
         let _ = uprint_string ((us "Scaling Factor :") ^. (ustring_of_float
         value)); uprint_endline (us " ") in
         let _ = scale_input value in
-        let _ = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r job.csv > output" in
+        let _ = Sys.command
+        "/home/saranya/Dokument/e2e/timed-c-e2e-sched-analysis/build/nptest -r job.csv -a action.csv > output" in
         let is = findSchedulable_mk () in
         let _ =  create_mk_analysis_csv () in
         let mlst = create_list_from_mk_csv () in
@@ -302,7 +304,7 @@ let rec compute_mk_each_task_k_vector original_list klist tmisses =
 let calculate_misses alpha klist =
     let _ = scale_input alpha in
     let _ = Sys.command
-    "../timed-c-e2e-sched-analysis/build/nptest -r -c job.csv > output" in
+    "/home/saranya/Dokument/e2e/timed-c-e2e-sched-analysis/build/nptest -r -c job.csv -a action.csv > output" in
     let _ =  create_mk_analysis_csv () in
     let mlst = create_list_from_mk_csv () in
     (*let _ = uprint_endline (us ("Task ID")); List.iter (fun a -> uprint_endline
@@ -352,14 +354,13 @@ let rec bsearch dmap_min dmap_max low high req klist miss_start mlst =
     uprint_endline (us " ")in
     let cond = Pervasives.abs_float ((List.nth dmap_max low) -. (List.nth dmap_min
     high)) in
-    (*let _ = uprint_string (us "cond : "); uprint_float cond; uprint_endline (us "")
+    let _ = uprint_string (us "cond : "); uprint_float cond; uprint_endline (us "")
     in
     let _ = if (low > high) then (uprint_endline (us "Min"); (List.iter (fun a ->
         (uprint_float a); uprint_endline (us " ")) dmap_min); uprint_endline (us
         "Max"); (List.iter (fun a -> (uprint_float a);
-        uprint_endline (us " ")) dmap_max); raise (Sense "low high issue"));()
-    in*)
-    if ((cond < 0.005)  & (high >= req)) then
+        uprint_endline (us " ")) dmap_max); raise (Sense "low high issue"));() in
+    if ((cond < 0.5)  & (high >= req)) then
     (
         let dmin = replace dmap_min (req) (min_float (List.nth dmap_min
         high) (List.nth
@@ -423,7 +424,7 @@ let compute_manhattan_distance_map alpha_start alpha_end miss_start klist =
         update_dmap dmap dmap_min dmap_max miss_start klist alpha_end [] (List.length dmap_min)
     )
     else
-        ([alpha_start], [alpha_end], [1])
+        ([alpha_end], [alpha_end], [1])
 
 let get_command_line_arg len arr =
     let _ = if (len = 0) then (raise (Sense "Not a valid k")) in
@@ -456,12 +457,14 @@ let write_to_file k dmin dmax =
 let sensitivity =
     let high = initial_high () in
     let low = 1.0 in
-    let _ = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r job.csv > output" in
+    let _ = Sys.command
+    "/home/saranya/Dokument/e2e/timed-c-e2e-sched-analysis/build/nptest -r job.csv  -a action.csv > output" in
     let _ = uprint_string (us "1") in
     let is = findSchedulable () in
     let _ = uprint_string (ustring_of_float high) in
     let _ = scale_input high in
-    let _ = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r job.csv > output" in
+    let _ = Sys.command
+    "/home/saranya/Dokument/e2e/timed-c-e2e-sched-analysis/build/nptest -r job.csv -a action.csv > output" in
     let ist = findSchedulable () in
     let alpha  = if (is = "1") then (binary_search low high) else 1.0 in
     let _ = (uprint_string ((us "Range of Scaling factor for (m, k) analysis: [") ^. (ustring_of_float (alpha)) ^.
@@ -477,8 +480,7 @@ let sensitivity =
         (let (dmin, dmax, mbar) = compute_manhattan_distance_map (alpha) (high) miss_start klist in
         let _ = uprint_endline (us "Min"); List.iter (fun a -> (uprint_float a); uprint_endline (us " ")) dmin in
         let _ = uprint_endline (us "Max"); List.iter (fun a -> (uprint_float a); uprint_endline (us " ")) dmax in
-        (*let _ = uprint_endline (us "Deadline miss at max"); List.iter (fun a
-         * -> uprint_int a) mbar; uprint_endline (us " ") in*)
+        let _ = uprint_endline (us "Deadline miss at max"); List.iter (fun a -> uprint_int a) mbar; uprint_endline (us " ") in
         let _ = write_to_file (Sys.argv.(2)) dmin dmax in ())
     else
         let miss_end = calculate_misses high klist in

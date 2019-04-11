@@ -188,20 +188,20 @@ let rec binary_search value low high init_high =
 let rec binary_search low high =
     if ((high -. low) > 0.5) then (
         let value = (low +. high) /. 2.0 in
-        (*let _ = uprint_endline (ustring_of_float low) in
+        let _ = uprint_endline (ustring_of_float low) in
         let _ = uprint_endline (ustring_of_float high) in
-        let _ = uprint_string (ustring_of_float value) in*)
+        let _ = uprint_string (ustring_of_float value) in
         let _ = scale_input value in
-        let _ = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r job.csv > output" in
+        let _ = Sys.command "/home/saranya/Dokument/e2e/timed-c-e2e-sched-analysis/build/nptest -r job.csv > output" in
         let is = findSchedulable () in
         if (is = "0") then
             binary_search low value
         else
             binary_search value high)
     else (
-        (*let _ = uprint_string (us "Maximum scaling factor is : ") in
+        let _ = uprint_string (us "Maximum scaling factor is : ") in
         let _ = uprint_float low in
-        let _ = uprint_endline (us "") in *)
+        let _ = uprint_endline (us "") in
         low )
 
 
@@ -273,7 +273,7 @@ let rec mk_binary_search low high k =
         let _ = uprint_string ((us "Scaling Factor :") ^. (ustring_of_float
         value)); uprint_endline (us " ") in
         let _ = scale_input value in
-        let _ = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r job.csv > output" in
+        let _ = Sys.command "/home/saranya/Dokument/e2e/timed-c-e2e-sched-analysis/build/nptest -r job.csv > output" in
         let is = findSchedulable_mk () in
         let _ =  create_mk_analysis_csv () in
         let mlst = create_list_from_mk_csv () in
@@ -302,7 +302,7 @@ let rec compute_mk_each_task_k_vector original_list klist tmisses =
 let calculate_misses alpha klist =
     let _ = scale_input alpha in
     let _ = Sys.command
-    "../timed-c-e2e-sched-analysis/build/nptest -r -c job.csv > output" in
+    "/home/saranya/Dokument/e2e/timed-c-e2e-sched-analysis/build/nptest -r -c job.csv > output" in
     let _ =  create_mk_analysis_csv () in
     let mlst = create_list_from_mk_csv () in
     (*let _ = uprint_endline (us ("Task ID")); List.iter (fun a -> uprint_endline
@@ -320,8 +320,6 @@ let min_float a b =
     if (a > b) then b else a
 
 let manhattan_distance m1 m2 =
-    let _ = uprint_int (List.length m1); uprint_string (us "calc"); uprint_int
-    (List.length m2) in
     let md_aux = List.map2 (fun a b -> (abs (b - a))) m1 m2 in
     (List.fold_left (add_distances) 0 md_aux)
 
@@ -352,13 +350,12 @@ let rec bsearch dmap_min dmap_max low high req klist miss_start mlst =
     uprint_endline (us " ")in
     let cond = Pervasives.abs_float ((List.nth dmap_max low) -. (List.nth dmap_min
     high)) in
-    (*let _ = uprint_string (us "cond : "); uprint_float cond; uprint_endline (us "")
+    let _ = uprint_string (us "cond : "); uprint_float cond; uprint_endline (us "")
     in
     let _ = if (low > high) then (uprint_endline (us "Min"); (List.iter (fun a ->
         (uprint_float a); uprint_endline (us " ")) dmap_min); uprint_endline (us
         "Max"); (List.iter (fun a -> (uprint_float a);
-        uprint_endline (us " ")) dmap_max); raise (Sense "low high issue"));()
-    in*)
+        uprint_endline (us " ")) dmap_max); raise (Sense "low high issue"));() in
     if ((cond < 0.005)  & (high >= req)) then
     (
         let dmin = replace dmap_min (req) (min_float (List.nth dmap_min
@@ -410,20 +407,15 @@ let compute_manhattan_distance_map alpha_start alpha_end miss_start klist =
     let _ = uprint_endline (us "compute_manhattan_distance") in
     let miss_end = calculate_misses alpha_end klist in
     let d_end = manhattan_distance miss_start miss_end in
-    if (d_end <> 1) then (
-        let dmap_min =  ((alpha_start :: (create_list 0 (d_end - 1) alpha_end []))) in
-        let dmap_max = List.append (create_list 0 (d_end - 1) alpha_start [])
-        [alpha_end] in
-        let _ = uprint_int (List.length (create_distance_min_map dmap_min
-        (d_end))); uprint_int (List.length dmap_min) in
-        let _ = uprint_int d_end in
-        let _ = (uprint_endline (us "end")); (uprint_int d_end) in
-        let dmap = List.tl (List.rev (List.tl (List.rev (create_distance_min_map
-        dmap_min (d_end))))) in
-        update_dmap dmap dmap_min dmap_max miss_start klist alpha_end [] (List.length dmap_min)
-    )
-    else
-        ([alpha_start], [alpha_end], [1])
+    let dmap_min =  ((alpha_start :: (create_list 0 (d_end - 1) alpha_end []))) in
+    let dmap_max = List.append (create_list 0 (d_end - 1) alpha_start [])
+    [alpha_end] in
+    let _ = uprint_int (List.length (create_distance_min_map dmap_min
+    (d_end))); uprint_int (List.length dmap_min) in
+    let _ = uprint_int d_end in
+    let dmap = List.tl (List.rev (List.tl (List.rev (create_distance_min_map
+    dmap_min (d_end))))) in
+    update_dmap dmap dmap_min dmap_max miss_start klist alpha_end [] (List.length dmap_min)
 
 let get_command_line_arg len arr =
     let _ = if (len = 0) then (raise (Sense "Not a valid k")) in
@@ -435,57 +427,52 @@ let get_command_line_arg len arr =
 
 let rec write_list_to_file oc dmin dmax coord =
     match (dmin, dmax) with
-    | ((mi :: minrest), (mx :: maxrest)) -> if ((string_of_float mi) <>
-    (string_of_float mx)) then (let fmi = "("^(string_of_float mi)^","^(string_of_int coord)^")" in
+    | ((mi :: minrest), (mx :: maxrest)) -> let fmi = "("^(string_of_float mi)^","^(string_of_int coord)^")" in
                                            let fmx = "("^(string_of_float mx)^","^(string_of_int coord)^")"in
                                            let _ = fprintf oc "%s" (fmi^fmx) in
-                                            write_list_to_file oc minrest
-                                            maxrest (coord + 1))
-    else
-        write_list_to_file oc minrest maxrest (coord + 1)
-
+                                            write_list_to_file oc minrest maxrest (coord + 1)
     | ([], []) -> ()
 
 let write_to_file k dmin dmax =
   let file = "k_"^k in
   let oc = Pervasives.open_out file in    (* create or truncate file, return channel *)
-  let _ = fprintf oc "%s" ("(1.0,0)") in    (* write something *)
+  let _ = fprintf oc "%s" ("(0,0) (1.0,0)") in    (* write something *)
   let _ = write_list_to_file oc dmin dmax 0 in
   Pervasives.close_out oc               (* flush and close the channel *)
 
 let sensitivity =
     let high = initial_high () in
     let low = 1.0 in
-    let _ = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r job.csv > output" in
+    let _ = Sys.command "/home/saranya/Dokument/e2e/timed-c-e2e-sched-analysis/build/nptest -r job.csv > output" in
     let _ = uprint_string (us "1") in
     let is = findSchedulable () in
     let _ = uprint_string (ustring_of_float high) in
     let _ = scale_input high in
-    let _ = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r job.csv > output" in
+    let _ = Sys.command "/home/saranya/Dokument/e2e/timed-c-e2e-sched-analysis/build/nptest -r job.csv > output" in
     let ist = findSchedulable () in
     let alpha  = if (is = "1") then (binary_search low high) else 1.0 in
-    let _ = (uprint_string ((us "Range of Scaling factor for (m, k) analysis: [") ^. (ustring_of_float (alpha)) ^.
+    let _ = (uprint_string ((us "Range of Scaling factor for (n, k) analysis: [") ^. (ustring_of_float (alpha)) ^.
     (us ", ") ^. (ustring_of_float high) ^. (us "]"))) in
+    let _ = uprint_endline (us "") in
+    let _ = uprint_string (us "(n, k) analysis") in
+    let _ = uprint_endline (us "") in
     (*let k = if ((Array.length Sys.argv - 1) = 0) then 3 else (int_of_string
     Sys.argv.(1)) in*)
     (*let klist = get_command_line_arg (Array.length Sys.argv - 1) Sys.argv in*)
     (*let _ = mk_binary_search alpha high k in*)
-    let klist = Array.to_list (Array.make (int_of_string (Sys.argv.(1))) (int_of_string (Sys.argv.(2)))) in
+    let klist = Array.to_list (Array.make (int_of_string (Sys.argv.(1)))
+    (int_of_string (Sys.argv.(2)))) in
     let miss_start = Array.to_list (Array.make (int_of_string (Sys.argv.(1))) 0) in
-    if (is = "1") then
+    let _ = uprint_string (us "New (m,k) analysis") in
     (*let miss_start = create_list 0 (Array.length Sys.argv - 1) 0 [] in*)
-        (let (dmin, dmax, mbar) = compute_manhattan_distance_map (alpha) (high) miss_start klist in
-        let _ = uprint_endline (us "Min"); List.iter (fun a -> (uprint_float a); uprint_endline (us " ")) dmin in
-        let _ = uprint_endline (us "Max"); List.iter (fun a -> (uprint_float a); uprint_endline (us " ")) dmax in
-        (*let _ = uprint_endline (us "Deadline miss at max"); List.iter (fun a
-         * -> uprint_int a) mbar; uprint_endline (us " ") in*)
-        let _ = write_to_file (Sys.argv.(2)) dmin dmax in ())
-    else
-        let miss_end = calculate_misses high klist in
-        (uprint_string (us "n :: [")); List.iter (fun a -> (uprint_int a)
-        ;(uprint_string (us ";"))) miss_end ; (uprint_string (us "]")); ()
-
-
+    let (dmin, dmax, mbar) = compute_manhattan_distance_map (alpha) (300.0) miss_start klist in
+    let _ = uprint_endline (us "Min"); List.iter (fun a -> (uprint_float a); uprint_endline (us " ")) dmin in
+    let _ = uprint_endline (us "Max"); List.iter (fun a -> (uprint_float a); uprint_endline (us " ")) dmax in
+    let _ = uprint_endline (us "Deadline miss at max"); List.iter (fun a ->
+        uprint_int
+    a) mbar; uprint_endline (us " ") in
+    let _ = write_to_file (Sys.argv.(2)) dmin dmax in
+    ()
 
 (*
 

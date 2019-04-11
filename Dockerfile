@@ -3,6 +3,8 @@ LABEL maintainer="saranyan@kth.se"
 
 
 RUN apt-get update && apt-get install -y ocaml ocaml-native-compilers opam m4
+RUN apt-get install -y libc6-armel-cross libc6-dev-armel-cross binutils-arm-linux-gnueabi libncurses5-dev
+RUN apt-get install -y gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf
 
 RUN opam init
 RUN opam config env
@@ -12,13 +14,15 @@ RUN opam install yojson
 RUN opam install csv
 RUN echo $(opam config env)
 
-COPY ktc /opt/e2e/ktc
+
 COPY timed-c-e2e-sched-analysis /opt/e2e/timed-c-e2e-sched-analysis
+COPY ktc /opt/e2e/ktc
 COPY tbb44_20160128oss/include/tbb /opt/e2e/timed-c-e2e-sched-analysis/include/tbb
 COPY sensitivity-analysis /opt/e2e/sensitivity-analysis
+#COPY script-files/ opt/e2e/project/
+COPY emsoft-eval opt/e2e/project
 COPY  CMakeLists.txt  /opt/e2e/CMakeLists.txt
 COPY tbb44_20160128oss/lib/intel64/gcc4.4 /opt/tbb44_20160128oss/lib/intel64/gcc4.4/
-COPY script-files/ opt/e2e/project/
 WORKDIR /opt/e2e/ktc
 RUN ocaml -version
 RUN opam --version
