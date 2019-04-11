@@ -63,6 +63,43 @@ Note : do this only after your initial installation is done successfully.
 
 		docker build --tag=e2e .
 
+## Running the EMSOFT examples
+
+The examples for the EMSOFT paper are in <path-to-end-to-end-toolchain>/emsoft-eval folder. In this folder soft.c is soft periodic, soft-offset.c is soft perioidic with offset, gmf.c is gmf, and gmf-offset.c is gmf with offset. To run these examples go to the directory and follow the following steps 
+
+1.  Intializing the Timed C E2E tool.
+This step is required because the tool runs as a docker container.  This command starts the docker container in the background that is used to run the tool. Noe that this command is only executed once at the begining.
+
+		 <path-to-end-to-end-toolchain>/end2end --init
+
+2. Instrumentation for own system
+This command runs the e2e toolchain. The input is a timed C program 
+
+  
+  		  <path-to-end-to-end-toolchain>/end2end -p <file.c>
+  		  
+3. Instrumentation for Raspberry Pi system
+ The input is a timed C program. Use option -m or --rasp 
+
+  
+  		  <path-to-end-to-end-toolchain>/end2end -m <file.c> 
+  		  
+4. For periodic task set run the following command once traces are generated. Here n is number of tasks and k is the number of windows 
+
+		<path-to-end-to-end-toolchain>/end2end --sensp <file.c>  n k
+		
+4. For gmf task set run the following command once traces are generated. Here n is number of tasks and k is the number of windows
+
+		<path-to-end-to-end-toolchain>/end2end -sensf <file.c>  n k
+ 
+ 
+5. Terminating the e2e toolchain.
+This command kills and removes the Timed C E2E docker container (created using --init). It is recommended to run this command only after finish all work on the  toolchain. Note, it is not required to run this command between every execution. This helps in cleaning up the memory used by the  docker container.
+
+		<path_to_end_to_end_toolchain>/end2end --end
+		
+The output can be found in file k_(no-of-windows-specified)_.For example, for k=3 the output is in k_3.
+		
 ## Running the Timed C E2E tool
 
 1.  Writing Timed C program

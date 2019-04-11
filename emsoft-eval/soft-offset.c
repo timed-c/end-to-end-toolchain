@@ -17,7 +17,7 @@ void musqrt(int k);
 task tsk_1(){
     stp(2, infty, ms);
     while(1){
-    musqrt(1);
+    musqrt(0);
     sdelay(1000, ms);
     }
 }
@@ -25,7 +25,7 @@ task tsk_1(){
 task tsk_2(){
     stp(2, infty, ms);
     while(1){
-    mdeg2rad(1);
+    mdeg2rad(0);
     sdelay(500, ms);
     }
 }
@@ -41,7 +41,7 @@ task tsk_3(){
 task tsk_4(){
     stp(1, infty, ms);
     while(1){
-    mSolveCubic(1);
+    mSolveCubic(0);
     sdelay(100, ms);
     }
 }
@@ -65,7 +65,7 @@ task tsk_6(){
 task tsk_7(){
     stp(0, infty, ms);
     while(1){
-    mdeg2rad(1);
+    mdeg2rad(0);
     sdelay(500, ms);
     }
 }
@@ -73,7 +73,7 @@ task tsk_7(){
 task tsk_8(){
     stp(2, infty, ms);
     while(1){
-    mrad2deg(1);
+    mrad2deg(0);
     sdelay(300, ms);
     }
 }
@@ -81,7 +81,7 @@ task tsk_8(){
 task tsk_9(){
     stp(0, infty, ms);
     while(1){
-    mSolveCubic(1);
+    mSolveCubic(0);
     sdelay(250, ms);
     }
 }
@@ -89,7 +89,7 @@ task tsk_9(){
 task tsk_10(){
     stp(5, infty, ms);
     while(1){
-    musqrt(1);
+    musqrt(0);
     sdelay(125, ms);
     }
 }
