@@ -3,7 +3,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include "cilktc.h"
-#include "log.h"
+#include "mlog.h"
 #include "snipmath.h"
 
 void qsort_large();
@@ -89,7 +89,7 @@ task tsk_9(){
 task tsk_10(){
     stp(0, infty, ms);
     while(1){
-    musqrt(2);
+    musqrt(1);
     sdelay(125, ms);
     }
 }

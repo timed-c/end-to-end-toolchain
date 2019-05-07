@@ -17,7 +17,7 @@ void musqrt(int k);
 task tsk_1(){
     stp(2, infty, ms);
     while(1){
-    musqrt(0);
+    musqrt(1);
     sdelay(1000, ms);
     }
 }
@@ -25,7 +25,7 @@ task tsk_1(){
 task tsk_2(){
     stp(2, infty, ms);
     while(1){
-    mdeg2rad(0);
+    mdeg2rad(1);
     sdelay(500, ms);
     }
 }
@@ -33,7 +33,7 @@ task tsk_2(){
 task tsk_3(){
     stp(2, infty, ms);
     while(1){
-    mrad2deg(1);
+    mrad2deg(0);
     sdelay(50, ms);
     }
 }
@@ -65,7 +65,7 @@ task tsk_6(){
 task tsk_7(){
     stp(0, infty, ms);
     while(1){
-    mdeg2rad(0);
+    mdeg2rad(1);
     sdelay(500, ms);
     }
 }

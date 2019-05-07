@@ -186,7 +186,7 @@ let rec binary_search value low high init_high =
 *)
 
 let rec binary_search low high =
-    if ((high -. low) > 0.5) then (
+    if ((high -. low) > 0.05) then (
         let value = (low +. high) /. 2.0 in
         let _ = uprint_endline (ustring_of_float low) in
         let _ = uprint_endline (ustring_of_float high) in
@@ -424,7 +424,7 @@ let compute_manhattan_distance_map alpha_start alpha_end miss_start klist =
         update_dmap dmap dmap_min dmap_max miss_start klist alpha_end [] (List.length dmap_min)
     )
     else
-        ([alpha_end], [alpha_end], [1])
+        ([alpha_start; alpha_end], [alpha_start; alpha_end], [1; 1])
 
 let get_command_line_arg len arr =
     let _ = if (len = 0) then (raise (Sense "Not a valid k")) in
@@ -436,22 +436,27 @@ let get_command_line_arg len arr =
 
 let rec write_list_to_file oc dmin dmax coord =
     match (dmin, dmax) with
-    | ((mi :: minrest), (mx :: maxrest)) -> if ((string_of_float mi) <>
-    (string_of_float mx)) then (let fmi = "("^(string_of_float mi)^","^(string_of_int coord)^")" in
+    | ((mi :: minrest), (mx :: maxrest)) -> if (((string_of_float mi) <>
+    (string_of_float mx))) then (let fmi = "("^(string_of_float mi)^","^(string_of_int coord)^")" in
                                            let fmx = "("^(string_of_float mx)^","^(string_of_int coord)^")"in
                                            let _ = fprintf oc "%s" (fmi^fmx) in
                                             write_list_to_file oc minrest
                                             maxrest (coord + 1))
-    else
-        write_list_to_file oc minrest maxrest (coord + 1)
+    else(
+        write_list_to_file oc minrest maxrest (coord + 1))
 
     | ([], []) -> ()
+    |_ -> ()
 
 let write_to_file k dmin dmax =
   let file = "k_"^k in
   let oc = Pervasives.open_out file in    (* create or truncate file, return channel *)
-  let _ = fprintf oc "%s" ("(1.0,0)") in    (* write something *)
-  let _ = write_list_to_file oc dmin dmax 0 in
+  let _ = fprintf oc "%s" ("(1.0,0)") in (* write something *)
+  let (mi, mx) = ((List.hd dmin), (List.hd dmax)) in
+  let fmx = "("^(string_of_float mx)^","^(string_of_int 0)^")"in
+  let fmi = "("^(string_of_float mi)^","^(string_of_int 0)^")" in
+  let _ = fprintf oc "%s" (fmi^fmx) in
+  let _ = write_list_to_file oc (List.tl dmin) (List.tl dmax) 1 in
   Pervasives.close_out oc               (* flush and close the channel *)
 
 let sensitivity =

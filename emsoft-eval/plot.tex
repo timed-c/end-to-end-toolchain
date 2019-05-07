@@ -18,55 +18,49 @@
 \begin{figure}[h!]
  %     \begin{center}
         \begin{tikzpicture}
-        \begin{axis}[xbar interval,
+        \begin{axis}[
             %  date coordinates in=x,
              % date ZERO=2017-01-01,
              % xticklabel=\month,
-            %ylabel={Manhattan distance w.r.t $\mathbf{\bar{m}_{\Delta_{min}}}$},
+            ylabel={Manhattan distance w.r.t $\mathbf{\bar{m}_{\Delta_{min}}}$},
             xlabel={Scaling factor ($\Delta$)},
             %xmin=0, xmax=6,
-            %ymin=0, ymax=4,
+            %ymin=0, ymax=1,
             %xtick={0,1,2,3,4,5,6},
-            %ytick={0,1,2,3,4},
+           % ytick={0,1},
         %xtick={0.5,1.0,1.5,2.0,2.5,3.0,3.5,4.0,4.5,5.0, 5.5},
         legend pos=north west,
-        axis x line=none,
+        %axis x line=none,
         ymajorgrids=false,
         %grid style=dashed,
-            yticklabel=\empty,
-            axis y line=none,
+            %yticklabel=\empty,
+            %axis y line=none,
         ]
-        \end{axis}
-          \begin{axis}[
-              %yticklabel=\empty,
-             ylabel={Manhattan distance w.r.t $\mathbf{\bar{m}_{\Delta_{min}}}$},
-             legend style={at={(1,1)},anchor=north east},
-              xlabel={Scaling factor ($\Delta$)},
-               %axis y line=none,
-              %no markers,
-              %axis lines=none,
-           ]
-    \addplot[
+      \addplot[
         color=blue,
         mark=asterisk,
+            thick,
         ]
         coordinates {
             \kthree
-        }node[above,pos=1] {\small{k=3}};
+        };
         \addplot[
         color=red,
-        mark=diamond,
+            mark=diamond,
+            thick,
         ]
         coordinates {
             \kfive
-        }node[above,pos=1] {\small{k=5}};
+        };
         \addplot[
         color=green,
         mark=square,
+            thick,
         ]
         coordinates {
             \kten
-        }node[above,pos=1] {\small{k=10}};
+        };\legend{k=3, k=5, k=10, $\Delta_{min}$=4.824}
+
             %\addlegendentry{\emph{$T_{min}$}}
           \end{axis}
         \end{tikzpicture}

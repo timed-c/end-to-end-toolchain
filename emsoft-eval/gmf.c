@@ -53,14 +53,16 @@ task tsk_10(){
     sdelay(100, ms);
     }
 }
+
 /*
 task tsk_20(){
-    stp(100, infty, ms);
+    stp(0, infty, ms);
     while(1){
-    sdelay(200, ms);
-    sdelay(100, ms);
+    musqrt(0);
+    sdelay(1000, ms);
     }
 }
+
 
 task tsk_50(){
     stp(200,infty, ms);
@@ -99,8 +101,8 @@ int main(){
     tsk_2();
     tsk_5();
     tsk_10();
-    /*tsk_20();
-    tsk_50();
+    tsk_20();
+    /*tsk_50();
     tsk_100();
     tsk_200();*/
     printf("main--end\n");

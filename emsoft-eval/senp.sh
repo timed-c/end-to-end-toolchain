@@ -10,7 +10,7 @@ echo "Schedulability Test"
 cp job.rta.csv output.rta
 cp job.csv input
 echo "Sensitivity Analysis"
-../sensitivity-analysis-firm/bin/sensitivity $k $j | tee $1.output
+../sensitivity-analysis/bin/sensitivity $k $j | tee $1.output
 rm *.csv
 rm *.rta
 rm output
