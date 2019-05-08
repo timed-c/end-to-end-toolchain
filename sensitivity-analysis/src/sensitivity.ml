@@ -103,7 +103,8 @@ let create_mk_analysis_csv () =
                                         [] ) rta ip in
     let header = ["Task ID"; "Job ID"; "MISS"] in
     let _ = Csv.save "job.mk" (header :: lst) in
-    List.map2 (fun a b  -> [int_of_string a.tid; int_of_string a.jid; ((int_of_string b.dl) - (int_of_string a.wcct))]) rta ip
+    List.map (fun [tid; jid; misses] -> [(int_of_string tid); (int_of_string jid); (int_of_string misses)]) lst
+   (* List.map2 (fun a b  -> [int_of_string a.tid; int_of_string a.jid; ((int_of_string b.dl) - (int_of_string a.wcct))]) rta ip*)
 
 
 let max_initial_upper_bound () =
@@ -126,13 +127,21 @@ let findSchedulable ()  =
     elem.is_schedulable
 
 let rec k_window llst k i kwin len =
+    let _ = uprint_string (us "\n k_window") in
+    let _ = uprint_int (i mod (len)) in
+    let _ = uprint_int (List.length (List.nth llst (i mod (len)))) in
     match k with
     |0 -> kwin
-    |_ -> k_window llst (k-1) (i+1) ((List.nth llst (i mod len)) :: kwin) len
+    |_ ->  let l = (i mod (len)) in k_window llst (k-1) (i+1) ((List.nth llst l) :: kwin) len
 
 let rec calculate_misses_k llst k i m len =
+    let _ = uprint_string (us "calculate_misses_k") in
+    let _ = uprint_int len in
     if (i < len) then
-        let mprime = Pervasives.max m (List.fold_left (fun b a -> if (List.nth a 2 < 0) then (b+1) else (b+0)) 0 (k_window llst k i [] len)) in
+        let kwin = (k_window llst k i [] len) in
+        let _ = uprint_int (List.length (List.hd llst)) in
+        let mprime = Pervasives.max m (List.fold_left (fun b a -> if (List.nth a 2 < 0) then (b+1) else (b+0)) 0 (kwin)) in
+           let _ = uprint_string (us "calculate_misses_k") in
         calculate_misses_k llst k (i+1) mprime len
     else
         m
@@ -147,9 +156,11 @@ let rec calculate_misses_for_each_task i num_task m klist olst =
         m
 
 let calculate_misses delta klist =
+    let _ = uprint_string (us "calculate_misses") in
     let _ = scale_input delta in
     let _ = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r -c job.csv > output" in
     let joblist =  create_mk_analysis_csv () in
+    let _ = uprint_int (List.length (List.hd joblist)) in
     let num_task = List.length klist in
     let m = calculate_misses_for_each_task 0 num_task 0 klist joblist in
     m

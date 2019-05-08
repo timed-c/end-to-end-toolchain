@@ -20,7 +20,7 @@ COPY ktc /opt/e2e/ktc
 COPY tbb44_20160128oss/include/tbb /opt/e2e/timed-c-e2e-sched-analysis/include/tbb
 COPY sensitivity-analysis /opt/e2e/sensitivity-analysis
 #COPY script-files/ opt/e2e/project/
-COPY emsoft-eval opt/e2e/project
+COPY  bin opt/e2e/project
 COPY  CMakeLists.txt  /opt/e2e/CMakeLists.txt
 COPY tbb44_20160128oss/lib/intel64/gcc4.4 /opt/tbb44_20160128oss/lib/intel64/gcc4.4/
 WORKDIR /opt/e2e/ktc
@@ -52,6 +52,7 @@ RUN mkdir /opt/e2e/timed-c-e2e-sched-analysis/build
 WORKDIR /opt/e2e/timed-c-e2e-sched-analysis/build
 RUN /opt/cmake-3.14.0-rc4/bin/cmake -DUSE_JE_MALLOC=no -DUSE_TBB_MALLOC=no -S /opt/e2e/timed-c-e2e-sched-analysis/ -B /opt/e2e/timed-c-e2e-sched-analysis/build
 RUN make
+
 
 COPY profile-test /opt/e2e/profile-test
 

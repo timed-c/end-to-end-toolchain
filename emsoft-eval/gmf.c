@@ -54,7 +54,7 @@ task tsk_10(){
     }
 }
 
-/*
+
 task tsk_20(){
     stp(0, infty, ms);
     while(1){
@@ -63,7 +63,7 @@ task tsk_20(){
     }
 }
 
-
+/*
 task tsk_50(){
     stp(200,infty, ms);
     while(1){
