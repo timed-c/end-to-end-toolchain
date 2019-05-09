@@ -2,34 +2,44 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
-#include <cilktc.h>
-#include <mlog.h>
+#include "cilktc.h"
+#include "mlog.h"
+#include "snipmath.h"
+
+void qsort_large();
+void qsort_small();
+void mdeg2rad(int k);
+void mrad2deg(int k);
+void mSolveCubic(int k);
+void musqrt(int k);
+
 FILE dfile;
 
 task tsk_foo(){
-    int i;
+    stp(0, infty, ms);
     while(1){
-        sdelay(300, ms);
+        sdelay(30, ms);
+
     }
 }
 
 
 task tsk_bar(){
-
-    int i;
+    stp(0, infty, ms);
     while(1){
-        sdelay(200, ms);
+        sdelay(20, ms);
+
     }
 
 }
 
-
-task tsk_far(){
-    int i;
+task tsk_boo(){
+    stp(0, infty, ms);
     while(1){
-        sdelay(600, ms);
+        sdelay(10, ms);
     }
 }
+
 
 
 
@@ -37,6 +47,6 @@ int main(){
     long unsigned int targ = 10;
     tsk_foo();
     tsk_bar();
-    tsk_far();
+    tsk_boo();
     printf("main--end\n");
 }

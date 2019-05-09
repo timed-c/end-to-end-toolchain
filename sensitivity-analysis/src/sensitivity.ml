@@ -76,6 +76,35 @@ let read_data_rta fname =
           {tid; jid; bcct; wcct; bcrt; wcrt}
                       | _ -> failwith "read_data_rta: incorrect file rta")
 
+let rec iter_get_number_of_task n lst =
+    match lst with
+    | [] -> n
+    | _ -> let id = List.nth (List.hd lst) 0 in
+            iter_get_number_of_task (Pervasives.max n id) (List.tl lst)
+
+
+let get_number_of_task () =
+    let ifile = read_data_input "job.csv" in
+    let noheader = List.tl ifile in
+    let original_csv =  List.map (fun a -> List.map (int_of_string) [a.tskid; a.jobid; a.rmin; a.rmax; a.cmin; a.cmax; a.dl; a.priority]) noheader in
+    let n = iter_get_number_of_task 0 original_csv in
+    n
+
+let rec print_delta_min_max delta_min delta_max delta_sup i =
+    let _ = if (i = 0) then
+        begin
+            uprint_string (us "Misses \t"); uprint_string (us "Delta Min\t"); uprint_string (us "Delta Max \n")
+        end in
+    if (Array.length delta_min > i) then
+        begin
+            if ((delta_min.(i) <> delta_sup) & (delta_max.(i) <> 0.0)) then
+                begin
+                    uprint_int i; uprint_string (us "\t"); uprint_float delta_min.(i); uprint_string (us "\t"); uprint_float delta_max.(i); uprint_endline (us "")
+                end;
+            print_delta_min_max delta_min delta_max delta_sup (i+1)
+        end
+
+
 let calculate_leeway l1 l2 =
     let lway = (float_of_string l1.dl) -. (float_of_string l2.wcct)  in
     let delta = ((float_of_string l1.cmax) +. lway) /. (float_of_string l1.cmax) in
@@ -127,68 +156,74 @@ let findSchedulable ()  =
     elem.is_schedulable
 
 let rec k_window llst k i kwin len =
-    let _ = uprint_string (us "\n k_window") in
-    let _ = uprint_int (i mod (len)) in
-    let _ = uprint_int (List.length (List.nth llst (i mod (len)))) in
+    (*let _ = uprint_string (us "k_window :") in
+    let _ = uprint_int k; uprint_string (us " ");uprint_int i; uprint_string (us "\n") in
+    let _ = uprint_int (i mod (len)) ;uprint_string (us "\n") in*)
     match k with
-    |0 -> kwin
+    |0 ->  kwin
     |_ ->  let l = (i mod (len)) in k_window llst (k-1) (i+1) ((List.nth llst l) :: kwin) len
 
 let rec calculate_misses_k llst k i m len =
-    let _ = uprint_string (us "calculate_misses_k") in
-    let _ = uprint_int len in
+    (*let _ = uprint_string (us "calculate_misses_k") in
+    let _ = (uprint_int len); (uprint_string (us "\n")) in*)
     if (i < len) then
         let kwin = (k_window llst k i [] len) in
-        let _ = uprint_int (List.length (List.hd llst)) in
-        let mprime = Pervasives.max m (List.fold_left (fun b a -> if (List.nth a 2 < 0) then (b+1) else (b+0)) 0 (kwin)) in
-           let _ = uprint_string (us "calculate_misses_k") in
+        (*let _ = uprint_int i in*)
+        let mprime = Pervasives.max m (List.fold_left (fun b a -> if ((List.nth a 2) < 0) then (b+1) else (b+0)) 0 (kwin)) in
         calculate_misses_k llst k (i+1) mprime len
     else
         m
 
 let rec calculate_misses_for_each_task i num_task m klist olst =
-    if (i < num_task) then
-        let llst = List.map (fun a -> if (List.hd a = i) then a else []) olst in
-        let k = List.nth klist i in
-        let mprime = calculate_misses_k llst k i 0 (List.length llst) in
+    if (i <= num_task) then
+        (*let _ = uprint_string (us "calculate_misses_for_each_task : ") in
+        let _ = uprint_int i; (uprint_string (us "\n")) in *)
+        let llst = List.filter (fun a -> (List.hd a = i)) olst in
+        let k = List.nth klist (i-1) in
+        let mprime = calculate_misses_k llst k 0 0 (List.length llst) in
             calculate_misses_for_each_task (i+1) num_task (m + mprime) klist olst
     else
         m
 
 let calculate_misses delta klist =
-    let _ = uprint_string (us "calculate_misses") in
+    (*let _ = uprint_string (us "calculate_misses for"); uprint_float delta; uprint_endline (us "") in*)
     let _ = scale_input delta in
     let _ = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r -c job.csv > output" in
     let joblist =  create_mk_analysis_csv () in
-    let _ = uprint_int (List.length (List.hd joblist)) in
     let num_task = List.length klist in
-    let m = calculate_misses_for_each_task 0 num_task 0 klist joblist in
-    m
+    let m = calculate_misses_for_each_task 1 num_task 0 klist joblist in
+    (*uprint_string (us "number of misses :"); uprint_int m; uprint_endline (us "");*) m
 
 let rec bsearch delta_min_lst delta_max_lst l u epsilon klist =
+    (*let _ = uprint_string (us "bsearch") in
+    let _ = uprint_int l; uprint_int u; uprint_endline (us "") in*)
     if (delta_min_lst.(u) -. delta_max_lst.(l) < epsilon) then
         (delta_min_lst, delta_max_lst, u)
     else
         let delta_mid = (delta_min_lst.(u) +. delta_max_lst.(l)) /. 2.0 in
         let m = calculate_misses delta_mid klist in
-        let _ = Pervasives.min delta_min_lst.(m) delta_mid in
-        let _ = Pervasives.max delta_max_lst.(m) delta_mid in
+        let _ = delta_min_lst.(m) <- (Pervasives.min delta_min_lst.(m) delta_mid) in
+        let _ = delta_max_lst.(m) <- (Pervasives.max delta_max_lst.(m) delta_mid) in
         let ub = if (l = m) then u else m in
-        bsearch delta_min_lst delta_max_lst l ub epsilon klist
+        (*(uprint_string (us "ub"); uprint_int ub; uprint_endline (us ""));*)
+        (bsearch delta_min_lst delta_max_lst l ub epsilon klist)
 
 
 let rec min_index delta_sup delta_min m cmin i =
     if (i < m) then
         if (delta_min.(i) < delta_sup) then
-            min_index delta_sup delta_min m (Pervasives.min i m) i+1
+            min_index delta_sup delta_min m (Pervasives.min i m) (i+1)
         else
-            min_index delta_sup delta_min m cmin i+1
+            min_index delta_sup delta_min m cmin (i+1)
     else
-        cmin
+        (*(uprint_string (us "min_index"); uprint_int cmin; uprint_endline (us ""));*) cmin
 
 let rec iter_bsearch delta_min_lst delta_max_lst delta_sup i m epsilon klist =
+    let _ = uprint_string (us "iter_bsearch :") in
+    let _ = uprint_int i; uprint_endline (us "") in
     if (i < m ) then
-        let u =  min_index delta_sup delta_min_lst m m i in
+        let u =  min_index delta_sup delta_min_lst m m (i+1) in
+        (*let _ = uprint_float (delta_min_lst.(u)); uprint_endline (us "") in*)
         let (delta_min, delta_max, iprime) = bsearch delta_min_lst delta_max_lst i u epsilon klist in
         iter_bsearch delta_min delta_max delta_sup iprime m epsilon klist
     else
@@ -196,19 +231,22 @@ let rec iter_bsearch delta_min_lst delta_max_lst delta_sup i m epsilon klist =
 
 
 let sensitivity =
-    let klist = Array.to_list (Array.make (int_of_string (Sys.argv.(1))) (int_of_string (Sys.argv.(2)))) in
-    let epsilon = 0.05 in
+    let num_task = get_number_of_task () in
+    (*let _ = uprint_int num_task; uprint_string (us "sensitivity\n") in*)
+    let klist = Array.to_list ((Array.make num_task (int_of_string (Sys.argv.(1))))) in
+    let epsilon = float_of_string (Sys.argv.(2)) in
     let _ = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r -c job.csv > output" in
     let delta_sup = max_initial_upper_bound () in
-    let _ = uprint_float delta_sup in
+    (*let _ = uprint_float delta_sup in*)
     let delta_inf = 0.0 in
     let m = calculate_misses delta_sup klist in
-    let delta_min_lst = Array.make m delta_sup  in
-    let delta_max_lst = Array.make m delta_inf in
+    let delta_min_lst = Array.make (m+1)delta_sup  in
+    let delta_max_lst = Array.make (m+1) delta_inf in
     let _ = delta_min_lst.(0) <- delta_inf in
     let _ = delta_max_lst.(m) <- delta_sup in
+    let _ = uprint_int m; uprint_float (delta_min_lst.(m)); uprint_endline (us "") in
     let (delta_min, delta_max) = iter_bsearch delta_min_lst delta_max_lst delta_sup 0 m epsilon klist in
-    ()
+    print_delta_min_max delta_min delta_max delta_sup 0; ()
 
 
 

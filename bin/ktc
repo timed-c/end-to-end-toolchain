@@ -6,7 +6,8 @@ do
 tkey="$3"
 key="$2"
 cfile="$1"
-len=`expr length $1`
+#len=`expr length $1`
+len=${#cfile}
 cilf=${cfile:0:$len-2}
 case $key in
     --posix)
@@ -46,7 +47,7 @@ case $key in
                     docker exec -i -t e2e-docker rm -r traces
                     docker exec -i -t e2e-docker mkdir traces
                     docker exec -i -t e2e-docker ./a.out
-                    docker exec -i -t e2e-docker ./copy.sh
+                    docker exec -i -t e2e-docker ./copy.sh  *.ktc.trace traces/
                     docker cp e2e-docker:/opt/e2e/project/traces $PWD/
                     ;;
                 --timing-param)
@@ -56,7 +57,7 @@ case $key in
                     docker exec -i -t e2e-docker rm -r traces
                     docker exec -i -t e2e-docker mkdir traces
                     docker exec -i -t e2e-docker ./a.out
-                    docker exec -i -t e2e-docker ./copy.sh
+                    docker exec -i -t e2e-docker ./copy.sh *.ktc.trace traces/
                     docker cp e2e-docker:/opt/e2e/project/traces $PWD/
                     ;;
                 *)
