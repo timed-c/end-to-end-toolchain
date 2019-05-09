@@ -14,9 +14,8 @@ RUN opam install yojson
 RUN opam install csv
 RUN echo $(opam config env)
 
-
-COPY timed-c-e2e-sched-analysis /opt/e2e/timed-c-e2e-sched-analysis
 COPY ktc /opt/e2e/ktc
+COPY timed-c-e2e-sched-analysis /opt/e2e/timed-c-e2e-sched-analysis
 COPY tbb44_20160128oss/include/tbb /opt/e2e/timed-c-e2e-sched-analysis/include/tbb
 COPY sensitivity-analysis /opt/e2e/sensitivity-analysis
 #COPY script-files/ opt/e2e/project/
@@ -38,20 +37,21 @@ WORKDIR /opt/e2e/sensitivity-analysis
 RUN eval $(opam config env) && make
 
 
-WORKDIR /opt
-RUN wget https://cmake.org/files/v3.14/cmake-3.14.0-rc4.tar.gz
-RUN tar -xzvf cmake-3.14.0-rc4.tar.gz
-WORKDIR /opt/cmake-3.14.0-rc4/
-RUN ./bootstrap
-RUN make -j4
-RUN make install
-RUN cp /opt/e2e/CMakeLists.txt /opt/e2e/timed-c-e2e-sched-analysis/CMakeLists.txt
-RUN /opt/cmake-3.14.0-rc4/bin/cmake --version
-RUN rm -r /opt/e2e/timed-c-e2e-sched-analysis/build
-RUN mkdir /opt/e2e/timed-c-e2e-sched-analysis/build
-WORKDIR /opt/e2e/timed-c-e2e-sched-analysis/build
-RUN /opt/cmake-3.14.0-rc4/bin/cmake -DUSE_JE_MALLOC=no -DUSE_TBB_MALLOC=no -S /opt/e2e/timed-c-e2e-sched-analysis/ -B /opt/e2e/timed-c-e2e-sched-analysis/build
-RUN make
+#WORKDIR /opt
+#RUN wget https://cmake.org/files/v3.14/cmake-3.14.0-rc4.tar.gz
+#RUN tar -xzvf cmake-3.14.0-rc4.tar.gz
+#COPY cmake-3.14.0-rc4/ /opt/cmake-3.14.0-rc4/
+#WORKDIR /opt/cmake-3.14.0-rc4/
+#RUN ./bootstrap
+#RUN make -j4
+#RUN make install
+#RUN cp /opt/e2e/CMakeLists.txt /opt/e2e/timed-c-e2e-sched-analysis/CMakeLists.txt
+#RUN /opt/cmake-3.14.0-rc4/bin/cmake --version
+#RUN rm -r /opt/e2e/timed-c-e2e-sched-analysis/build
+#RUN mkdir /opt/e2e/timed-c-e2e-sched-analysis/build
+#WORKDIR /opt/e2e/timed-c-e2e-sched-analysis/build
+#RUN /opt/cmake-3.14.0-rc4/bin/cmake -DUSE_JE_MALLOC=no -DUSE_TBB_MALLOC=no -S /opt/e2e/timed-c-e2e-sched-analysis/ -B /opt/e2e/timed-c-e2e-sched-analysis/build
+#RUN make
 
 
 COPY profile-test /opt/e2e/profile-test
