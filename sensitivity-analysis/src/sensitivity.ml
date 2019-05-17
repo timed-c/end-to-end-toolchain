@@ -93,13 +93,16 @@ let get_number_of_task () =
 let rec print_delta_min_max delta_min delta_max delta_sup i =
     let _ = if (i = 0) then
         begin
-            uprint_string (us "Misses \t"); uprint_string (us "Delta Min\t"); uprint_string (us "Delta Max \n")
+            (*uprint_string (us "Misses \t"); uprint_string (us "Delta Min\t"); uprint_string (us "Delta Max \n")*)
+             uprint_string (us "Misses \t"); uprint_string (us "WCET Margin\t")
         end in
     if (Array.length delta_min > i) then
         begin
             if ((delta_min.(i) <> delta_sup) & (delta_max.(i) <> 0.0)) then
                 begin
-                    uprint_int i; uprint_string (us "\t"); uprint_float delta_min.(i); uprint_string (us "\t"); uprint_float delta_max.(i); uprint_endline (us "")
+                    (*uprint_int i; uprint_string (us "\t"); uprint_float delta_min.(i); uprint_string (us "\t"); uprint_float delta_max.(i); uprint_endline (us
+                     * "")*)
+                      uprint_int i; uprint_string (us "\t"); uprint_float delta_max.(i); uprint_endline (us "")
                 end;
             print_delta_min_max delta_min delta_max delta_sup (i+1)
         end

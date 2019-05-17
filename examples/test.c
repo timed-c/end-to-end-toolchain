@@ -2,9 +2,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
-#include "cilktc.h"
-#include "mlog.h"
-#include "snipmath.h"
+#include <cilktc.h>
 
 void qsort_large();
 void qsort_small();
@@ -14,6 +12,7 @@ void mSolveCubic(int k);
 void musqrt(int k);
 
 FILE dfile;
+#define infty 0
 
 task tsk_foo(){
     stp(0, infty, ms);
@@ -43,7 +42,7 @@ task tsk_boo(){
 
 
 
-int main(){
+int main(int argc, char* argv[]){
     long unsigned int targ = 10;
     tsk_foo();
     tsk_bar();

@@ -3,6 +3,8 @@
 POSITIONAL=()
 while [[ $# -gt 0 ]]
 do
+iter="$4"
+k="$5"
 tkey="$3"
 key="$2"
 cfile="$1"
@@ -44,10 +46,10 @@ case $key in
                     docker cp $PWD/$1 e2e-docker:/opt/e2e/project
                     docker exec -i -t e2e-docker /opt/e2e/ktc/bin/ktc --enable-ext2 --save-temps=/opt/e2e/project $1 -I. -L. -w  -lplogs -lmbench --link
                     docker cp e2e-docker:/opt/e2e/project/a.out $PWD/
-                    docker exec -i -t e2e-docker rm -r traces
+                    docker exec -i -t e2e-docker rm -r -f traces
                     docker exec -i -t e2e-docker mkdir traces
                     docker exec -i -t e2e-docker ./remove.sh
-                    docker exec -i -t e2e-docker ./a.out
+                    docker exec -i -t e2e-docker ./a.out $4
                     docker exec -i -t e2e-docker ./copy.sh  *.ktc.trace traces/
                     docker cp e2e-docker:/opt/e2e/project/traces $PWD/
                     ;;
@@ -58,7 +60,7 @@ case $key in
                     docker exec -i -t e2e-docker rm -r traces
                     docker exec -i -t e2e-docker mkdir traces
                     docker exec -i -t e2e-docker ./remove.sh
-                    docker exec -i -t e2e-docker ./a.out
+                    docker exec -i -t e2e-docker ./a.out $5 $4
                     docker exec -i -t e2e-docker ./copy.sh *.ktc.trace traces/
                     docker cp e2e-docker:/opt/e2e/project/traces $PWD/
                     ;;
@@ -71,6 +73,8 @@ case $key in
             esac
             shift # past argument
             shift # past value
+            shift
+            shift
             shift
             ;;
 

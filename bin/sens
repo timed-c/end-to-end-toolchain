@@ -1,11 +1,46 @@
 #!/bin/bash
-epsilon="$3"
+POSITIONAL=()
+while [[ $# -gt 0 ]]
+do
+epsilon="$4"
+k="$3"
 key="$2"
 cfile="$1"
-docker cp $PWD/$1 e2e-docker:/opt/e2e/project
-docker cp $PWD/traces e2e-docker:/opt/e2e/project
-docker exec -i -t e2e-docker ./copy.sh /opt/e2e/project/traces/* /opt/e2e/project/
-docker exec -i -t e2e-docker /opt/e2e/ktc/bin/ktc --enable-ext5 --save-temps=/opt/e2e/project $1 -I. -L. -w
-docker exec -i -t e2e-docker cp job.csv input
-docker exec -i -t e2e-docker ../sensitivity-analysis/bin/sensitivity $2 $3
+case $key in
+    --trace)
+        docker cp $PWD/$1 e2e-docker:/opt/e2e/project
+        docker cp $PWD/traces e2e-docker:/opt/e2e/project
+        docker exec -i -t e2e-docker ./copy.sh /opt/e2e/project/traces/* /opt/e2e/project/
+        docker exec -i -t e2e-docker /opt/e2e/ktc/bin/ktc --enable-ext3 --save-temps=/opt/e2e/project $1 -I. -L. -w
+        docker exec -i -t e2e-docker cp job.csv input
+        docker exec -i -t e2e-docker ../sensitivity-analysis/bin/sensitivity $3 $4
+        shift # past argument
+        shift # past value
+        shift
+        shift
+        ;;
+        --param)
+        docker cp $PWD/$1 e2e-docker:/opt/e2e/project
+        docker cp $PWD/traces e2e-docker:/opt/e2e/project
+        docker exec -i -t e2e-docker ./copy.sh /opt/e2e/project/traces/* /opt/e2e/project/
+        docker exec -i -t e2e-docker /opt/e2e/ktc/bin/ktc --enable-ext5 --save-temps=/opt/e2e/project $1 -I. -L. -w
+        docker exec -i -t e2e-docker cp job.csv input
+        docker exec -i -t e2e-docker ../sensitivity-analysis/bin/sensitivity $3 $4
+        shift # past argument
+        shift # past value
+        shift
+        shift
+        ;;
+        *)    # unknown option
+        echo "Unknown option"
+        echo "See e2e --help"
+        shift # past argument
+        ;;
+    esac
+    done
+set -- "${POSITIONAL[@]}" # restore positional parameters
+
+
+
+
 
