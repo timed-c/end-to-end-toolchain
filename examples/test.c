@@ -12,7 +12,6 @@ void mSolveCubic(int k);
 void musqrt(int k);
 
 FILE dfile;
-#define infty 0
 
 task tsk_foo(){
     stp(0, infty, ms);

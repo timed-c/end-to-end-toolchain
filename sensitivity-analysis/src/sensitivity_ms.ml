@@ -109,9 +109,8 @@ let rec print_delta_min_max delta_min delta_max delta_sup i =
 
 
 let calculate_leeway l1 l2 =
-    let lway = (float_of_string l1.dl) -. (float_of_string l2.wcct)   in
-    let slack = if (lway < 0.0) then 0.0 else lway in
-    let delta = ((float_of_string l1.cmax) +. slack) /. (float_of_string l1.cmax) in
+    let lway = (float_of_string l1.dl) -. (float_of_string l2.wcct)  in
+    let delta = ((float_of_string l1.cmax) +. lway) /. (float_of_string l1.cmax) in
     [l1.tskid; l2.jid; (string_of_float delta)]
 
 
@@ -123,7 +122,7 @@ let scale_input alpha =
     let original_csv =  List.map (fun a -> [a.tskid; a.jobid; a.rmin; a.rmax; a.cmin;
     a.cmax; a.dl; a.priority]) inp in
     let newip = List.map (fun a -> [a.tskid; a.jobid; a.rmin; string_of_int
-    (int_of_float ((float_of_string a.rmin) +. (((float_of_string a.rmax) -.(float_of_string a.rmin))))); a.cmin; (string_of_int (int_of_float ((alpha *. (float_of_string a.cmax))))); a.dl; a.priority]) noheader in
+    (int_of_float ((float_of_string a.rmin) +. (((float_of_string a.rmax) -.(float_of_string a.rmin)) *. alpha))); a.cmin; (string_of_int (int_of_float ((alpha *. (float_of_string a.cmax))))); a.dl; a.priority]) noheader in
     let nip = List.append header newip in
     Csv.save "job.csv" nip
 
@@ -147,7 +146,7 @@ let max_initial_upper_bound () =
     let lst = List.map2 (calculate_leeway) ip rta in
     let _ = Csv.save "check" lst in
     let t = List.map (function [ti; ji; lw] -> {ti; ji; lw}) lst in
-    let minlw = List.fold_right Pervasives.min (List.map (fun a -> (float_of_string a.lw)) t) 1000000000000.0 in
+    let minlw = List.fold_right min (List.map (fun a -> (float_of_string a.lw)) t) 1000000000000.0 in
     minlw
 
 let findSchedulable ()  =
@@ -190,11 +189,9 @@ let rec calculate_misses_for_each_task i num_task m klist olst =
         m
 
 let calculate_misses delta klist =
-    let _ = uprint_string (us "calculate_misses for "); uprint_float delta; uprint_endline (us "") in
+    (*let _ = uprint_string (us "calculate_misses for"); uprint_float delta; uprint_endline (us "") in*)
     let _ = scale_input delta in
-    let _ = uprint_endline (us "schedulability start\n") in
     let _ = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r -c job.csv > output" in
-    let _ = uprint_endline (us "schedulability end\n") in
     let joblist =  create_mk_analysis_csv () in
     let num_task = List.length klist in
     let m = calculate_misses_for_each_task 1 num_task 0 klist joblist in
@@ -243,7 +240,7 @@ let sensitivity =
     let epsilon = float_of_string (Sys.argv.(2)) in
     let _ = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r -c job.csv > output" in
     let delta_sup = max_initial_upper_bound () in
-    let _ = uprint_float delta_sup in
+    (*let _ = uprint_float delta_sup in*)
     let delta_inf = 0.0 in
     let m = calculate_misses delta_sup klist in
     let delta_min_lst = Array.make (m+1)delta_sup  in

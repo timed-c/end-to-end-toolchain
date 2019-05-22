@@ -1,9 +1,9 @@
 #!/bin/bash
-rm *.c
-rm *.dot
-rm *.o
-rm *.mk
-rm *.ktc.trace
-rm input
-rm *.csv
+rm -f *.c
+rm -f *.dot
+rm -f *.o
+rm -f *.mk
+rm -f *.ktc.trace
+rm -f input
+rm -f *.csv
 
