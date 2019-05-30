@@ -1,0 +1,44 @@
+/*tasks with periodic loop*/
+
+#include <stdio.h>
+#include <math.h>
+#include <stdlib.h>
+#include <cilktc.h>
+
+//void qsort_large();
+//void qsort_small();
+void mdeg2rad(int k);
+void mrad2deg(int k);
+void mSolveCubic(int k);
+void musqrt(int k);
+
+FILE dfile;
+int call_fun(int x){
+    int i;
+    for(i=0; i<x; i++){
+        basicmath_small();
+    }
+}
+int call_fun2(int x){
+    while(1){}
+
+}
+
+task task1(){
+    int i=0;
+    stp(0, infty, ms);
+    while(1){
+        qsort_small("input_small.dat");
+        printf("completed call fun\n");
+        fdelay(20, ms);
+    }
+}
+
+
+
+int main(int argc, char* argv[]){
+    task1();
+   // task2();
+    printf("main--end\n");
+
+}

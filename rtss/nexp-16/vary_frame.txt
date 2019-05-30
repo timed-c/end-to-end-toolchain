@@ -1,0 +1,13 @@
+Hyperperiod 1000000
+H+Omax : 1000000 + 0 = 1000000
+Observation Window 2211194
+Job generation complete
+^CFatal error: exception Sys_error("job.rta.csv: No such file or directory")
+Hyperperiod 1000000
+H+Omax : 1000000 + 0 = 1000000
+Observation Window 2211194
+Job generation complete
+^CHyperperiod 1000000
+H+Omax : 1000000 + 0 = 1000000
+Observation Window 2211194
+Job generation complete

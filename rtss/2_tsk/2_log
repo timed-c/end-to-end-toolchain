@@ -1,0 +1,62 @@
+*******Taskset with 2 tasks*********
+Period:{10,100,}
+Utilization:{0.060000,0.006000,}
+Sum Utilization:0.066000
+Hyperperiod 100000
+H+Omax : 100000 + 0 = 100000
+Observation Window 94276
+Job generation complete
+SA:1-213.865217391-25.8728323699-25.8728323699-24.5462427746SA:2
+Misses 	WCET Margin
+0	1.
+Time Elapsed:2.070054214
+#######
+Period:{20,1000,}
+Utilization:{0.060000,0.000600,}
+Sum Utilization:0.060600
+Hyperperiod 1000000
+H+Omax : 1000000 + 0 = 1000000
+Observation Window 1004122
+Job generation complete
+SA:1-1620.04707792-40.4276457883-40.4276457883-39.0993520518SA:2
+Misses 	WCET Margin
+0	1.
+Time Elapsed:1.992436021
+#######
+Period:{20,20,}
+Utilization:{0.060000,0.060000,}
+Sum Utilization:0.120000
+Hyperperiod 20000
+H+Omax : 20000 + 0 = 20000
+Observation Window 1176
+Job generation complete
+SA:1-40.1925601751-50.8567493113SA:2
+Misses 	WCET Margin
+0	1.
+Time Elapsed:1.968053666
+#######
+Period:{20,10,}
+Utilization:{0.060000,0.120000,}
+Sum Utilization:0.180000
+Hyperperiod 20000
+H+Omax : 20000 + 0 = 20000
+Observation Window 11404
+Job generation complete
+SA:1-26.4483775811-25.3598820059-50.1756756757SA:2
+Misses 	WCET Margin
+0	1.
+Time Elapsed:1.998733267
+#######
+Period:{20,1,}
+Utilization:{0.090000,1.200000,}
+Sum Utilization:1.290000
+Hyperperiod 20000
+H+Omax : 20000 + 0 = 20000
+Observation Window 26506
+Job generation complete
+SA:10.1002949852510.1002949852511.18879056047-50.227027027SA:2SA:3SA:4SA:5SA:6SA:7SA:8SA:9SA:10
+Misses 	WCET Margin
+0	0.891592920354
+1	1.18879056047
+Time Elapsed:2.137628054
+#######

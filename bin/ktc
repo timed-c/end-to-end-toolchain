@@ -16,17 +16,19 @@ case $key in
         case $tkey in
                 --timing-trace)
                     docker cp $PWD/$1 e2e-docker:/opt/e2e/project
-                    docker exec -i -t e2e-docker /opt/e2e/ktc/bin/ktc --enable-ext2 --save-temps=/opt/e2e/project $1 -I. -L. -w
+                    docker exec -i -t e2e-docker /opt/e2e/ktc/bin/ktc --enable-ext2 --save-temps=/opt/e2e/project $1 -I. -L. -w -lmplogs -lbasicmath -lm -w
                     docker cp e2e-docker:/opt/e2e/project/$cilf.cil.c $PWD/
                     ;;
                 --timing-param)
                     docker cp $PWD/$1 e2e-docker:/opt/e2e/project
-                    docker exec -i -t e2e-docker /opt/e2e/ktc/bin/ktc --enable-ext4 --save-temps=/opt/e2e/project $1 -I. -L. -w
+                    docker exec -i -t e2e-docker /opt/e2e/ktc/bin/ktc --enable-ext4 --save-temps=/opt/e2e/project $1 -I. -L. -w -lmplogs -lbasicmath -lm -w
                     docker cp e2e-docker:/opt/e2e/project/$cilf.cil.c $PWD/
+                    shift
+                    shift
                     ;;
                 *)
                     docker cp $PWD/$1 e2e-docker:/opt/e2e/project
-                    docker exec -i -t e2e-docker /opt/e2e/ktc/bin/ktc --enable-ext0 --save-temps=/opt/e2e/project $1 -I. -L. -w
+                    docker exec -i -t e2e-docker /opt/e2e/ktc/bin/ktc --enable-ext0 --save-temps=/opt/e2e/project $1 -I. -L. -w -lmplogs -lbasicmath -lm -w
                     docker cp e2e-docker:/opt/e2e/project/$cilf.cil.c $PWD/
             esac
             shift # past argument
@@ -44,7 +46,7 @@ case $key in
         case $tkey in
                 --timing-trace)
                     docker cp $PWD/$1 e2e-docker:/opt/e2e/project
-                    docker exec -i -t e2e-docker /opt/e2e/ktc/bin/ktc --enable-ext2 --save-temps=/opt/e2e/project $1 -I. -L. -w  -lplogs -lmbench --link
+                    docker exec -i -t e2e-docker /opt/e2e/ktc/bin/ktc --enable-ext2 --save-temps=/opt/e2e/project $1 -I. -L. -w  -lmplogs -lbasicmath -lm -w --link
                     docker cp e2e-docker:/opt/e2e/project/a.out $PWD/
                     docker exec -i -t e2e-docker rm -r -f traces
                     docker exec -i -t e2e-docker mkdir traces
@@ -55,12 +57,12 @@ case $key in
                     ;;
                 --timing-param)
                     docker cp $PWD/$1 e2e-docker:/opt/e2e/project
-                    docker exec -i -t e2e-docker /opt/e2e/ktc/bin/ktc --enable-ext4 --save-temps=/opt/e2e/project $1 -I. -L. -w -lmplogs -lmbench --link
+                    docker exec -i -t e2e-docker /opt/e2e/ktc/bin/ktc --enable-ext4 --save-temps=/opt/e2e/project $1 -I. -L. -lmplogs -lbasicmath -lm -w --link
                     rm -r traces
                     docker exec -i -t e2e-docker rm -r traces
                     docker exec -i -t e2e-docker mkdir traces
                     docker exec -i -t e2e-docker ./remove.sh
-                    docker exec -i -t e2e-docker ./a.out $5 $4
+                    docker exec -u 0 -i -t e2e-docker ./a.out $5 $4
                     docker exec -i -t e2e-docker ./copy.sh *.ktc.trace traces/
                     docker cp e2e-docker:/opt/e2e/project/traces $PWD/
                     ;;

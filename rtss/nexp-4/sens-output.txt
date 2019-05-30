@@ -1,0 +1,756 @@
+15.5297906602calculate_misses for 15.5297906602
+schedulability start
+
+schedulability end
+
+00.
+iter_bsearch :0
+Misses 	WCET Margin
+0	15.5297906602
+15.5297906602calculate_misses for 15.5297906602
+schedulability start
+
+schedulability end
+
+00.
+iter_bsearch :0
+Misses 	WCET Margin
+0	15.5297906602
+15.5297906602calculate_misses for 15.5297906602
+schedulability start
+
+schedulability end
+
+00.
+iter_bsearch :0
+Misses 	WCET Margin
+0	15.5297906602
+14.2386185243calculate_misses for 14.2386185243
+schedulability start
+
+schedulability end
+
+614.2386185243
+iter_bsearch :0
+calculate_misses for 7.11930926215
+schedulability start
+
+schedulability end
+
+calculate_misses for 10.6789638932
+schedulability start
+
+schedulability end
+
+calculate_misses for 8.89913657769
+schedulability start
+
+schedulability end
+
+calculate_misses for 8.00922291992
+schedulability start
+
+schedulability end
+
+calculate_misses for 7.56426609103
+schedulability start
+
+schedulability end
+
+calculate_misses for 7.78674450548
+schedulability start
+
+schedulability end
+
+calculate_misses for 7.8979837127
+schedulability start
+
+schedulability end
+
+calculate_misses for 7.95360331631
+schedulability start
+
+schedulability end
+
+iter_bsearch :6
+Misses 	WCET Margin
+0	7.95360331631
+6	14.2386185243
+14.2386185243calculate_misses for 14.2386185243
+schedulability start
+
+schedulability end
+
+614.2386185243
+iter_bsearch :0
+calculate_misses for 7.11930926215
+schedulability start
+
+schedulability end
+
+calculate_misses for 10.6789638932
+schedulability start
+
+schedulability end
+
+calculate_misses for 8.89913657769
+schedulability start
+
+schedulability end
+
+calculate_misses for 8.00922291992
+schedulability start
+
+schedulability end
+
+calculate_misses for 7.56426609103
+schedulability start
+
+schedulability end
+
+calculate_misses for 7.78674450548
+schedulability start
+
+schedulability end
+
+calculate_misses for 7.8979837127
+schedulability start
+
+schedulability end
+
+calculate_misses for 7.95360331631
+schedulability start
+
+schedulability end
+
+iter_bsearch :6
+Misses 	WCET Margin
+0	7.95360331631
+6	14.2386185243
+14.2386185243calculate_misses for 14.2386185243
+schedulability start
+
+schedulability end
+
+614.2386185243
+iter_bsearch :0
+calculate_misses for 7.11930926215
+schedulability start
+
+schedulability end
+
+calculate_misses for 10.6789638932
+schedulability start
+
+schedulability end
+
+calculate_misses for 8.89913657769
+schedulability start
+
+schedulability end
+
+calculate_misses for 8.00922291992
+schedulability start
+
+schedulability end
+
+calculate_misses for 7.56426609103
+schedulability start
+
+schedulability end
+
+calculate_misses for 7.78674450548
+schedulability start
+
+schedulability end
+
+calculate_misses for 7.8979837127
+schedulability start
+
+schedulability end
+
+calculate_misses for 7.95360331631
+schedulability start
+
+schedulability end
+
+iter_bsearch :6
+Misses 	WCET Margin
+0	7.95360331631
+6	14.2386185243
+1.calculate_misses for 1.
+schedulability start
+
+schedulability end
+
+91.
+iter_bsearch :0
+calculate_misses for 0.5
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.25
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.125
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.0625
+schedulability start
+
+schedulability end
+
+iter_bsearch :6
+iter_bsearch :9
+Misses 	WCET Margin
+6	0.0625
+9	1.
+1.calculate_misses for 1.
+schedulability start
+
+schedulability end
+
+91.
+iter_bsearch :0
+calculate_misses for 0.5
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.25
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.125
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.0625
+schedulability start
+
+schedulability end
+
+iter_bsearch :6
+iter_bsearch :9
+Misses 	WCET Margin
+6	0.0625
+9	1.
+1.calculate_misses for 1.
+schedulability start
+
+schedulability end
+
+91.
+iter_bsearch :0
+calculate_misses for 0.5
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.25
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.125
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.0625
+schedulability start
+
+schedulability end
+
+iter_bsearch :6
+iter_bsearch :9
+Misses 	WCET Margin
+6	0.0625
+9	1.
+1.calculate_misses for 1.
+schedulability start
+
+schedulability end
+
+121.
+iter_bsearch :0
+calculate_misses for 0.5
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.25
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.125
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.1875
+schedulability start
+
+schedulability end
+
+iter_bsearch :1
+calculate_misses for 0.375
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.3125
+schedulability start
+
+schedulability end
+
+iter_bsearch :3
+calculate_misses for 0.4375
+schedulability start
+
+schedulability end
+
+iter_bsearch :12
+Misses 	WCET Margin
+0	0.1875
+1	0.25
+3	0.375
+12	1.
+1.calculate_misses for 1.
+schedulability start
+
+schedulability end
+
+121.
+iter_bsearch :0
+calculate_misses for 0.5
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.25
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.125
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.1875
+schedulability start
+
+schedulability end
+
+iter_bsearch :1
+calculate_misses for 0.375
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.3125
+schedulability start
+
+schedulability end
+
+iter_bsearch :3
+calculate_misses for 0.4375
+schedulability start
+
+schedulability end
+
+iter_bsearch :12
+Misses 	WCET Margin
+0	0.1875
+1	0.25
+3	0.375
+12	1.
+1.calculate_misses for 1.
+schedulability start
+
+schedulability end
+
+121.
+iter_bsearch :0
+calculate_misses for 0.5
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.25
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.125
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.1875
+schedulability start
+
+schedulability end
+
+iter_bsearch :1
+calculate_misses for 0.375
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.3125
+schedulability start
+
+schedulability end
+
+iter_bsearch :3
+calculate_misses for 0.4375
+schedulability start
+
+schedulability end
+
+iter_bsearch :12
+Misses 	WCET Margin
+0	0.1875
+1	0.25
+3	0.375
+12	1.
+1.calculate_misses for 1.
+schedulability start
+
+schedulability end
+
+151.
+iter_bsearch :0
+calculate_misses for 0.5
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.25
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.125
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.1875
+schedulability start
+
+schedulability end
+
+iter_bsearch :2
+calculate_misses for 0.375
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.3125
+schedulability start
+
+schedulability end
+
+iter_bsearch :3
+calculate_misses for 0.4375
+schedulability start
+
+schedulability end
+
+iter_bsearch :15
+Misses 	WCET Margin
+0	0.1875
+2	0.25
+3	0.375
+15	1.
+1.calculate_misses for 1.
+schedulability start
+
+schedulability end
+
+151.
+iter_bsearch :0
+calculate_misses for 0.5
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.25
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.125
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.1875
+schedulability start
+
+schedulability end
+
+iter_bsearch :2
+calculate_misses for 0.375
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.3125
+schedulability start
+
+schedulability end
+
+iter_bsearch :3
+calculate_misses for 0.4375
+schedulability start
+
+schedulability end
+
+iter_bsearch :15
+Misses 	WCET Margin
+0	0.1875
+2	0.25
+3	0.375
+15	1.
+1.calculate_misses for 1.
+schedulability start
+
+schedulability end
+
+151.
+iter_bsearch :0
+calculate_misses for 0.5
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.25
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.125
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.1875
+schedulability start
+
+schedulability end
+
+iter_bsearch :2
+calculate_misses for 0.375
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.3125
+schedulability start
+
+schedulability end
+
+iter_bsearch :3
+calculate_misses for 0.4375
+schedulability start
+
+schedulability end
+
+iter_bsearch :15
+Misses 	WCET Margin
+0	0.1875
+2	0.25
+3	0.375
+15	1.
+1.calculate_misses for 1.
+schedulability start
+
+schedulability end
+
+181.
+iter_bsearch :0
+calculate_misses for 0.5
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.25
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.125
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.0625
+schedulability start
+
+schedulability end
+
+iter_bsearch :2
+calculate_misses for 0.15625
+schedulability start
+
+schedulability end
+
+iter_bsearch :3
+iter_bsearch :5
+calculate_misses for 0.375
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.3125
+schedulability start
+
+schedulability end
+
+iter_bsearch :8
+iter_bsearch :11
+calculate_misses for 0.4375
+schedulability start
+
+schedulability end
+
+iter_bsearch :18
+Misses 	WCET Margin
+2	0.0625
+3	0.15625
+5	0.25
+8	0.3125
+11	0.375
+18	1.
+1.calculate_misses for 1.
+schedulability start
+
+schedulability end
+
+181.
+iter_bsearch :0
+calculate_misses for 0.5
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.25
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.125
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.0625
+schedulability start
+
+schedulability end
+
+iter_bsearch :2
+calculate_misses for 0.15625
+schedulability start
+
+schedulability end
+
+iter_bsearch :3
+iter_bsearch :5
+calculate_misses for 0.375
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.3125
+schedulability start
+
+schedulability end
+
+iter_bsearch :8
+iter_bsearch :11
+calculate_misses for 0.4375
+schedulability start
+
+schedulability end
+
+iter_bsearch :18
+Misses 	WCET Margin
+2	0.0625
+3	0.15625
+5	0.25
+8	0.3125
+11	0.375
+18	1.
+1.calculate_misses for 1.
+schedulability start
+
+schedulability end
+
+181.
+iter_bsearch :0
+calculate_misses for 0.5
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.25
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.125
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.0625
+schedulability start
+
+schedulability end
+
+iter_bsearch :2
+calculate_misses for 0.15625
+schedulability start
+
+schedulability end
+
+iter_bsearch :3
+iter_bsearch :5
+calculate_misses for 0.375
+schedulability start
+
+schedulability end
+
+calculate_misses for 0.3125
+schedulability start
+
+schedulability end
+
+iter_bsearch :8
+iter_bsearch :11
+calculate_misses for 0.4375
+schedulability start
+
+schedulability end
+
+iter_bsearch :18
+Misses 	WCET Margin
+2	0.0625
+3	0.15625
+5	0.25
+8	0.3125
+11	0.375
+18	1.

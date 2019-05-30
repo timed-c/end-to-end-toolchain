@@ -1,0 +1,11 @@
+Period:{20,10,100,}
+Utilization:{6.000000,3.000000,2.400000,}
+Sum Utilization:11.400000
+Period:{20,2,20,}
+Utilization:{10.500000,15.000000,10.500000,}
+Sum Utilization:36.000000
+Hyperperiod 20000
+H+Omax : 20000 + 0 = 20000
+Observation Window 27939
+Job generation complete
+
