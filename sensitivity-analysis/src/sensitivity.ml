@@ -258,9 +258,10 @@ let calculate_misses delta klist =
     (*let _ = uprint_string (us "calculate_misses for "); uprint_float delta; uprint_endline (us "") in*)
     let _ = scale_input delta in
     (*let _ = uprint_endline (us "schedulability start\n") in*)
-    let _ = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r job.csv -c -a action.csv > output" in
+    let _ = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r job.csv -c -a action.csv -l 600 " in
+    (*let _ = if (ret == 127) then uprint_string (us "return"); exit 0 in*)
     let _ = sa_time := !sa_time + 1 in
-    let _ = uprint_string (us "SA:"); uprint_int (!sa_time) in
+    let _ = uprint_int (!sa_time); uprint_string (us ",") in
     (*let _ = uprint_endline (us "schedulability end\n") in*)
     let joblist =  create_mk_analysis_csv () in
     let num_task = List.length klist in
@@ -274,9 +275,10 @@ let rec bsearch delta_min_lst delta_max_lst l u epsilon klist =
         (delta_min_lst, delta_max_lst, u)
     else
         let delta_mid = (delta_min_lst.(u) +. delta_max_lst.(l)) /. 2.0 in
-        let _ = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r job.csv -c -a action.csv > output" in
+        let ret = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r job.csv -c -a action.csv -l 600 " in
+        (*let _ = if (ret == 127) then uprint_string (us "return"); exit 0 in*)
         let _ = sa_time := !sa_time + 1 in
-        let _ = uprint_string (us "SA:"); uprint_int (!sa_time) in
+        let _ = uprint_int (!sa_time); uprint_string (us ",") in
         let m = calculate_misses delta_mid klist in
         let _ = delta_min_lst.(m) <- (Pervasives.min delta_min_lst.(m) delta_mid) in
         let _ = delta_max_lst.(m) <- (Pervasives.max delta_max_lst.(m) delta_mid) in
@@ -311,9 +313,11 @@ let sensitivity =
     (*let _ = uprint_int num_task; uprint_string (us "sensitivity\n") in*)
     let klist = Array.to_list ((Array.make num_task (int_of_string (Sys.argv.(1))))) in
     let epsilon = float_of_string (Sys.argv.(2)) in
-    let _ = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r job.csv -c -a action.csv > output" in
-    let _ = sa_time := !sa_time + 1 in
-    let _ = uprint_string (us "SA:"); uprint_int (!sa_time) in
+    let ret = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r job.csv -c -a action.csv -l 600" in
+    let _ = if (ret = 127) then exit 0 in
+    let _ = uprint_int ret in
+    let _ = sa_time := !sa_time + 1; uprint_string (us ",") in
+    let _ = uprint_int (!sa_time) ; uprint_string (us ",") in
     let delta_sup = max_initial_upper_bound num_task (List.hd klist) in
     let delta_sup = Pervasives.max delta_sup 1.0 in
     (*let _ = uprint_endline (us "dsup") in*)

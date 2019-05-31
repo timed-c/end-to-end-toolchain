@@ -11,15 +11,16 @@ wcet=$9
 to=$10
 var="tsk"
 echo "Task = ${tsk}, Frame =${frame}, Offset=${offset}, Size=${size}, k=${k}, Epsilon=${epsilon}, Iter=${iter}, Kind=${kind}, Seed=${seed}" > config
-for ((j=6; j<=$tsk;j=j+1))
+for ((j=3; j<=$tsk;j=j+2))
     do
         exp="${j}_${var}"
         mkdir $exp
         cd $exp
         log="${j}_log"
+        mv config $exp
         echo "*******Taskset with ${j} tasks*********" | tee $log
         mkdir traces
-        for ((i=1; i<=5; i=i+1))
+        for ((i=1; i<=10; i=i+1))
         do
             file="${var}_${j}_${i}.c"
             ../generate $tsk $frame $offset $size $file $kind $wcet | tee -a $log
@@ -51,5 +52,6 @@ for ((j=6; j<=$tsk;j=j+1))
             rm -f $file
             echo "#######" | tee -a $log
         done
+            cd ..
     done
 

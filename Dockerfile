@@ -14,7 +14,8 @@ RUN opam install yojson
 RUN opam install csv
 RUN echo $(opam config env)
 
-COPY ktc /opt/e2e/ktc
+#COPY ktc /opt/e2e/ktc
+#COPY ktc/src/mftfg.ml /opt/e2e/ktc/mftfg.ml
 COPY timed-c-e2e-sched-analysis /opt/e2e/timed-c-e2e-sched-analysis
 COPY tbb44_20160128oss/include/tbb /opt/e2e/timed-c-e2e-sched-analysis/include/tbb
 COPY sensitivity-analysis /opt/e2e/sensitivity-analysis

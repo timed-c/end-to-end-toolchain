@@ -25,7 +25,7 @@ case $key in
         docker cp $PWD/$1 e2e-docker:/opt/e2e/project
         docker cp $PWD/traces e2e-docker:/opt/e2e/project
         docker exec -i -t e2e-docker ./copy.sh /opt/e2e/project/traces/* /opt/e2e/project/
-        docker exec -i -t e2e-docker /opt/e2e/ktc/bin/ktc --enable-ext5 --save-temps=/opt/e2e/project $1 -I. -L. -w
+        docker exec -i -t e2e-docker /opt/e2e/ktc/bin/ktc --enable-ext5 $1 -I. -L. -w
         docker exec -i -t e2e-docker cp job.csv input
         docker exec -i -t e2e-docker cp action.csv orginal_action
         docker cp e2e-docker:/opt/e2e/project/input $PWD

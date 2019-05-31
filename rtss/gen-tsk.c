@@ -197,14 +197,14 @@ void main(int argc, char *argv[]){
         printf("%d,", period_array[k]);
     }
     printf("}\n");
-    printf("Utilization:{");
+    /*printf("Utilization:{");
     float sum_util=0;
     for(k=0; k<tsk; k++){
         printf("%f,", util_array[k]);
         sum_util = sum_util + util_array[k];
     }
     printf("}\n");
-    printf("Sum Utilization:%f\n", sum_util);
+    printf("Sum Utilization:%f\n", sum_util);*/
     //findlcm(lcm_arr, tsk);
     write_main(fp, tsk);
     fclose(fp);
