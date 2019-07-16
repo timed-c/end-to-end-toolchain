@@ -11,19 +11,19 @@ wcet=$9
 to=$10
 var="tsk"
 echo "Task = ${tsk}, Frame =${frame}, Offset=${offset}, Size=${size}, k=${k}, Epsilon=${epsilon}, Iter=${iter}, Kind=${kind}, Seed=${seed}" > config
-for ((j=6; j<=$tsk;j=j+2))
+for ((j=4; j<=$tsk;j=j+2))
     do
-        exp="$r_{j}_${var}"
+        exp="r_${j}_${var}"
         mkdir $exp
         cd $exp
-        log="$r_{j}_log"
+        log="r_${j}_log"
         mv config $exp
         echo "*******Taskset with ${j} tasks*********" | tee $log
         mkdir traces
-        for ((i=1; i<=4; i=i+1))
+        for ((i=1; i<=1; i=i+1))
         do
             file="${var}_${j}_${i}.c"
-            ../generate $tsk $frame $offset $size $file $kind $wcet | tee -a $log
+            ../generate $j $frame $offset $size $file $kind $wcet | tee -a $log
             exe="${var}_${j}_${i}"
             sudo ../../bin/ktc $file --posix --timing-param $k $iter
             cilfile="${var}_${j}_${i}.cil.c"
@@ -37,20 +37,20 @@ for ((j=6; j<=$tsk;j=j+2))
             cp *.ktc.trace traces
             cp $file $dir
             pout="${var}_${j}_${i}.perf"
-            date
-            sudo perf stat -o $pout ../../bin/sens $file --param $k $epsilon $to | tee -a $log
-            tail -2 $pout > imm_log
-            yvar=$(awk '{print $1}' imm_log)
-            echo "Time Elapsed:${yvar}" | tee -a $log
-            rm imm_log
-            mv input $dir
-            mv output $dir
+            #date
+            #sudo perf stat -o $pout ../../bin/sens $file --param $k $epsilon $to | tee -a $log
+            #tail -2 $pout > imm_log
+            #yvar=$(awk '{print $1}' imm_log)
+            #echo "Time Elapsed:${yvar}" | tee -a $log
+            #rm imm_log
+            #mv input $dir
+            #mv output $dir
             rm -f *.ktc.trace
             rm -f *.cil.c
             rm traces/*.ktc.trace
-            rm $exe
-            rm -f $file
-            echo "#######" | tee -a $log
+            #rm $exe
+            #rm -f $file
+            #echo "#######" | tee -a $log
         done
             cd ..
     done

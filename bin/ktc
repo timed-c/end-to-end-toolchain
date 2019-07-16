@@ -62,7 +62,7 @@ case $key in
                     docker exec -i -t e2e-docker rm -r traces
                     docker exec -i -t e2e-docker mkdir traces
                     docker exec -i -t e2e-docker ./remove.sh
-                    docker exec -u 0 -it e2e-docker ./a.out $5 $4 > log
+                    docker exec -u 0 -it e2e-docker ./a.out $5 $4
                     docker exec -i -t e2e-docker ./copy.sh *.ktc.trace traces/
                     docker cp e2e-docker:/opt/e2e/project/traces $PWD/
                     ;;

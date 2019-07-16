@@ -1,1 +1,1 @@
-Task = 6, Frame =2, Offset=0, Size=small, k=3, Epsilon=0.1, Iter=80, Kind=1, Seed=
+Task = 20, Frame =2, Offset=0, Size=small, k=3, Epsilon=0.1, Iter=50, Kind=1, Seed=
