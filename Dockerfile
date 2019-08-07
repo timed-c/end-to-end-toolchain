@@ -54,6 +54,11 @@ WORKDIR /opt/e2e/timed-c-e2e-sched-analysis/build
 RUN /opt/cmake-3.14.0-rc4/bin/cmake -DUSE_JE_MALLOC=no -DUSE_TBB_MALLOC=no -S /opt/e2e/timed-c-e2e-sched-analysis/ -B /opt/e2e/timed-c-e2e-sched-analysis/build
 RUN make
 
+RUN apt-get update \
+  && apt-get install -y python3-pip python3-dev \
+  && cd /usr/local/bin \
+  && ln -s /usr/bin/python3 python \
+  && pip3 install --upgrade pip
 
 COPY profile-test /opt/e2e/profile-test
 

@@ -30,10 +30,10 @@ case $key in
         docker exec -i -t e2e-docker cp action.csv orginal_action
         docker cp e2e-docker:/opt/e2e/project/input $PWD
         #timeout -s SIGKILL 900
-        docker exec -i -t e2e-docker ../sensitivity-analysis/bin/sensitivity $3 $4
+        docker exec -i -t e2e-docker ../sensitivity-analysis/bin/sensitivity $3 $4 0.9
         docker cp e2e-docker:/opt/e2e/project/output $PWD
         shift # past argument
-        shift # past value
+        shift # past vale
         shift
         shift
         shift
