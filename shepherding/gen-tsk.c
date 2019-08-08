@@ -49,7 +49,7 @@ void write_file_header(FILE* fp, char* bmark){
     fprintf(fp, " #include <stdio.h> \n #include <math.h> \n #include <stdlib.h> \n #include \"cilktc.h\" \n #include \"mbench.h\" \n");
     fprintf(fp, "\n \n FILE dfile;\n");
     if(!strcmp(bmark,"small")){
-        fprintf(fp, "void func(int x){\n \t int i; \n \t change_to_max_priority(); \n \t for(i=0; i<x; i++){\n \t \t mbitcount(50);}\n}");
+        fprintf(fp, "void func(int x){\n \t int i; \n \t for(i=0; i<x; i++){\n \t \t mbitcount(50);}\n}");
     }
     if(!strcmp(bmark,"large")){
         fprintf(fp, "void func(int x){\n \t int i; \n \t for(i=0; i<x; i++){\n \t \t mbitcount(1000);}\n}");
@@ -185,7 +185,12 @@ void main(int argc, char *argv[]){
                 frame_period = (priod) - sum_period;
             }
             randnum = rand()% MBENCH;
-            mul = write_workload(fp, (randnum+1), bmark, knd);
+            if(i < 10){
+                mul = write_workload(fp, (randnum+1), bmark, knd);
+            }
+            else{
+                mul = write_workload(fp, 1, bmark, knd);
+            }
             if(j != (frme-1)){
                 write_spolicy(fp, frame_period);
             }

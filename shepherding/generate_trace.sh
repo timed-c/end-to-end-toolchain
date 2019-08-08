@@ -11,7 +11,7 @@ wcet=$9
 to=$10
 var="tsk"
 #echo "Task = ${tsk}, Frame =${frame}, Offset=${offset}, Size=${size}, k=${k}, Epsilon=${epsilon}, Iter=${iter}, Kind=${kind}, Seed=${seed}" > config
-for ((j=10; j<=$tsk;j=j+2))
+for ((j=12; j<=$tsk;j=j+2))
     do
         exp="${j}_${var}"
         mkdir $exp
