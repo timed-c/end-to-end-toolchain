@@ -228,15 +228,7 @@ let scale_input alpha =
     Csv.save "job.csv" nip;
     Csv.save ((alpha_string)^"_job.csv") nip
 
-let simulation_analysis sim_file =
-    let ip = List.tl (read_data_input "job.csv") in
-    let rta = List.tl (read_data_rta sim_file) in
-    let lst = List.map2 (fun a b -> if ((a.tid = b.tskid) & (a.jid = b.jobid)) then
-                                        (Pervasives.abs_float((float_of_string b.dl) -. (float_of_string b.rmax))) /. (float_of_string a.wcct)
-                                    else
-                                        0.0 ) rta ip in
-    let ext = List.exists (fun a -> (a > 50.00)) lst in
-    if ext then false else true
+
 
 let create_mk_analysis_csv () =
     let ip = List.tl (read_data_input "job.csv") in
@@ -303,18 +295,7 @@ let rec calculate_misses_for_each_task i num_task m klist olst =
     else
         m
 
-let rec calculate_delta_after_simulation delta fc =
-    if (fc >= 0.0 || delta <= 1.0) then
-        (let _ = uprint_string (us "pre-simulation"); uprint_float delta; uprint_endline (us "") in
-        delta)
-    else
-        (let _ = scale_input delta in
-        let sim_csv = (string_of_float delta)^"_simulation.csv" in
-        let _ = Sys.command "../timed-c-e2e-sched-analysis/scripts/simulate-pre-analysis.py --nptest ../timed-c-e2e-sched-analysis/build/nptest --jobs job.csv --action action.csv -o     simulation.csv --num-random-releases 20 -- -p pred.csv -c" in
-        let _ = Sys.command ("mv simulation.csv "^(sim_csv)) in
-        let cont = simulation_analysis sim_csv in
-        let fct = fc -. 0.1 in
-        if cont then delta else (calculate_delta_after_simulation (delta *. fct) fct))
+
 
 let calculate_misses delta klist  =
     (*let _ = uprint_string (us "calculate_misses for "); uprint_float delta; uprint_endline (us "") in*)
@@ -373,6 +354,43 @@ let rec iter_bsearch delta_min_lst delta_max_lst delta_sup i m epsilon klist =
     else
         (delta_min_lst, delta_max_lst)
 
+let simulation_analysis sim_file k num_task delta =
+    let ip = List.tl (read_data_input "job.csv") in
+    let rta = List.tl (read_data_rta sim_file) in
+    let lst = List.map2 (fun a b -> if ((a.tid = b.tskid) & (a.jid = b.jobid)) then
+                                        (Pervasives.abs_float((float_of_string b.dl) -. (float_of_string b.rmax))) /. (float_of_string a.wcct)
+                                    else
+                                        0.0 ) rta ip in
+    let ext = List.exists (fun a -> (a > 50.00)) lst in
+    if ext then
+        false
+    else
+        (let klst =  Array.to_list ((Array.make num_task k)) in
+        let m = calculate_misses delta klst in
+        let max_m = k * num_task in
+        (if (m < max_m) then
+            false
+        else
+            true))
+
+
+let rec calculate_delta_after_simulation original_delta delta fc k num_task =
+    if (fc >= 0.0 || delta <= 1.0) then
+        (let _ = uprint_string (us "pre-simulation :"); uprint_float original_delta; uprint_string (us ":") ; uprint_float delta; uprint_endline (us "") in
+        delta)
+    else
+        (let _ = scale_input delta in
+        let sim_csv = (string_of_float delta)^"_simulation.csv" in
+        let _ = Sys.command "../timed-c-e2e-sched-analysis/scripts/simulate-pre-analysis.py --nptest ../timed-c-e2e-sched-analysis/build/nptest --jobs job.csv --action action.csv -o     simulation.csv --num-random-releases 20 -- -p pred.csv -c" in
+        let _ = Sys.command ("mv simulation.csv "^(sim_csv)) in
+        let cont = simulation_analysis sim_csv k num_task delta in
+        let fct = fc -. 0.2 in
+        let new_delta = original_delta *. fct in
+        if cont then
+            (let _ = uprint_string (us "pre-simulation :"); uprint_float original_delta; uprint_string (us ":") ; uprint_float delta; uprint_endline (us "") in
+             delta)
+        else (calculate_delta_after_simulation original_delta (new_delta) fct k num_task ))
+
 
 let sensitivity =
     let num_task = get_number_of_task () in
@@ -385,7 +403,7 @@ let sensitivity =
     let _ = Sys.command "../timed-c-e2e-sched-analysis/scripts/simulate-pre-analysis.py --nptest ../timed-c-e2e-sched-analysis/build/nptest --jobs job.csv --action action.csv -o     simulation.csv --num-random-releases 20 -- -p pred.csv -c" in
     let sim_csv = "1.00_simulation.csv" in
     let _ = Sys.command ("mv simulation.csv "^(sim_csv)) in
-    let _ = simulation_analysis sim_csv in
+    let _ = simulation_analysis sim_csv (int_of_string (Sys.argv.(1))) num_task 1.00 in
     let ret = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r job.csv -c -a action.csv -p pred.csv -l 600 " in
     let _ = if (ret = 127) then exit 0 in
     let _ = uprint_int ret in
@@ -393,7 +411,7 @@ let sensitivity =
     let _ = uprint_int (!sa_time) ; uprint_string (us ",") in
     let delta_sup = max_initial_upper_bound num_task (List.hd klist) in
     let delta_sup = Pervasives.max delta_sup 1.0 in
-    let delta_sup_allowed = calculate_delta_after_simulation delta_sup 1.0 in
+    let delta_sup_allowed = calculate_delta_after_simulation delta_sup delta_sup 1.0 (int_of_string (Sys.argv.(1))) num_task in
     let delta_sup = delta_sup_allowed in
     let delta_inf = 0.0 in
     let m = calculate_misses delta_sup klist in
