@@ -19,10 +19,12 @@ for ((j=4; j<=$tsk;j=j+2))
         log="s_${j}_log"
         rm -f traces
         mkdir traces
-        for ((i=1; i<=3; i=i+1))
+        ssh saranya@130.237.20.223 "cd /home/saranya/Documents/end-to-end-toolchain/shepherding && mkdir $exp"
+        for ((i=1; i<=5; i=i+1))
         do
             file="${var}_${j}_${i}.c"
             ../generate-shepherd $j $frame $offset $size $file $kind $wcet | tee -a $log
+            pwd
             exe="${var}_${j}_${i}"
             sudo ../../bin/ktc $file --posix --timing-param $k $iter
             cilfile="${var}_${j}_${i}.cil.c"
@@ -31,25 +33,24 @@ for ((j=4; j<=$tsk;j=j+2))
             mkdir $dir
             rm -f *.ktc.trace
             scp $exe pi@10.42.0.101:/home/pi/Documents/rtss
-            ssh pi@10.42.0.101 "cd && cd /home/pi/Documents/rtss/ && ./clean.sh && sudo ./$exe $k $iter && scp *.ktc.trace saranya@10.42.0.1:/home/saranya/Dokument/e2e/shepherding/$exp && rm $exe && ./clean.sh && exit"
+            ssh pi@10.42.0.101 "cd && cd /home/pi/Documents/rtss/ && ./clean.sh && sudo ./$exe $k $iter && scp *.ktc.trace saranya@10.42.0.1:/home/saranya/Dokument/e2e/shepherding/$exp && ./clean.sh && exit"
             cp *.ktc.trace $dir
             cp $dir/*.ktc.trace traces
-            cp $dir/$file .
+            cp $file $dir/
             pout="r_${var}_${j}_${i}.perf"
-            sudo perf stat -o $pout ../../bin/sens $file --param $k $epsilon $to | tee -a $log
-            tail -2 $pout > imm_log
-            yvar=$(awk '{print $1}' imm_log)
-            echo "Time Elapsed:${yvar}" | tee -a $log
-            rm imm_log
+            scp -r traces saranya@130.237.20.223:/home/saranya/Documents/end-to-end-toolchain/shepherding/$exp
+            scp -r $file saranya@130.237.20.223:/home/saranya/Documents/end-to-end-toolchain/shepherding/$exp
+            ssh -tt saranya@130.237.20.223 "cd /home/saranya/Documents/end-to-end-toolchain/shepherding/$exp && perf stat -o $pout ../../bin/sens $file --param $k $epsilon $to | tee -a $log && tail -2 $pout > immlog"
+            ssh -tt saranya@130.237.20.223 "cd /home/saranya/Documents/end-to-end-toolchain/shepherding/$exp && cat immlog >> $log && echo ######## | tee -a $log && rm immlog && rm $file && rm -r traces"
             #mv input $dir
             #mv output $dir
-            mv *.csv $dir
-            rm -f *.ktc.trace
-            rm -f *.cil.c
-            rm -f traces/*.ktc.trace
-            rm -f $exe
-            rm -f $file
-            echo "#######" | tee -a $log
+                 mv *.csv $dir
+                 rm -f *.ktc.trace
+                 rm -f *.cil.c
+                 rm -f traces/*.ktc.trace
+                 #rm -f $exe
+                 rm -f $file
+                 echo "#######" | tee -a $log
         done
             cd ..
     done

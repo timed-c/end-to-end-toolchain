@@ -303,16 +303,18 @@ let rec calculate_misses_for_each_task i num_task m klist olst =
     else
         m
 
-let rec calculate_delta_after_simulation delta =
-    if (delta <= 1.0) then
-        delta
+let rec calculate_delta_after_simulation delta fc =
+    if (fc >= 0.0 || delta <= 1.0) then
+        (let _ = uprint_string (us "pre-simulation"); uprint_float delta; uprint_endline (us "") in
+        delta)
     else
         (let _ = scale_input delta in
         let sim_csv = (string_of_float delta)^"_simulation.csv" in
         let _ = Sys.command "../timed-c-e2e-sched-analysis/scripts/simulate-pre-analysis.py --nptest ../timed-c-e2e-sched-analysis/build/nptest --jobs job.csv --action action.csv -o     simulation.csv --num-random-releases 20 -- -p pred.csv -c" in
         let _ = Sys.command ("mv simulation.csv "^(sim_csv)) in
         let cont = simulation_analysis sim_csv in
-        if cont then delta else (calculate_delta_after_simulation (delta/.2.0)))
+        let fct = fc -. 0.1 in
+        if cont then delta else (calculate_delta_after_simulation (delta *. fct) fct))
 
 let calculate_misses delta klist  =
     (*let _ = uprint_string (us "calculate_misses for "); uprint_float delta; uprint_endline (us "") in*)
@@ -391,7 +393,7 @@ let sensitivity =
     let _ = uprint_int (!sa_time) ; uprint_string (us ",") in
     let delta_sup = max_initial_upper_bound num_task (List.hd klist) in
     let delta_sup = Pervasives.max delta_sup 1.0 in
-    let delta_sup_allowed = calculate_delta_after_simulation delta_sup in
+    let delta_sup_allowed = calculate_delta_after_simulation delta_sup 1.0 in
     let delta_sup = delta_sup_allowed in
     let delta_inf = 0.0 in
     let m = calculate_misses delta_sup klist in
