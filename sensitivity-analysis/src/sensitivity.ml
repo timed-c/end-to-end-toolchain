@@ -431,10 +431,21 @@ let sensitivity =
     let _ = uprint_int (!sa_time) ; uprint_string (us ",") in
     let delta_sup = max_initial_upper_bound num_task (List.hd klist) in
     let delta_sup = Pervasives.max delta_sup 1.0 in
-    (*let delta_sup_allowed = calculate_delta_after_simulation delta_sup delta_sup 1.0 (int_of_string (Sys.argv.(1))) num_task in*)
-    let delta_sup_allowed = binary_simulation_search 1.0 delta_sup (int_of_string (Sys.argv.(1)))  num_task delta_sup in
-    let _ = uprint_string (us "pre-simulation :"); uprint_float delta_sup; uprint_string (us ":") ; uprint_float delta_sup_allowed; uprint_endline (us "") in
-    let delta_sup = delta_sup_allowed in
+    let opt = Sys.argv.(4) in
+    let delta_sup =
+        if (opt = "--sim") then
+        (*let delta_sup_allowed = calculate_delta_after_simulation delta_sup delta_sup 1.0 (int_of_string (Sys.argv.(1))) num_task in*)
+        (let delta_sup_allowed = binary_simulation_search 1.0 delta_sup (int_of_string (Sys.argv.(1)))  num_task delta_sup in
+        let _ = uprint_string (us "pre-simulation :"); uprint_float delta_sup; uprint_string (us ":") ; uprint_float delta_sup_allowed; uprint_endline (us "") in
+        delta_sup_allowed)
+    else
+        (if (opt = "--util") then
+            (let cap_util = float_of_string (Sys.argv.(5)) in
+            let delta_sup_allowed = cap_util/.sys_util in
+            let _ = uprint_string (us "utilization-delta :"); uprint_float delta_sup; uprint_string (us ":") ; uprint_float delta_sup_allowed; uprint_endline (us "") in
+            delta_sup_allowed)
+        else
+            delta_sup) in
     let delta_inf = 0.0 in
     let m = calculate_misses delta_sup klist in
     let delta_min_lst = Array.make (m+1)delta_sup  in
