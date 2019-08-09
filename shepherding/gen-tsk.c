@@ -9,7 +9,7 @@
 #define PERIOD 9
 #define FRAME 10
 #define OFFSET 1
-#define MBENCH 3
+#define MBENCH 10
 
 int period_table[]={1, 2, 5, 10, 20, 50, 100, 200, 1000};
 int share_table[]={3, 2,  2,  25, 25, 3,  20, 1,  4};
@@ -49,7 +49,7 @@ void write_file_header(FILE* fp, char* bmark){
     fprintf(fp, " #include <stdio.h> \n #include <math.h> \n #include <stdlib.h> \n #include \"cilktc.h\" \n #include \"mbench.h\" \n");
     fprintf(fp, "\n \n FILE dfile;\n");
     if(!strcmp(bmark,"small")){
-        fprintf(fp, "void func(int x){\n \t int i; \n \t for(i=0; i<x; i++){\n \t \t mbitcount(50);}\n}");
+        fprintf(fp, "void func(int x){\n \t int i; \n \t for(i=0; i<1; i++){\n \t \t mbitcount(x);}\n}");
     }
     if(!strcmp(bmark,"large")){
         fprintf(fp, "void func(int x){\n \t int i; \n \t for(i=0; i<x; i++){\n \t \t mbitcount(1000);}\n}");
@@ -80,8 +80,9 @@ void write_offset(FILE* fp, int ofst){
 
 int write_workload(FILE* fp, int randnum, char* bmark, int knd){
     int ret;
+    int arg = randnum * 10;
     if(knd == 0){
-        fprintf(fp, "\t \t func(%d);\n", randnum);
+        fprintf(fp, "\t \t func(%d);\n", arg);
         ret = randnum;
     }
     else{
