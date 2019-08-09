@@ -7,8 +7,7 @@ k=$5
 epsilon=$6
 iter=$7
 kind=$8
-wcet=$9
-to=$10
+util=$9
 var="tsk"
 #echo "Task = ${tsk}, Frame =${frame}, Offset=${offset}, Size=${size}, k=${k}, Epsilon=${epsilon}, Iter=${iter}, Kind=${kind}, Seed=${seed}" > config
 for ((j=4; j<=$tsk;j=j+2))
@@ -20,10 +19,10 @@ for ((j=4; j<=$tsk;j=j+2))
         rm -f traces
         mkdir traces
         ssh saranya@130.237.20.223 "cd /home/saranya/Documents/end-to-end-toolchain/shepherding && mkdir $exp"
-        for ((i=1; i<=5; i=i+1))
+        for ((i=1; i<=1; i=i+1))
         do
             file="${var}_${j}_${i}.c"
-            ../generate-shepherd $j $frame $offset $size $file $kind $wcet | tee -a $log
+            ../generate-shepherd $j $frame $offset $size $file $kind 600 | tee -a $log
             pwd
             exe="${var}_${j}_${i}"
             sudo ../../bin/ktc $file --posix --timing-param $k $iter
@@ -37,10 +36,16 @@ for ((j=4; j<=$tsk;j=j+2))
             cp *.ktc.trace $dir
             cp $dir/*.ktc.trace traces
             cp $file $dir/
-            pout="r_${var}_${j}_${i}.perf"
+            sim_out="sim_${var}_${j}_${i}.perf"
+            util_9="util_9_${var}_${j}_${i}.perf"
+            util_1="util_1_${var}_${j}_${i}.perf"
             scp -r traces saranya@130.237.20.223:/home/saranya/Documents/end-to-end-toolchain/shepherding/$exp
             scp -r $file saranya@130.237.20.223:/home/saranya/Documents/end-to-end-toolchain/shepherding/$exp
-            ssh -tt saranya@130.237.20.223 "cd /home/saranya/Documents/end-to-end-toolchain/shepherding/$exp && perf stat -o $pout ../../bin/sens $file --param $k $epsilon $to | tee -a $log && tail -2 $pout > immlog"
+            ssh -tt saranya@130.237.20.223 "cd /home/saranya/Documents/end-to-end-toolchain/shepherding/$exp && perf stat -o $sim_out ../../bin/sens $file --param $k $epsilon $util --sim | tee -a $log && tail -2 $pout > immlog"
+            ssh -tt saranya@130.237.20.223 "cd /home/saranya/Documents/end-to-end-toolchain/shepherding/$exp && cat immlog >> $log && echo ######## | tee -a $log && rm immlog && rm $file && rm -r traces"
+            ssh -tt saranya@130.237.20.223 "cd /home/saranya/Documents/end-to-end-toolchain/shepherding/$exp && perf stat -o $util_9 ../../bin/sens $file --param $k $epsilon 0.9 --util | tee -a $log && tail -2 $pout > immlog"
+            ssh -tt saranya@130.237.20.223 "cd /home/saranya/Documents/end-to-end-toolchain/shepherding/$exp && cat immlog >> $log && echo ######## | tee -a $log && rm immlog && rm $file && rm -r traces"
+            ssh -tt saranya@130.237.20.223 "cd /home/saranya/Documents/end-to-end-toolchain/shepherding/$exp && perf stat -o $util_1 ../../bin/sens $file --param $k $epsilon 1.0 --util | tee -a $log && tail -2 $pout > immlog"
             ssh -tt saranya@130.237.20.223 "cd /home/saranya/Documents/end-to-end-toolchain/shepherding/$exp && cat immlog >> $log && echo ######## | tee -a $log && rm immlog && rm $file && rm -r traces"
             #mv input $dir
             #mv output $dir

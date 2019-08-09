@@ -440,8 +440,7 @@ let sensitivity =
         delta_sup_allowed)
     else
         (if (opt = "--util") then
-            (let cap_util = float_of_string (Sys.argv.(5)) in
-            let delta_sup_allowed = cap_util/.sys_util in
+            (let delta_sup_allowed = exp_util/.sys_util in
             let _ = uprint_string (us "utilization-delta :"); uprint_float delta_sup; uprint_string (us ":") ; uprint_float delta_sup_allowed; uprint_endline (us "") in
             delta_sup_allowed)
         else

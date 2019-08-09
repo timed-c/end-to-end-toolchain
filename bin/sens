@@ -2,7 +2,8 @@
 POSITIONAL=()
 while [[ $# -gt 0 ]]
 do
-to="$5"
+mode=$6
+util="$5"
 epsilon="$4"
 k="$3"
 key="$2"
@@ -30,8 +31,16 @@ case $key in
         docker exec -i -t e2e-docker cp action.csv orginal_action
         docker cp e2e-docker:/opt/e2e/project/input $PWD
         #timeout -s SIGKILL 900
-        docker exec -i -t e2e-docker ../sensitivity-analysis/bin/sensitivity $3 $4 0.9
-        docker cp e2e-docker:/opt/e2e/project/output $PWD
+        case $mode in
+            --util)
+                docker exec -i -t e2e-docker ../sensitivity-analysis/bin/sensitivity $3 $4 $5 --sim
+                shift
+                ;;
+            --sim)
+                docker exec -i -t e2e-docker ../sensitivity-analysis/bin/sensitivity $3 $4 $5 --util
+                shift
+                ;;
+        esac
         shift # past argument
         shift # past vale
         shift
