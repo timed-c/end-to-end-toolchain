@@ -354,24 +354,6 @@ let rec iter_bsearch delta_min_lst delta_max_lst delta_sup i m epsilon klist =
     else
         (delta_min_lst, delta_max_lst)
 
-let simulation_analysis sim_file k num_task delta =
-    let ip = List.tl (read_data_input "job.csv") in
-    let rta = List.tl (read_data_rta sim_file) in
-    let lst = List.map2 (fun a b -> if ((a.tid = b.tskid) & (a.jid = b.jobid)) then
-                                        (Pervasives.abs_float((float_of_string b.dl) -. (float_of_string b.rmax))) /. (float_of_string a.wcct)
-                                    else
-                                        0.0 ) rta ip in
-    let ext = List.exists (fun a -> (a > 50.00)) lst in
-    if ext then
-        false
-    else
-        (let klst =  Array.to_list ((Array.make num_task k)) in
-        let m = calculate_misses delta klst in
-        let max_m = k * num_task in
-        (if (m <= max_m) then
-            false
-        else
-            true))
 
 let simulation_analysis_init sim_file =
     let ip = List.tl (read_data_input "job.csv") in
@@ -380,7 +362,7 @@ let simulation_analysis_init sim_file =
                                         (Pervasives.abs_float((float_of_string b.dl) -. (float_of_string b.rmax))) /. (float_of_string a.wcct)
                                     else
                                         0.0 ) rta ip in
-    let ext = List.exists (fun a -> (a > 30.00)) lst in
+    let ext = List.exists (fun a -> (a > 20.00)) lst in
     if ext then
         false
     else
@@ -388,7 +370,7 @@ let simulation_analysis_init sim_file =
 
 
 let rec calculate_delta_after_simulation original_delta delta fc k num_task =
-    if (fc <= 0.0 || delta <= 1.0) then
+    if (fc <= 0.0) then
         (*let _ = uprint_string (us "pre-simulation :"); uprint_float original_delta; uprint_string (us ":") ; uprint_float delta; uprint_endline (us "") in*)
         delta
     else
@@ -399,7 +381,7 @@ let rec calculate_delta_after_simulation original_delta delta fc k num_task =
          let ret = Sys.command "../timed-c-e2e-sched-analysis/scripts/simulate-pre-analysis.py --nptest ../timed-c-e2e-sched-analysis/build/nptest --jobs job.csv --action action.csv -t 60 -o  simulation.csv --num-random-releases 20 -- -p pred.csv -c" in
          let _ = if (ret == 0) then exit 0 in
          let _ = Sys.command ("mv simulation.csv "^(sim_csv)) in
-         let cont = simulation_analysis sim_csv k num_task new_delta in
+         let cont = simulation_analysis_init sim_csv in
         if cont then
             (*let _ = uprint_string (us "pre-simulation :"); uprint_float original_delta; uprint_string (us ":") ; uprint_float delta; uprint_endline (us "") in *)
              new_delta
