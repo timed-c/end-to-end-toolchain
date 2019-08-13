@@ -77,6 +77,16 @@ type utilization_format =
     ukind    : string;
 }
 
+type imm_format =
+{
+        itskid : string;
+        ijobid : string;
+        irmin : int;
+        icmax : int;
+        idl : int;
+        iwcct : int;
+}
+
 let sa_time = ref 0
 
 let read_data_output fname =
@@ -209,6 +219,32 @@ let rec calculate_slack_each_task ip rta num_task i k dsup =
             dsup
 
 
+let calculate_leeway_new lst =
+    let lway = lst.icmax + lst.idl - lst.iwcct in
+    let delta = (float_of_int lway) /. (float_of_int lst.icmax) in
+    (delta)
+
+
+let compare_sort a b =
+    if (a.irmin = b.irmin) then 0 else
+        (if (a.irmin > b.irmin) then 1 else 0)
+
+let rec calculate_slack_each_task_updated lst num_task i k dsup =
+        if (i <= num_task) then
+        begin
+        (*let _ = uprint_string (us "calculate_misses_for_each_task : ") in
+        let _ = uprint_int i; (uprint_string (us "\n")) in *)
+        let concat_task = List.filter (fun a -> ((int_of_string a.itskid) = i)) lst in
+        let concat_sorted = List.sort (compare_sort) concat_task in
+        let (concat_k, _) = get_first_k_element concat_sorted k in
+        let slack_list = List.map (calculate_leeway_new) concat_k in
+        let dsup_lst_max = List.fold_right Pervasives.max slack_list 0.0 in
+        let new_dsup = Pervasives.max dsup dsup_lst_max in
+        calculate_slack_each_task_updated lst num_task (i+1) k new_dsup
+        end
+        else
+            dsup
+
 let scale_input alpha =
     let inp = (read_data_input "input") in
     let actionlist =  (read_data_action "orginal_action") in
@@ -246,8 +282,17 @@ let create_mk_analysis_csv () =
 let max_initial_upper_bound num_task k  =
     let ip = List.tl (read_data_input "job.csv") in
     let rta = List.tl (read_data_rta "job.rta.csv") in
-    let _ =  create_mk_analysis_csv () in
     calculate_slack_each_task ip rta num_task 1 k 0.0
+
+let max_initial_upper_bound_updated num_task k  =
+    let ip = List.tl (read_data_input "job.csv") in
+    let rta = List.tl (read_data_rta "job.rta.csv") in
+    let concat_list_aux = List.map2 (fun a b -> (if ((a.tskid = b.tid) & (a.jobid = b.jid)) then [{itskid = a.tskid; ijobid = a.jobid; irmin = (int_of_string a.rmin); icmax = (int_of_string a.cmax); idl = (int_of_string a.dl); iwcct = (int_of_string b.wcct)}] else [])) ip rta in
+    let concat_list = List.filter (function []-> false
+                                        |_ -> true) concat_list_aux in
+    let concat_list = List.map (function [a] -> a) concat_list in
+    calculate_slack_each_task_updated concat_list num_task 1 k 0.0
+
     (*let (ip_k, ip_rest) = get_first_k_element ip k in
     let (rta_k, rta_rest) = get_first_k_element rta k in
     let lst = List.map2 (calculate_leeway_new) ip_k rta_k in
@@ -301,6 +346,11 @@ let calculate_misses delta klist  =
     (*let _ = uprint_string (us "calculate_misses for "); uprint_float delta; uprint_endline (us "") in*)
     let _ = scale_input delta in
     (*let _ = uprint_endline (us "schedulability start\n") in*)
+    (*let _ = if (ret_sim = 127) then exit 0 in*)
+    let sim_csv = (string_of_float delta)^"_simulation.csv" in
+    let ret = Sys.command "../timed-c-e2e-sched-analysis/scripts/simulate-pre-analysis.py --nptest ../timed-c-e2e-sched-analysis/build/nptest --jobs job.csv --action action.csv -t 180 -o  simulation.csv --num-random-releases 20 -- -p pred.csv -c" in
+    let _ = Sys.command ("mv simulation.csv "^(sim_csv)) in
+    let ret = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r job.csv -c -a action.csv -l 600 " in
     let _ = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r job.csv -c -a action.csv -p pred.csv -l 300 " in
     (*let _ = if (ret == 127) then uprint_string (us "return"); exit 0 in*)
     let _ = sa_time := !sa_time + 1 in
@@ -320,12 +370,6 @@ let rec bsearch delta_min_lst delta_max_lst l u epsilon klist  =
         (delta_min_lst, delta_max_lst, u)
     else
         let delta_mid = (delta_min_lst.(u) +. delta_max_lst.(l)) /. 2.0 in
-        (*let sim_csv = (string_of_float delta_mid)^" simulation.csv" in
-        let _ = Sys.command ("../timed-c-e2e-sched-analysis/scripts/simulate-pre-analysis.py --nptest ../timed-c-e2e-sched-analysis/build/nptest --jobs job.csv --action action.csv -p pred.csv --num-random-releases 20 -o ")^sim_csv in
-        let ret = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r job.csv -c -a action.csv -l 600 " in*)
-        (*let _ = if (ret == 127) then uprint_string (us "return"); exit 0 in*)
-        let _ = sa_time := !sa_time + 1 in
-        let _ = uprint_int (!sa_time); uprint_string (us ",") in
         let m = calculate_misses delta_mid klist in
         let _ = delta_min_lst.(m) <- (Pervasives.min delta_min_lst.(m) delta_mid) in
         let _ = delta_max_lst.(m) <- (Pervasives.max delta_max_lst.(m) delta_mid) in
@@ -372,7 +416,7 @@ let rec binary_simulation_search l u k num_task pdelta =
     let delta = (l +. u)/.2.0 in
     let _ = scale_input delta in
     let sim_csv = (string_of_float delta)^"_simulation.csv" in
-    let ret = Sys.command "../timed-c-e2e-sched-analysis/scripts/simulate-pre-analysis.py --nptest ../timed-c-e2e-sched-analysis/build/nptest --jobs job.csv --action action.csv -t 60 -o  simulation.csv --num-random-releases 20 -- -p pred.csv -c" in
+    let ret = Sys.command "../timed-c-e2e-sched-analysis/scripts/simulate-pre-analysis.py --nptest ../timed-c-e2e-sched-analysis/build/nptest --jobs job.csv --action action.csv -t 180 -o  simulation.csv --num-random-releases 20 -- -p pred.csv -c" in
     let _ = Sys.command ("mv simulation.csv "^(sim_csv)) in
     let ip = List.tl (read_data_input "job.csv") in
     let rta = List.tl (read_data_rta sim_csv) in
@@ -402,7 +446,7 @@ let rec calculate_delta_after_simulation original_delta delta fc k num_task =
          let new_delta = original_delta *. fct in
          let _ = scale_input new_delta in
          let sim_csv = (string_of_float new_delta)^"_simulation.csv" in
-         let ret = Sys.command "../timed-c-e2e-sched-analysis/scripts/simulate-pre-analysis.py --nptest ../timed-c-e2e-sched-analysis/build/nptest --jobs job.csv --action action.csv -t 60 -o  simulation.csv --num-random-releases 20 -- -p pred.csv -c" in
+         let ret = Sys.command "../timed-c-e2e-sched-analysis/scripts/simulate-pre-analysis.py --nptest ../timed-c-e2e-sched-analysis/build/nptest --jobs job.csv --action action.csv -t 180 -o  simulation.csv --num-random-releases 20 -- -p pred.csv -c" in
          let _ = Sys.command ("mv simulation.csv "^(sim_csv)) in
          let cont = simulation_analysis_init sim_csv new_delta in
         if cont then
@@ -415,27 +459,26 @@ let sensitivity =
     let num_task = get_number_of_task () in
     (*let _ = uprint_int num_task; uprint_string (us "sensitivity\n") in*)
     let klist = Array.to_list ((Array.make num_task (int_of_string (Sys.argv.(1))))) in
-    let epsilon = float_of_string (Sys.argv.(2)) in
+    let epsilon_resolution = float_of_string (Sys.argv.(2)) in
     let exp_util = float_of_string (Sys.argv.(3)) in
     let sys_util = calculate_system_utilization () in
-    let _ = utilization_analysis sys_util exp_util in
-    let _ = uprint_string (us "utilization analysis complete") in
+    (*let _ = utilization_analysis sys_util exp_util in
+    let _ = uprint_string (us "utilization analysis complete") in *)
     let rets = Sys.command "../timed-c-e2e-sched-analysis/scripts/simulate-pre-analysis.py --nptest ../timed-c-e2e-sched-analysis/build/nptest --jobs job.csv --action action.csv -t 60 -o     simulation.csv --num-random-releases 20 -- -p pred.csv -c" in
     let sim_csv = "1.00_simulation.csv" in
     let _ = Sys.command ("mv simulation.csv "^(sim_csv)) in
-    let cond = simulation_analysis_init sim_csv 1.00 in
-    let _ = if (cond) then uprint_endline (us "true") else uprint_endline (us "false") in
-    (*let _ = if (cond == false) then exit 0 in*)
     let ret = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r job.csv -c -a action.csv -p pred.csv -l 300 " in
     let _ = if (ret = 127) then exit 0 in
     let _ = uprint_int ret in
     let _ = sa_time := !sa_time + 1; uprint_string (us ",") in
     let _ = uprint_int (!sa_time) ; uprint_string (us ",") in
     let delta_sup = max_initial_upper_bound num_task (List.hd klist) in
+    let delta_sup_updated = max_initial_upper_bound_updated num_task (List.hd klist) in
+    let _ = uprint_string (us "delta_sup"); uprint_float delta_sup; uprint_string (us ":") ; uprint_float delta_sup_updated; uprint_endline (us "") in
     let delta_sup = Pervasives.max delta_sup 1.0 in
     let opt = Sys.argv.(4) in
-    let delta_sup =
-        if (opt = "--sim") then
+    let delta_sup_cap =
+    if (opt = "--sim") then
         (*let delta_sup_allowed = calculate_delta_after_simulation delta_sup delta_sup 1.0 (int_of_string (Sys.argv.(1))) num_task in*)
         (let delta_sup_allowed = binary_simulation_search 1.0 delta_sup (int_of_string (Sys.argv.(1)))  num_task delta_sup in
         let _ = uprint_string (us "pre-simulation :"); uprint_float delta_sup; uprint_string (us ":") ; uprint_float delta_sup_allowed; uprint_endline (us "") in
@@ -447,14 +490,18 @@ let sensitivity =
             delta_sup_allowed)
         else
             delta_sup) in
+    let delta_sup = Pervasives.min delta_sup delta_sup_cap in
     let delta_inf = 0.0 in
+    let epsilon = epsilon_resolution *. delta_sup in
     let m = calculate_misses delta_sup klist in
     let delta_min_lst = Array.make (m+1)delta_sup  in
     let delta_max_lst = Array.make (m+1) delta_inf in
     let _ = delta_min_lst.(0) <- delta_inf in
     let _ = delta_max_lst.(m) <- delta_sup in
-    (*let _ = uprint_int m; uprint_float (delta_min_lst.(m)); uprint_endline (us "") in*)
-     let (delta_min, delta_max) = iter_bsearch delta_min_lst delta_max_lst delta_sup 0 m epsilon klist in
+    let (delta_min, delta_max) = iter_bsearch delta_min_lst delta_max_lst delta_sup 0 m epsilon klist in
+    let _ = uprint_string (us "Utilization : "); uprint_float (epsilon); uprint_endline (us"") in
+    let _ = uprint_string (us "Calculated epsilon : "); uprint_float (epsilon); uprint_endline (us"") in
+    let _ = uprint_string (us "Total number of calls to sensitivity analysis : "); uprint_int (!sa_time); uprint_endline (us"") in
     print_delta_min_max delta_min delta_max delta_sup 0; ()
 
 

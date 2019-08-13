@@ -49,7 +49,9 @@ void write_file_header(FILE* fp, char* bmark){
     fprintf(fp, " #include <stdio.h> \n #include <math.h> \n #include <stdlib.h> \n #include \"cilktc.h\" \n #include \"mbench.h\" \n");
     fprintf(fp, "\n \n FILE dfile;\n");
     if(!strcmp(bmark,"small")){
-        fprintf(fp, "void func(int x){\n \t int i; \n \t for(i=0; i<1; i++){\n \t \t mbitcount(x);}\n}");
+        //fprintf(fp, "void func(int x){\n \t int i; \n \t for(i=0; i<1; i++){\n \t \t mbitcount(x);}\n}");
+        fprintf(fp, "void func(int x){\n \t int i; \n \t for(i=0; i<x; i++){}\n}");
+
     }
     if(!strcmp(bmark,"large")){
         fprintf(fp, "void func(int x){\n \t int i; \n \t for(i=0; i<x; i++){\n \t \t mbitcount(1000);}\n}");
@@ -80,7 +82,7 @@ void write_offset(FILE* fp, int ofst){
 
 int write_workload(FILE* fp, int randnum, char* bmark, int knd){
     int ret;
-    int arg = randnum * 10;
+    int arg = randnum * 100;
     if(knd == 0){
         fprintf(fp, "\t \t func(%d);\n", arg);
         ret = randnum;
@@ -186,11 +188,11 @@ void main(int argc, char *argv[]){
                 frame_period = (priod) - sum_period;
             }
             randnum = rand()% MBENCH;
-            if(i < 10){
+            if(i <=  0){
                 mul = write_workload(fp, (randnum+1), bmark, knd);
             }
             else{
-                mul = write_workload(fp, 1, bmark, knd);
+                mul = write_workload(fp, randnum, bmark, knd);
             }
             if(j != (frme-1)){
                 write_spolicy(fp, frame_period);
