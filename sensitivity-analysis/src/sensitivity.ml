@@ -350,12 +350,11 @@ let calculate_misses delta klist  =
     let sim_csv = (string_of_float delta)^"_simulation.csv" in
     let ret = Sys.command "../timed-c-e2e-sched-analysis/scripts/simulate-pre-analysis.py --nptest ../timed-c-e2e-sched-analysis/build/nptest --jobs job.csv --action action.csv -t 180 -o  simulation.csv --num-random-releases 20 -- -p pred.csv -c" in
     let _ = Sys.command ("mv simulation.csv "^(sim_csv)) in
-    let ret = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r job.csv -c -a action.csv -l 600 " in
     let _ = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r job.csv -c -a action.csv -p pred.csv -l 300 " in
     (*let _ = if (ret == 127) then uprint_string (us "return"); exit 0 in*)
     let _ = sa_time := !sa_time + 1 in
-    let _ = uprint_int (!sa_time); uprint_string (us ",") in
-    (*let _ = uprint_endline (us "schedulability end\n") in*)
+    (*let _ = uprint_int (!sa_time); uprint_string (us ",") in
+    let _ = uprint_endline (us "schedulability end\n") in*)
     let joblist =  create_mk_analysis_csv () in
     let num_task = List.length klist in
     let m = calculate_misses_for_each_task 1 num_task 0 klist joblist in
@@ -471,10 +470,10 @@ let sensitivity =
     let _ = if (ret = 127) then exit 0 in
     let _ = uprint_int ret in
     let _ = sa_time := !sa_time + 1; uprint_string (us ",") in
-    let _ = uprint_int (!sa_time) ; uprint_string (us ",") in
+    (*let _ = uprint_int (!sa_time) ; uprint_string (us ",") in*)
     let delta_sup = max_initial_upper_bound num_task (List.hd klist) in
     let delta_sup_updated = max_initial_upper_bound_updated num_task (List.hd klist) in
-    let _ = uprint_string (us "delta_sup"); uprint_float delta_sup; uprint_string (us ":") ; uprint_float delta_sup_updated; uprint_endline (us "") in
+    let _ = uprint_string (us "DEBUG : delta_sup"); uprint_float delta_sup; uprint_string (us ":") ; uprint_float delta_sup_updated; uprint_endline (us "") in
     let delta_sup = Pervasives.max delta_sup 1.0 in
     let opt = Sys.argv.(4) in
     let delta_sup_cap =
@@ -499,7 +498,8 @@ let sensitivity =
     let _ = delta_min_lst.(0) <- delta_inf in
     let _ = delta_max_lst.(m) <- delta_sup in
     let (delta_min, delta_max) = iter_bsearch delta_min_lst delta_max_lst delta_sup 0 m epsilon klist in
-    let _ = uprint_string (us "Utilization : "); uprint_float (epsilon); uprint_endline (us"") in
+    let _ = uprint_string (us "Utilization : "); uprint_float (sys_util); uprint_endline (us"") in
+    let _ = uprint_string (us "Epsilon Resolution :"); uprint_float (epsilon_resolution); uprint_endline (us"") in
     let _ = uprint_string (us "Calculated epsilon : "); uprint_float (epsilon); uprint_endline (us"") in
     let _ = uprint_string (us "Total number of calls to sensitivity analysis : "); uprint_int (!sa_time); uprint_endline (us"") in
     print_delta_min_max delta_min delta_max delta_sup 0; ()
