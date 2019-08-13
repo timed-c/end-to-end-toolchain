@@ -301,7 +301,7 @@ let calculate_misses delta klist  =
     (*let _ = uprint_string (us "calculate_misses for "); uprint_float delta; uprint_endline (us "") in*)
     let _ = scale_input delta in
     (*let _ = uprint_endline (us "schedulability start\n") in*)
-    let _ = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r job.csv -c -a action.csv -p pred.csv -l 600 " in
+    let _ = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r job.csv -c -a action.csv -p pred.csv -l 300 " in
     (*let _ = if (ret == 127) then uprint_string (us "return"); exit 0 in*)
     let _ = sa_time := !sa_time + 1 in
     let _ = uprint_int (!sa_time); uprint_string (us ",") in
@@ -419,12 +419,14 @@ let sensitivity =
     let exp_util = float_of_string (Sys.argv.(3)) in
     let sys_util = calculate_system_utilization () in
     let _ = utilization_analysis sys_util exp_util in
+    let _ = uprint_string (us "utilization analysis complete") in
     let rets = Sys.command "../timed-c-e2e-sched-analysis/scripts/simulate-pre-analysis.py --nptest ../timed-c-e2e-sched-analysis/build/nptest --jobs job.csv --action action.csv -t 60 -o     simulation.csv --num-random-releases 20 -- -p pred.csv -c" in
     let sim_csv = "1.00_simulation.csv" in
     let _ = Sys.command ("mv simulation.csv "^(sim_csv)) in
     let cond = simulation_analysis_init sim_csv 1.00 in
+    let _ = if (cond) then uprint_endline (us "true") else uprint_endline (us "false") in
     (*let _ = if (cond == false) then exit 0 in*)
-    let ret = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r job.csv -c -a action.csv -p pred.csv -l 600 " in
+    let ret = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r job.csv -c -a action.csv -p pred.csv -l 300 " in
     let _ = if (ret = 127) then exit 0 in
     let _ = uprint_int ret in
     let _ = sa_time := !sa_time + 1; uprint_string (us ",") in
@@ -441,7 +443,7 @@ let sensitivity =
     else
         (if (opt = "--util") then
             (let delta_sup_allowed = exp_util/.sys_util in
-            let _ = uprint_string (us "utilization-delta :"); uprint_float delta_sup; uprint_string (us ":") ; uprint_float delta_sup_allowed; uprint_endline (us "") in
+            let _ = uprint_string (us "utilization-delta :"); uprint_float exp_util; uprint_string (us ":") ; uprint_float delta_sup_allowed; uprint_endline (us "") in
             delta_sup_allowed)
         else
             delta_sup) in

@@ -33,11 +33,11 @@ case $key in
         #timeout -s SIGKILL 900
         case $mode in
             --util)
-                docker exec -i -t e2e-docker ../sensitivity-analysis/bin/sensitivity $3 $4 $5 --sim
+                docker exec -i -t e2e-docker ../sensitivity-analysis/bin/sensitivity $3 $4 $5 --util
                 shift
                 ;;
             --sim)
-                docker exec -i -t e2e-docker ../sensitivity-analysis/bin/sensitivity $3 $4 $5 --util
+                docker exec -i -t e2e-docker ../sensitivity-analysis/bin/sensitivity $3 $4 $5 --sim
                 shift
                 ;;
         esac
