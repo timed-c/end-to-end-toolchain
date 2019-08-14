@@ -314,18 +314,23 @@ let findSchedulable ()  =
 let rec is_monotonic x =
   match x with
   | [] -> true
-  | h::[] -> true
-  | h::h2::t -> if h <= h2 then is_monotonic (h2::t) else false
+  | h::[] -> false
+  | h::h2::t -> if h < h2 then is_monotonic (h2::t) else false
 
-let rec simulation_analysis_init sim_file num_task i res delta =
+let rec simulation_analysis_init sim_file num_task i delta =
     if (i <= num_task) then
         let rta = List.tl (read_data_rta sim_file) in
         let comp_lst = List.filter (fun a -> if ((int_of_string a.tid) = i) then true else false) rta in
-        let lst = List.map (fun a -> a.wcrt) comp_lst in
+        let lst = List.map (fun a -> (int_of_string a.wcrt)) comp_lst in
+        (*let _ = List.iter (fun a -> (uprint_int a; uprint_string (us ";"))) lst in *)
         let mono = is_monotonic lst in
-        simulation_analysis_init sim_file num_task (i+1) (res & mono) delta
+        (if (mono = true)  then 
+	   ( (*let _ = List.iter (fun a -> (uprint_int a; uprint_string (us ";"))) lst in*)
+		(uprint_string (us "DEBUG : simulation_analysis_int failed for scaling factor ")); uprint_float delta; uprint_endline (us " "); true)
+        else
+           simulation_analysis_init sim_file num_task (i+1) delta)
     else
-        ((if (res = false) then  ((uprint_string (us "DEBUG : simulation_analysis_int")); uprint_float delta; uprint_endline (us "false"))); res)
+         false
 
 
 let rec k_window llst k i kwin len =
@@ -367,8 +372,8 @@ let calculate_misses delta klist num_task  =
     (*let _ = if (ret_sim = 127) then exit 0 in*)
     let sim_csv = (string_of_float delta)^"_simulation.csv" in
     let ret = Sys.command "../timed-c-e2e-sched-analysis/scripts/simulate-pre-analysis.py --nptest ../timed-c-e2e-sched-analysis/build/nptest --jobs job.csv --action action.csv -t 180 -o  simulation.csv --num-random-releases 20 -- -p pred.csv -c" in
-    let response_time = simulation_analysis_init "simulation.csv" num_task 1 true delta in
-    let _ = if (response_time = false) then exit 0 in
+    let response_time = simulation_analysis_init "simulation.csv" num_task 1 delta in
+    let _ = if (response_time = true) then exit 0 in
     let _ = Sys.command ("mv simulation.csv "^(sim_csv)) in
     let _ = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r job.csv -c -a action.csv -p pred.csv -l 300 " in
     (*let _ = if (ret == 127) then uprint_string (us "return"); exit 0 in*)
@@ -471,8 +476,8 @@ let sensitivity =
     (*let _ = utilization_analysis sys_util exp_util in
     let _ = uprint_string (us "utilization analysis complete") in *)
     let rets = Sys.command "../timed-c-e2e-sched-analysis/scripts/simulate-pre-analysis.py --nptest ../timed-c-e2e-sched-analysis/build/nptest --jobs job.csv --action action.csv -t 60 -o simulation.csv --num-random-releases 20 -- -p pred.csv -c" in
-    let response_time = simulation_analysis_init "simulation.csv" num_task 1 true 1.0 in
-    let _ = if (response_time = false) then exit 0 in
+    let response_time = simulation_analysis_init "simulation.csv" num_task 1 1.0 in
+    let _ = if (response_time = true) then exit 0 in
     let sim_csv = "1.00_simulation.csv" in
     let _ = Sys.command ("mv simulation.csv "^(sim_csv)) in
     let ret = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r job.csv -c -a action.csv -p pred.csv -l 300 " in
@@ -482,12 +487,12 @@ let sensitivity =
     (*let _ = uprint_int (!sa_time) ; uprint_string (us ",") in*)
     let delta_sup = max_initial_upper_bound num_task (List.hd klist) in
     let delta_sup_updated = max_initial_upper_bound_updated num_task (List.hd klist) in
-    let _ = uprint_string (us "DEBUG : delta_sup"); uprint_float delta_sup; uprint_string (us ":") ; uprint_float delta_sup_updated; uprint_endline (us "") in
+    (*let _ = uprint_string (us "DEBUG : delta_sup"); uprint_float delta_sup; uprint_string (us ":") ; uprint_float delta_sup_updated; uprint_endline (us "") in *)
     let delta_sup = Pervasives.max delta_sup 1.0 in
     let opt = Sys.argv.(4) in
     let delta_sup_cap = (if (opt = "--util") then
                             (let delta_sup_allowed = exp_util/.sys_util in
-                             let _ = uprint_string (us "DEBUG :: utilization-delta :"); uprint_float exp_util; uprint_string (us ":") ; uprint_float delta_sup_allowed; uprint_endline (us "") in
+                             (*let _ = uprint_string (us "DEBUG :: utilization-delta :"); uprint_float exp_util; uprint_string (us ":") ; uprint_float delta_sup_allowed; uprint_endline (us "") in *)
                              delta_sup_allowed)
                          else
                             delta_sup) in
