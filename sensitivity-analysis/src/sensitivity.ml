@@ -315,7 +315,7 @@ let rec is_monotonic x =
   match x with
   | [] -> true
   | h::[] -> true
-  | h::h2::t -> if h <= h2 then is_monotonic (h2::t) else false;;
+  | h::h2::t -> if h <= h2 then is_monotonic (h2::t) else false
 
 let rec simulation_analysis_init sim_file num_task i res delta =
     if (i <= num_task) then
