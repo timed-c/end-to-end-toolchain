@@ -151,6 +151,7 @@ void main(int argc, char *argv[]){
     long randnum;
     int count = 0;
     char fpname[50];
+    char edfname[50];
     int policy;
     int mul;
     if(argc < 8){
@@ -171,9 +172,11 @@ void main(int argc, char *argv[]){
     int restrict_fdelay = 0;
     //tsk = (rand() % task) + 1;
     tsk = task;
-    fp = fopen(argv[5], "w");
+    strcpy(edfname, argv[5]);
+    strcat(edfname, "_edf.c");
+    fp = fopen(edfname, "w");
     strcpy(fpname, argv[5]);
-    strcat(fpname, "_fp");
+    strcat(fpname, "_fp.c");
     fp1 = fopen(fpname, "w");
     write_file_header(fp, bmark);
      write_file_header(fp1, bmark);
