@@ -22,6 +22,15 @@ char* mibench_large[] = {"basicmath_small()", "mbitcount(75000)", /*"qsort_small
 //char* mibench_large[] = {"basicmath_large()", "mbitcount(1125000)", "qsort_large(\"input_large.dat\")", /*"fft(8, 32768)", "inverse_fft(8, 32768)",*/ "crc(\"large.pcm\")"};
 
 
+/*void change_to_max_priority(){
+    struct sched_param param;
+    int s;
+    param.sched_priority = sched_get_priority_max(SCHED_FIFO);
+    s = pthread_setschedparam(pthread_self(), SCHED_FIFO, &param);
+    if (s != 0)
+        printf("pthread_setschedparam");
+}*/
+
 void write_task_header(FILE* fp, int num){
     fprintf(fp,"\n \ntask tsk_%d(){\n", num);
 }
@@ -37,9 +46,26 @@ void write_frame(FILE* fp, int knd, int priod){
 }
 
 void write_spolicy(FILE* fp, int priod){
-    int i, k;
-    fprintf(fp, "\t \t spriority(%d);\n", priod);
+    int i, k, p;
+    for(i = 0; i<9; i++){
+        if(period_table[i] == priod){
+            p = i+1;
+            break;
+        }
+    }
+    fprintf(fp, "\t \t spriority(%d);\n", p);
 }
+
+void write_sched(FILE* fp, int p){
+    if (p == 1){
+        fprintf(fp, "\t \t spolicy(EDF);\n");
+    }
+    else{
+        fprintf(fp, "\t \t spolicy(FIFO_RM);\n");
+    }
+
+}
+
 
 void write_tail(FILE* fp){
     fprintf(fp, "\t } \n}");
@@ -50,7 +76,7 @@ void write_file_header(FILE* fp, char* bmark){
     fprintf(fp, "\n \n FILE dfile;\n");
     if(!strcmp(bmark,"small")){
         //fprintf(fp, "void func(int x){\n \t int i; \n \t for(i=0; i<1; i++){\n \t \t mbitcount(x);}\n}");
-        fprintf(fp, "void func(int x){\n \t int i; \n \t for(i=0; i<x; i++){}\n}");
+        fprintf(fp, "void func(int x){\n \t struct sched_param param; \n \t int s, i; \n \t param.sched_priority = sched_get_priority_max(SCHED_FIFO); \n \t s=pthread_setschedparam(pthread_self(), SCHED_FIFO, &param); \n \t if(s != 0) printf(\"pthread_setschedparam\");\n \t mbitcount(x); \n}");
 
     }
     if(!strcmp(bmark,"large")){
@@ -82,7 +108,7 @@ void write_offset(FILE* fp, int ofst){
 
 int write_workload(FILE* fp, int randnum, char* bmark, int knd){
     int ret;
-    int arg = randnum * 100;
+    int arg = randnum * 10;
     if(knd == 0){
         fprintf(fp, "\t \t func(%d);\n", arg);
         ret = randnum;
@@ -120,13 +146,15 @@ void main(int argc, char *argv[]){
     int task, frame, offset, first_period;
     int i, j, seed, sfdelay, this_period;
     FILE* fp;
+    FILE* fp1;
     char* bmark;
     long randnum;
     int count = 0;
-    float wcet;
+    char fpname[50];
+    int policy;
     int mul;
     if(argc < 8){
-        printf("Error: input parameters missing \nExpected input parameters are number-of-task, no-of-frames, range-of-offset, (small, large, mix), fname, kind, and wcet\n");
+        printf("Error: input parameters missing \nExpected input parameters are number-of-task, no-of-frames, range-of-offset, (small, large, mix), fname, kind, and policy\n");
         return;
     }
     task = atoi(argv[1]);
@@ -134,7 +162,7 @@ void main(int argc, char *argv[]){
     offset = atoi(argv[3]);
     bmark = argv[4];
     sfdelay = atoi(argv[6]);
-    wcet = atof(argv[7]);
+    policy = atoi(argv[7]);
     srand(time(0));
     int sum_frame = 0;
     float sum_wcet = 0;
@@ -144,7 +172,11 @@ void main(int argc, char *argv[]){
     //tsk = (rand() % task) + 1;
     tsk = task;
     fp = fopen(argv[5], "w");
+    strcpy(fpname, argv[5]);
+    strcat(fpname, "_fp");
+    fp1 = fopen(fpname, "w");
     write_file_header(fp, bmark);
+     write_file_header(fp1, bmark);
     //printf("Number of tasks: %d \n", tsk);
     for(i=0; i<tsk; i++){
         restrict_fdelay = 0;
@@ -159,15 +191,19 @@ void main(int argc, char *argv[]){
         count++;
         //printf("Number of frames in task t_%d : %d\n", i, frme);
         write_task_header(fp, i);
+        write_task_header(fp1, i);
         if(offset != 0){
             ofst = rand() % offset;
         }
         else{
             ofst = 0;
         }
-        write_spolicy(fp, frame_period);
+        write_sched(fp, 1);
+        write_sched(fp1, 2);
+        write_spolicy(fp, priod);
         write_offset(fp, ofst);
-        sum_wcet = 0;
+        write_spolicy(fp1, priod);
+        write_offset(fp1, ofst);
         for(j=0; j<frme; j++){
             this_period = frame_period;
            // printf("%d %d\n", this_period, frame_period);
@@ -190,22 +226,26 @@ void main(int argc, char *argv[]){
             randnum = rand()% MBENCH;
             if(i <=  0){
                 mul = write_workload(fp, (randnum+1), bmark, knd);
+                mul = write_workload(fp1, (randnum+1), bmark, knd);
             }
             else{
                 mul = write_workload(fp, randnum, bmark, knd);
+                mul = write_workload(fp1, randnum, bmark, knd);
             }
             if(j != (frme-1)){
-                write_spolicy(fp, frame_period);
+                write_spolicy(fp, priod);
+                write_spolicy(fp1, priod);
             }
             else{
-                write_spolicy(fp, first_period);
+                write_spolicy(fp, priod);
+                write_spolicy(fp1, priod);
             }
             write_frame(fp, knd, this_period);
-            sum_wcet = sum_wcet + (mul*wcet);
+            write_frame(fp1, knd, this_period);
         }
         write_tail(fp);
+        write_tail(fp1);
         period_array[i] = priod;
-        util_array[i] = sum_wcet/priod;
     }
     int k;
     printf("Period:{");
@@ -223,5 +263,7 @@ void main(int argc, char *argv[]){
     printf("Sum Utilization:%f\n", sum_util);*/
     //findlcm(lcm_arr, tsk);
     write_main(fp, tsk);
+    write_main(fp1, tsk);
     fclose(fp);
+    fclose(fp1);
 }

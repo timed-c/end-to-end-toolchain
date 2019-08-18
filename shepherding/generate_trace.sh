@@ -10,7 +10,7 @@ kind=$8
 util=$9
 var="tsk"
 #echo "Task = ${tsk}, Frame =${frame}, Offset=${offset}, Size=${size}, k=${k}, Epsilon=${epsilon}, Iter=${iter}, Kind=${kind}, Seed=${seed}" > config
-for ((j=3; j<=$tsk;j=j+2))
+for ((j=10; j<=$tsk;j=j+1))
     do
         exp="${j}_${var}_util9"
         mkdir $exp
@@ -19,7 +19,7 @@ for ((j=3; j<=$tsk;j=j+2))
         rm -f traces
         mkdir traces
         ssh saranya@130.237.20.223 "cd /home/saranya/Documents/end-to-end-toolchain/shepherding && mkdir $exp"
-        for ((i=1; i<=2; i=i+1))
+        for ((i=1; i<=1; i=i+1))
         do
             file="${var}_${j}_${i}.c"
             ../generate-shepherd $j $frame $offset $size $file $kind 600 | tee -a $log
