@@ -454,18 +454,22 @@ let sensitivity =
     let epsilon_resolution = float_of_string (Sys.argv.(2)) in
     let exp_util = float_of_string (Sys.argv.(3)) in
     let sys_util = calculate_system_utilization () in
-    let rets = Sys.command "../timed-c-e2e-sched-analysis/scripts/simulate-pre-analysis.py --nptest ../timed-c-e2e-sched-analysis/build/nptest --jobs job.csv --action action.csv -t 60 -o simulation.csv --num-random-releases 20 -- -p pred.csv -c" in
-    let response_time = simulation_analysis_init "simulation.csv" num_task 1 1.0 in
-    let _ = if (response_time = true) then exit 0 in
-    let sim_csv = "1.00_simulation.csv" in
-    let _ = Sys.command ("mv simulation.csv "^(sim_csv)) in
-    let ret = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r job.csv -c -a action.csv -p pred.csv -l 300 " in
-    let _ = if (ret = 127) then exit 0 in
-    (*let _ = (uprint_string (us "DEBUG : ")); (uprint_int ret) in*)
-    let _ = sa_time := !sa_time + 1; uprint_string (us ",") in
-    (*let delta_sup = max_initial_upper_bound num_task (List.hd klist) in*)
-    let delta_sup_org = max_initial_upper_bound_updated num_task (List.hd klist) in
-    (*let _ = uprint_string (us "DEBUG : delta_sup"); uprint_float delta_sup; uprint_string (us ":") ; uprint_float delta_sup_updated; uprint_endline (us "") in *)
+    let delta_sup_org = (if (sys_util < 1.0) then
+        (let rets = Sys.command "../timed-c-e2e-sched-analysis/scripts/simulate-pre-analysis.py --nptest ../timed-c-e2e-sched-analysis/build/nptest --jobs job.csv --action action.csv -t 60 -o simulation.csv --num-random-releases 20 -- -p pred.csv -c" in
+        let response_time = simulation_analysis_init "simulation.csv" num_task 1 1.0 in
+        let _ = if (response_time = true) then exit 0 in
+        let sim_csv = "1.00_simulation.csv" in
+        let _ = Sys.command ("mv simulation.csv "^(sim_csv)) in
+        let ret = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r job.csv -c -a action.csv -p pred.csv -l 300 " in
+        let _ = if (ret = 127) then exit 0 in
+        (*let _ = (uprint_string (us "DEBUG : ")); (uprint_int ret) in*)
+        let _ = sa_time := !sa_time + 1; uprint_string (us ",") in
+        (*let delta_sup = max_initial_upper_bound num_task (List.hd klist) in*)
+        max_initial_upper_bound_updated num_task (List.hd klist))
+        (*let _ = uprint_string (us "DEBUG : delta_sup"); uprint_float delta_sup; uprint_string (us ":") ; uprint_float delta_sup_updated; uprint_endline (us
+         * "") in *)
+    else
+            1.0) in
     let delta_sup = Pervasives.max delta_sup_org 1.0 in
     let opt = Sys.argv.(4) in
     let delta_sup_cap = (if (opt = "--util") then

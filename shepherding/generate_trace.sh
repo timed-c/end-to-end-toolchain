@@ -10,7 +10,7 @@ kind=$8
 util=$9
 var="tsk"
 #echo "Task = ${tsk}, Frame =${frame}, Offset=${offset}, Size=${size}, k=${k}, Epsilon=${epsilon}, Iter=${iter}, Kind=${kind}, Seed=${seed}" > config
-for ((j=10; j<=$tsk;j=j+1))
+for ((j=8; j<=$tsk;j=j+1))
     do
         exp="${j}_${var}_util9"
         mkdir $exp
