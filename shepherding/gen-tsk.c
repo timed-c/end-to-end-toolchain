@@ -9,7 +9,7 @@
 #define PERIOD 9
 #define FRAME 10
 #define OFFSET 1
-#define MBENCH 10
+#define MBENCH 5
 
 int period_table[]={1, 2, 5, 10, 20, 50, 100, 200, 1000};
 int share_table[]={3, 2,  2,  25, 25, 3,  20, 1,  4};
