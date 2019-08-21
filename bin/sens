@@ -29,9 +29,11 @@ case $key in
         docker exec -i -t e2e-docker ./copy.sh /opt/e2e/project/traces/* /opt/e2e/project/
         docker exec -i -t e2e-docker /opt/e2e/ktc/bin/ktc --enable-ext5 $1 -I. -L. -w
         if [[ "$policy" == '0' ]]; then
+	    echo "edf"
             docker exec -i -t e2e-docker cp job_edf.csv job.csv
         fi
         if [[ "$policy" == '1' ]]; then
+	    echo "RM"
             docker exec -i -t e2e-docker cp job_fp.csv job.csv
         fi
 	docker exec -i -t e2e-docker cp job.csv input

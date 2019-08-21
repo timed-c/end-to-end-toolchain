@@ -285,7 +285,7 @@ let scale_input alpha =
 (*Description: Creates a list for help calculate (m,k)*)
 let create_mk_analysis_csv rta_file =
     let ip = List.tl (read_data_input "job.csv") in
-    let rta = List.tl (read_data_rta "job.rta.csv") in
+    let rta = List.tl (read_data_rta rta_file) in
     let lst = List.map2 (fun a b -> if ((a.tid = b.tskid) & (a.jid = b.jobid)) then
                                         [a.tid; a.jid; string_of_int ((int_of_string b.dl) - (int_of_string a.wcct))]
                                     else
@@ -366,7 +366,7 @@ let calculate_misses delta klist num_task  =
     (*let _ = uprint_endline (us "schedulability start\n") in*)
     (*let _ = if (ret_sim = 127) then exit 0 in*)
     (*let _ = if (ret == 127) then uprint_string (us "simulation timeout"); exit 0 in*)
-    let ret = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r job.csv -c -a action.csv -p pred.csv -l 300 " in
+    let ret = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r job.csv -c -a action.csv -p pred.csv -l 600 " in
     (*let _ = if (ret == 127) then uprint_string (us "schedulability timeout"); exit 0 in*)
     let _ = sa_time := !sa_time + 1 in
     (*let _ = uprint_int (!sa_time); uprint_string (us ",") in
@@ -379,12 +379,12 @@ let calculate_misses delta klist num_task  =
 
 (*Description : Checks if the wcrt of any task in the output of the simulation tool is increasing monotonically*)
 let rec simulation_analysis_init sim_file num_task i delta klist k =
-    let joblist =  create_mk_analysis_csv "job.rta.csv" in
+    let joblist =  create_mk_analysis_csv "simulation.csv" in
     let num_task = List.length klist in
     let m = calculate_misses_for_each_task 1 num_task 0 klist joblist in
-    let limit = num_task * k in
-    let _ = uprint_string (us ("DEBUG: limit")); uprint_int limit; uprint_string (us "::"); uprint_int m; uprint_endline (us "") in
-    if (m > limit) then true else false
+    let limit = (num_task * k)/4 in
+    (*let _ = uprint_int limit; uprint_string (us "DEBUG"); uprint_int m; uprint_endline (us "") in *)
+    if (m >= limit) then ((uprint_endline (us "DISCARD"));true) else false
 
 
 (* Description: Implements the bsearch algorithm (Algorithm 3 of the paper)*)
@@ -454,7 +454,7 @@ let sensitivity =
         let _ = if (response_time = true) then exit 0 in
         let sim_csv = "init_simulation.csv" in
         let _ = Sys.command ("mv simulation.csv "^(sim_csv)) in
-	    let ret = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r job.csv -c -a action.csv -p pred.csv -l 300 " in
+	    let ret = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r job.csv -c -a action.csv -p pred.csv -l 600 " in
 	    (*let _ = if (ret = 127) then exit 0 in*)
         (*let _ = (uprint_string (us "DEBUG : ")); (uprint_int ret) in*)
         let _ = sa_time := !sa_time + 1; uprint_string (us ",") in
