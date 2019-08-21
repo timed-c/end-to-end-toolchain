@@ -108,7 +108,7 @@ void write_offset(FILE* fp, int ofst){
 
 int write_workload(FILE* fp, int randnum, char* bmark, int knd){
     int ret;
-    int arg = randnum * 10;
+    int arg = (randnum + 1) * 20;
     if(knd == 0){
         fprintf(fp, "\t \t func(%d);\n", arg);
         ret = randnum;

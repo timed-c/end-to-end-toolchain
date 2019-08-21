@@ -10,19 +10,22 @@ kind=$8
 util=$9
 var="tsk"
 #echo "Task = ${tsk}, Frame =${frame}, Offset=${offset}, Size=${size}, k=${k}, Epsilon=${epsilon}, Iter=${iter}, Kind=${kind}, Seed=${seed}" > config
-for ((j=2; j<=$tsk;j=j+2))
+for ((j=16; j<=$tsk;j=j+2))
     do
         exp="${j}_${var}_util9"
+
         mkdir $exp
         cd $exp
         rm -f traces
         mkdir traces
         ssh saranya@130.237.20.223 "cd /home/saranya/Documents/end-to-end-toolchain/shepherding && mkdir $exp"
-        for ((i=21; i<=21; i=i+1))
+        counter=1
+        for ((i=1; i<=5; i=i+$counter))
         do
+            counter=1
             fileg="${var}_${j}_${i}"
            ../generate-shepherd $j $frame $offset $size $fileg $kind 600 | tee -a $log
-            for ((z=0; z<2;z++))
+            for ((z=1; z<2;z++))
                 do
                     if [[ "$z" == '0' ]]; then
                         file="${fileg}_edf.c"
@@ -59,19 +62,27 @@ for ((j=2; j<=$tsk;j=j+2))
                     #echo "sim"
                     #ssh -tt saranya@130.237.20.223 "cd /home/saranya/Documents/end-to-end-toolchain/shepherding/$exp && perf stat -o $sim_out ../../bin/sens $file --param $k $epsilon $util --sim | tee -a $log && tail -2 $sim_out > immlog"
                     #ssh -tt saranya@130.237.20.223 "cd /home/saranya/Documents/end-to-end-toolchain/shepherding/$exp && cat immlog >> $log && echo ######## | tee -a $log && rm immlog"
-                    ssh -tt saranya@130.237.20.223 "cd /home/saranya/Documents/end-to-end-toolchain/shepherding/$exp && perf stat -o $util_9 ../../bin/sens $file --param $k $epsilon 0.98 --util $z | tee -a $log && tail -2 $util_9 > immlog"
+                    ssh -tt saranya@130.237.20.223 "cd /home/saranya/Documents/end-to-end-toolchain/shepherding/$exp && perf stat -o $util_9 ../../bin/sens $file --param $k $epsilon 0.8 --util $z | tee -a $log && tail -2 $util_9 > immlog"
                     ssh -tt saranya@130.237.20.223 "cd /home/saranya/Documents/end-to-end-toolchain/shepherding/$exp && cat immlog >> $log && echo ######## | tee -a $log && rm immlog"
+                    #ssh -tt saranya@130.237.20.223 "cd /home/saranya/Documents/end-to-end-toolchain/shepherding/$exp && perf stat -o $util_9 ../../bin/sens $file --param $k $epsilon 0.98 --util $z | tee -a $log && tail -2 $util_9 > immlog"
+                    #ssh -tt saranya@130.237.20.223 "cd /home/saranya/Documents/end-to-end-toolchain/shepherding/$exp && cat immlog >> $log && echo ######## | tee -a $log && rm immlog"
                     #ssh -tt saranya@130.237.20.223 "cd /home/saranya/Documents/end-to-end-toolchain/shepherding/$exp && perf stat -o $util_1 ../../bin/sens $file --param $k $epsilon 1.0 --util | tee -a $log && tail -2 $util_1 > immlog"
                     #ssh -tt saranya@130.237.20.223 "cd /home/saranya/Documents/end-to-end-toolchain/shepherding/$exp && cat immlog >> $log && echo ######## | tee -a $log && rm immlog && rm $file && rm -r traces"
                     #mv input $dir
                     #mv output $dir
                     #mv *.csv $dir
+                    scp saranya@130.237.20.223:/home/saranya/Documents/end-to-end-toolchain/shepherding/$exp/$log .
+                    discard=$(tail -5 $log | head  -1)
+                    act=$(echo $discard)
+                    if [[ $discard = $act ]]; then
+                            echo "discarding ...... "
+                            counter=0
+                    fi
                     rm -f *.ktc.trace
                     rm -f *.cil.c
                     rm -f traces/*.ktc.trace
                     #rm -f $exe
                     rm -f $file
-                    echo "#######" | tee -a $log
                 done
         done
             cd ..

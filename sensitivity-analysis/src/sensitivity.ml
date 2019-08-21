@@ -379,7 +379,7 @@ let calculate_misses delta klist num_task  =
 
 (*Description : Checks if the wcrt of any task in the output of the simulation tool is increasing monotonically*)
 let rec simulation_analysis_init sim_file num_task i delta klist k =
-    let joblist =  create_mk_analysis_csv "job.rta.csv" in
+    let joblist =  create_mk_analysis_csv "simulation.csv" in
     let num_task = List.length klist in
     let m = calculate_misses_for_each_task 1 num_task 0 klist joblist in
     let limit = num_task * k in
