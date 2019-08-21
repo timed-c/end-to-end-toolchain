@@ -2,3 +2,6 @@
 	path = ktc
 	url = https://github.com/timed-c/ktc.git
 
+[submodule "np-schedulability-analysis"]
+	path = np-schedulability-analysis
+	url = https://github.com/brandenburg/np-schedulability-analysis.git

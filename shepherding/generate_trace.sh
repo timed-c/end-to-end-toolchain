@@ -20,7 +20,7 @@ for ((j=16; j<=$tsk;j=j+2))
         mkdir traces
         ssh saranya@130.237.20.223 "cd /home/saranya/Documents/end-to-end-toolchain/shepherding && mkdir $exp"
         counter=1
-        for ((i=1; i<=5; i=i+$counter))
+        for ((i=2; i<=5; i=i+$counter))
         do
             counter=1
             fileg="${var}_${j}_${i}"
