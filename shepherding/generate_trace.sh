@@ -10,9 +10,9 @@ kind=$8
 util=$9
 var="tsk"
 #echo "Task = ${tsk}, Frame =${frame}, Offset=${offset}, Size=${size}, k=${k}, Epsilon=${epsilon}, Iter=${iter}, Kind=${kind}, Seed=${seed}" > config
-for ((j=16; j<=$tsk;j=j+2))
+for ((j=2; j<=$tsk;j=j+2))
     do
-        exp="${j}_${var}_util9"
+        exp="${j}_${var}_final"
 
         mkdir $exp
         cd $exp
@@ -20,7 +20,7 @@ for ((j=16; j<=$tsk;j=j+2))
         mkdir traces
         ssh saranya@130.237.20.223 "cd /home/saranya/Documents/end-to-end-toolchain/shepherding && mkdir $exp"
         counter=1
-        for ((i=2; i<=5; i=i+$counter))
+        for ((i=11; i<=24; i=i+$counter))
         do
             counter=1
             fileg="${var}_${j}_${i}"
@@ -44,9 +44,9 @@ for ((j=16; j<=$tsk;j=j+2))
                         cilfile="${var}_${j}_${i}_fp.cil.c"
                         dir="${var}_${j}_${i}_traces_fp"
                         sim_out="sim_${var}_${j}_${i}_fp.perf"
-                        util_9="util_9_${var}_${j}_${i}_fp.perf"
-                        util_1="util_1_${var}_${j}_${i}_fp.perf"
-                        log="FP_${j}_log"
+                        util_9="final_${var}_${j}_${i}_fp.perf"
+                        util_1="final ${var}_${j}_${i}_fp.perf"
+                        log="final_${j}_log"
                     fi
                     sudo ../../bin/ktc $file --posix --timing-param $k $iter
                     arm-linux-gnueabihf-gcc  $cilfile -I../ -L../ -lraspmplogs -lraspcrc -lraspbitcount -lraspbasicmath -lraspqsort -lpthread -lktcrasp -lm -lrt -w -o $exe
@@ -62,7 +62,7 @@ for ((j=16; j<=$tsk;j=j+2))
                     #echo "sim"
                     #ssh -tt saranya@130.237.20.223 "cd /home/saranya/Documents/end-to-end-toolchain/shepherding/$exp && perf stat -o $sim_out ../../bin/sens $file --param $k $epsilon $util --sim | tee -a $log && tail -2 $sim_out > immlog"
                     #ssh -tt saranya@130.237.20.223 "cd /home/saranya/Documents/end-to-end-toolchain/shepherding/$exp && cat immlog >> $log && echo ######## | tee -a $log && rm immlog"
-                    ssh -tt saranya@130.237.20.223 "cd /home/saranya/Documents/end-to-end-toolchain/shepherding/$exp && perf stat -o $util_9 ../../bin/sens $file --param $k $epsilon 0.8 --util $z | tee -a $log && tail -2 $util_9 > immlog"
+                    ssh -tt saranya@130.237.20.223 "cd /home/saranya/Documents/end-to-end-toolchain/shepherding/$exp && perf stat -o $util_9 ../../bin/sens $file --param $k $epsilon 0.98 --util $z | tee -a $log && tail -2 $util_9 > immlog"
                     ssh -tt saranya@130.237.20.223 "cd /home/saranya/Documents/end-to-end-toolchain/shepherding/$exp && cat immlog >> $log && echo ######## | tee -a $log && rm immlog"
                     #ssh -tt saranya@130.237.20.223 "cd /home/saranya/Documents/end-to-end-toolchain/shepherding/$exp && perf stat -o $util_9 ../../bin/sens $file --param $k $epsilon 0.98 --util $z | tee -a $log && tail -2 $util_9 > immlog"
                     #ssh -tt saranya@130.237.20.223 "cd /home/saranya/Documents/end-to-end-toolchain/shepherding/$exp && cat immlog >> $log && echo ######## | tee -a $log && rm immlog"
