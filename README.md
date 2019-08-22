@@ -48,10 +48,13 @@ https://docs.docker.com/docker-for-mac/install/
 		cd end-to-end-toolchain
 		git submodule init
 		git submodule update
+If you get a error on update please use the below command
+		
+		git submodule update --force --recursive --init --remote 
 		
 3. Build the E2E docker image. This will take few minutes. 
 		
-		docker build --tag=e2e .
+		docker build --no-cache --tag=e2e .
 
 ## Updating the Timed C E2E Toolchain
 Note : do this only after your initial installation is done successfully.
@@ -60,35 +63,45 @@ Note : do this only after your initial installation is done successfully.
 
 		git pull
 
+3. Enter the working directory  and fetch update submodules
+
+		git submodule update
+
 2. Re-build the E2E docker image
 
-		docker build --tag=e2e .
+		<path-to-end-to-end-toolchain>/end2end --end
+		docker build --no-cache --tag=e2e .
 
 ## Running the toolcahin
 
+Run the docker image 
+	
+	<path-to-end-to-end-toolchain>/end2end --init
+	
+
 Compiling timed C code for freeRTOS platform.
 	
-		bin/ktc <file.c> --freertos
+		<path-to-end-to-end-toolchain>/bin/ktc <file.c> --freertos
 		
 Compiling timed C code for POSIX platform
 
-		bin/ktc <file.c> --posix
+		<path-to-end-to-end-toolchain>/bin/ktc <file.c> --posix
 		
 Compiling timed C code for profiling (complete timing trace). Here iter is the number of iteration. Output is cil.c file
 
-		bin/ktc <file.c> --posix --timing-trace <iter>
+		<path-to-end-to-end-toolchain>//bin/ktc <file.c> --posix --timing-trace <iter>
 
 Compiling timed C code for profiling (only parameters). Here iter is the number of iteration. Output is cil.c file
 
-		bin/ktc <file.c> --posix --timing-param <k> <iter>
+		<path-to-end-to-end-toolchain>//bin/ktc <file.c> --posix --timing-param <k> <iter>
 	
 Compile and run timed C code for profiling . Here iter is the number of iteration. Output is cil.c file
 
-		bin/ktc <file.c> --posix-run --timing-param <k> <iter>
+		<path-to-end-to-end-toolchain>//bin/ktc <file.c> --posix-run --timing-param <k> <iter>
 		
 Run sensitivity analysis
 
-		bin/sens <file> <trace-format> <k> <epsilon> <utilization_cap>  --util <policy>
+		<path-to-end-to-end-toolchain>//bin/sens <file> <trace-format> <k> <epsilon> <utilization_cap>  --util <policy>
 
 where, trace-format is --param or --trace, epsilon is epsilon resolution, utilization_cap is the cap on system utilization and policy is either 0 for edf and 1 for RM.
 
