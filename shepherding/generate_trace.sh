@@ -10,7 +10,7 @@ kind=$8
 util=$9
 var="tsk"
 #echo "Task = ${tsk}, Frame =${frame}, Offset=${offset}, Size=${size}, k=${k}, Epsilon=${epsilon}, Iter=${iter}, Kind=${kind}, Seed=${seed}" > config
-for ((j=2; j<=$tsk;j=j+2))
+for ((j=10; j<=$tsk;j=j+2))
     do
         exp="${j}_${var}_final"
 
@@ -20,7 +20,7 @@ for ((j=2; j<=$tsk;j=j+2))
         mkdir traces
         ssh saranya@130.237.20.223 "cd /home/saranya/Documents/end-to-end-toolchain/shepherding && mkdir $exp"
         counter=1
-        for ((i=11; i<=24; i=i+$counter))
+        for ((i=15; i<=24; i=i+$counter))
         do
             counter=1
             fileg="${var}_${j}_${i}"
