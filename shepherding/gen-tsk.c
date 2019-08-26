@@ -9,7 +9,7 @@
 #define PERIOD 9
 #define FRAME 10
 #define OFFSET 1
-#define MBENCH 5
+#define MBENCH 10
 
 int period_table[]={1, 2, 5, 10, 20, 50, 100, 200, 1000};
 int share_table[]={3, 2,  2,  25, 25, 3,  20, 1,  4};
@@ -76,8 +76,8 @@ void write_file_header(FILE* fp, char* bmark){
     fprintf(fp, "\n \n FILE dfile;\n");
     if(!strcmp(bmark,"small")){
         //fprintf(fp, "void func(int x){\n \t int i; \n \t for(i=0; i<1; i++){\n \t \t mbitcount(x);}\n}");
-        fprintf(fp, "void func(int x){\n \t struct sched_param param; \n \t int s, i; \n \t param.sched_priority = sched_get_priority_max(SCHED_FIFO); \n \t s=pthread_setschedparam(pthread_self(), SCHED_FIFO, &param); \n \t if(s != 0) printf(\"pthread_setschedparam\");\n \t mbitcount(x); \n}");
-
+        fprintf(fp, "void func_1(int x){\n \t struct sched_param param; \n \t int s, i; \n \t param.sched_priority = sched_get_priority_max(SCHED_FIFO); \n \t s=pthread_setschedparam(pthread_self(), SCHED_FIFO, &param); \n \t if(s != 0) printf(\"pthread_setschedparam\");\n \t mbitcount(x); \n} \n");
+        fprintf(fp, "void func_2(){\n \t struct sched_param param; \n \t int s, i; \n \t param.sched_priority = sched_get_priority_max(SCHED_FIFO); \n \t s=pthread_setschedparam(pthread_self(), SCHED_FIFO, &param); \n \t if(s != 0) printf(\"pthread_setschedparam\");\n \t qsort_small(\"input_100.dat\");\n}");
     }
     if(!strcmp(bmark,"large")){
         fprintf(fp, "void func(int x){\n \t int i; \n \t for(i=0; i<x; i++){\n \t \t mbitcount(1000);}\n}");
@@ -108,18 +108,27 @@ void write_offset(FILE* fp, int ofst){
 
 int write_workload(FILE* fp, int randnum, char* bmark, int knd){
     int ret;
-    int arg = (randnum + 1) * 20;
+    int arg = (randnum + 1);
+    int fun = arg % 2;
     if(knd == 0){
-        fprintf(fp, "\t \t func(%d);\n", arg);
-        ret = randnum;
+        if( fun == 0){
+            fprintf(fp, "\t \t func_1(%d);\n", arg);
+            ret = randnum;
+        }
+        else{
+            fprintf(fp, "\t \t func_2();\n");
+            ret = randnum;
+        }
+
+
     }
     else{
         if(randnum % 2 == 0){
-            fprintf(fp, "\t \t critical{ \n \t \t func(1);}\n");
+            fprintf(fp, "\t \t critical{ \n \t \t func_1(1);}\n");
             ret = 1;
         }
         else{
-            fprintf(fp, "\t \t critical{ \n \t \t func(1);}\n");
+            fprintf(fp, "\t \t critical{ \n \t \t func_1(1);}\n");
             ret = 2;
         }
         //fprintf(fp, "\t \t critical{ \n \t \t func(1);}\n");

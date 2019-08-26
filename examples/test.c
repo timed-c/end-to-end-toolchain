@@ -13,9 +13,15 @@ void musqrt(int k);
 
 FILE dfile;
 
+
+void fun() {
+    int i;
+    for(i=0; i<1000; i++){}
+}
 task tsk_foo(){
     stp(0, infty, ms);
     while(1){
+        fun();
         sdelay(30, ms);
 
     }
@@ -25,6 +31,7 @@ task tsk_foo(){
 task tsk_bar(){
     stp(0, infty, ms);
     while(1){
+        fun();
         sdelay(20, ms);
 
     }

@@ -2,6 +2,7 @@
 POSITIONAL=()
 while [[ $# -gt 0 ]]
 do
+limit=$8
 policy=$7
 mode=$6
 util="$5"
@@ -36,17 +37,18 @@ case $key in
 	    echo "RM"
             docker exec -i -t e2e-docker cp job_fp.csv job.csv
         fi
-	docker exec -i -t e2e-docker cp job.csv input
+	    docker exec -i -t e2e-docker cp job.csv input
         docker exec -i -t e2e-docker cp action.csv orginal_action
         docker cp e2e-docker:/opt/e2e/project/input $PWD
         #timeout -s SIGKILL 900
         case $mode in
             --util)
-                docker exec -i -t e2e-docker ../sensitivity-analysis/bin/sensitivity $3 $4 $5 --util
+                docker cp $3 e2e-docker:/opt/e2e/project
+                docker exec -i -t e2e-docker ../sensitivity-analysis/bin/sensitivity $3 $4 $5 $8
                 shift
                 ;;
             --sim)
-                docker exec -i -t e2e-docker ../sensitivity-analysis/bin/sensitivity $3 $4 $5 --sim
+                docker exec -i -t e2e-docker ../sensitivity-analysis/bin/sensitivity $3 $4 $5 $8
                 shift
                 ;;
         esac

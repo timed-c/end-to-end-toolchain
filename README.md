@@ -89,21 +89,21 @@ Compiling timed C code for POSIX platform
 		
 Compiling timed C code for profiling (complete timing trace). Here iter is the number of iteration. Output is cil.c file
 
-		<path-to-end-to-end-toolchain>//bin/ktc <file.c> --posix --timing-trace <iter>
+		<path-to-end-to-end-toolchain>/bin/ktc <file.c> --posix --timing-trace <iter>
 
 Compiling timed C code for profiling (only parameters). Here iter is the number of iteration. Output is cil.c file
 
-		<path-to-end-to-end-toolchain>//bin/ktc <file.c> --posix --timing-param <k> <iter>
+		<path-to-end-to-end-toolchain>/bin/ktc <file.c> --posix --timing-param <k> <iter>
 	
 Compile and run timed C code for profiling . Here iter is the number of iteration. Output is cil.c file
 
-		<path-to-end-to-end-toolchain>//bin/ktc <file.c> --posix-run --timing-param <k> <iter>
+		<path-to-end-to-end-toolchain>/bin/ktc <file.c> --posix-run --timing-param <k> <iter>
 		
 Run sensitivity analysis
 
-		<path-to-end-to-end-toolchain>//bin/sens <file> <trace-format> <k> <epsilon> <utilization_cap>  --util <policy>
+		<path-to-end-to-end-toolchain>/bin/sens <file> <trace-format> <kfile> <epsilon> <utilization_cap>  --util <policy>
 
-where, trace-format is --param or --trace, epsilon is epsilon resolution, utilization_cap is the cap on system utilization and policy is either 0 for edf and 1 for RM.
+where, trace-format is --param or --trace, epsilon is epsilon resolution, utilization_cap is the cap on system utilization and policy is either 0 for edf and 1 for RM. kfile is a csv file that list the name of a tasks, its k, and its limit of interest (task name,k,l),
 
 ## The Format of the Output File
 Below is an example depicting M v/s WCET margins for a given input 
