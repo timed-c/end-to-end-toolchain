@@ -1,4 +1,0 @@
-Hyperperiod 20000
-H+Omax : 20000 + 0 = 20000
-Observation Window 19623
-Job generation complete

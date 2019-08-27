@@ -1,2 +1,0 @@
-^CFatal error: exception Sys_error("job.rta.csv: No such file or directory")
-^C
