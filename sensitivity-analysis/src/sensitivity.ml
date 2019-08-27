@@ -88,14 +88,14 @@ type imm_format =
         iwcct : int;
 }
 
-type kcsv = 
+type kcsv =
 {
-	ktskid : string; 
+	ktskid : string;
 	kwin : string;
 	klim : string;
 }
 
-type mapcsv = 
+type mapcsv =
 {
 	mtskid : string;
 	mindex : string;
@@ -210,9 +210,9 @@ let rec print_delta_min_max delta_min delta_max delta_sup i =
         end *)
 
 let rec print_sm delta_max slist tlist =
-	 match slist with 
-	 | ht :: rst -> if (List.exists (fun a -> a = (fst ht)) (Array.to_list delta_max))  then  
-				begin 
+	 match slist with
+	 | ht :: rst -> if (List.exists (fun a -> a = (fst ht)) (Array.to_list delta_max))  then
+				begin
 					let _ = uprint_string (us "WCET Margin"); uprint_float (fst ht); uprint_endline (us "") in
 					let _ = List.iter (fun a -> uprint_string (us (List.nth tlist ((fst a) - 1)^(":"))); (uprint_int (snd a)); uprint_endline (us "")) (snd ht)  in
 					print_sm delta_max rst tlist
@@ -230,7 +230,7 @@ let rec print_small_m delta_min delta_max delta_sup i slist tlist =
 	 let ht = List.hd (List.rev slist) in
          let _ = uprint_string (us "WCET Margin"); uprint_float (delta_max.(i-1)); uprint_endline (us "") in
          let _ = List.iter (fun a -> uprint_string (us (List.nth tlist ((fst a) - 1)^(":"))); (uprint_int (snd a)); uprint_endline (us "")) (snd ht)  in ()
-	
+
 
 (*let calculate_leeway l1 l2 =
     let lway = (float_of_string l1.dl) -. (float_of_string l2.wcct)   in
@@ -541,22 +541,22 @@ let rec create_klist mlist klist i tid kint lint num_task =
         (*let _ = uprint_string (us "calculate_misses_for_each_task : ") in
         let _ = uprint_int i; (uprint_string (us "\n")) in *)
         let value = List.find (fun a -> (int_of_string a.mindex) = i) mlist in
-        let kval = List.find (fun a -> a.ktskid = value.mtskid) klist in 
-	let (t, k, l) = (kval.ktskid, kval.kwin, kval.klim) in 
-	create_klist mlist klist (i+1) (t :: tid) (k :: kint) (l :: lint) num_task 
+        let kval = List.find (fun a -> a.ktskid = value.mtskid) klist in
+	let (t, k, l) = (kval.ktskid, kval.kwin, kval.klim) in
+	create_klist mlist klist (i+1) (t :: tid) (k :: kint) (l :: lint) num_task
     else
        (tid, kint, lint)
- 
-let create_interest_list num_tsk kname = 
+
+let create_interest_list num_tsk kname =
     let klist = List.tl (read_data_ksv kname) in
     let mlist = List.tl (read_data_mapcsv "map") in
-    let (twin, kwin, lwin) = create_klist mlist klist 1 [] [] [] num_tsk in 
+    let (twin, kwin, lwin) = create_klist mlist klist 1 [] [] [] num_tsk in
     let kwin_int = List.map (fun a -> (int_of_string a)) kwin in
     let lwin_int = List.map (fun a -> (int_of_string a)) lwin in
      (List.rev twin, List.rev kwin_int, List.rev lwin_int)
 
-  
-	
+
+
 
 (*Description : The main function for sensitivity analysis
  * Call simulation tool (simulate-pre-analysis.py) on input trace with timeout of 60 seconds
@@ -591,7 +591,7 @@ let sensitivity =
           (*let delta_sup = max_initial_upper_bound num_task (List.hd klist) in*)
           let delta_sup_org =  max_initial_upper_bound_updated num_task (List.hd klist) in
           (*let _ = uprint_string (us "Delta_sup_org :"); uprint_float (delta_sup_org); uprint_endline (us "") in*)
-          (*Pervasives.min delta_sup_org *)(Pervasives.min delta_sup_cap delta_sup_sim))
+           Pervasives.min delta_sup_org (Pervasives.min delta_sup_cap delta_sup_sim))
         (*let _ = uprint_string (us "DEBUG : delta_sup"); uprint_float delta_sup; uprint_string (us ":") ; uprint_float delta_sup_updated; uprint_endline (us
          * "") in *)
         else
