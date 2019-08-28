@@ -19,9 +19,6 @@ int lvchannel(chan9);
 void func_1(int x){
  	 struct sched_param param;
  	 int s, i;
- 	 param.sched_priority = sched_get_priority_max(SCHED_FIFO);
- 	 s=pthread_setschedparam(pthread_self(), SCHED_FIFO, &param);
- 	 if(s != 0) printf("pthread_setschedparam");
  	 mbitcount(x);
     //for(i=0; i<1000; i++){}
 }
@@ -32,7 +29,7 @@ task lidar_sensor(){
 	spriority(4);
 	stp(0, infty, ms);
 	while(1){
-        func_1(50);
+        mbitcount(250);
         cwrite(chan1,a);
         sdelay(250, 50, ms);
 	 }
@@ -48,7 +45,7 @@ task particle_filter(){
 	 while(1){
         cread(chan1, b);
         cwrite(chan2, c);
-        func_1(600);
+        mbitcount(3000);
 	 	ftp(250,100,ms);
 	 }
 }
@@ -59,31 +56,12 @@ task gps_signal(){
 	 spriority(4);
 	 stp(0, infty, ms);
 	 while(1){
-        func_1(50);
+        mbitcount(250);
         cwrite(chan3,d);
 	 	sdelay(250,ms);
 	 }
 }
 
-
-/*task controller(){
-  int e, f, g=1;
-  spolicy(FIFO_RM);
-  spriority(4);
-  stp(0, infty, ms);
-  while(1){
-    cread(chan2, e);
-    stp(0,250,ms);
-    func_1(20);
-    cread(chan3, f);
-    func_1(30);
-    stp(0,250,ms);
-    func_1(10);
-    cwrite(chan4,g);
-    stp(250,250,ms);
-
-  }
-}*/
 
 task controller(){
   int e, f, g=1;
@@ -92,14 +70,14 @@ task controller(){
   stp(0, infty, ms);
   while(1){
     cread(chan2, e);
-    sdelay(100, ms);
-    func_1(30);
+    stp(0, 250, ms);
+    mbitcount(100);
     cread(chan3, f);
-    func_1(20);
-    sdelay(100,ms);
-    func_1(10);
+    mbitcount(150);
+    stp(0, 250,ms);
+    mbitcount(50);
     cwrite(chan4,g);
-    sdelay(50,ms);
+    sdelay(250, ms);
 
   }
 }
@@ -111,10 +89,10 @@ task stabilization(){
 	 stp(0, infty, ms);
 	 while(1){
         cread(chan4, h);
-        func_1(10);
+        mbitcount(50);
         cwrite(chan5, h);
         cread(chan6, i);
-        func_1(10);
+        mbitcount(50);
         cwrite(chan8, i);
 	 	sdelay(50,ms);
 	 }
@@ -127,7 +105,7 @@ task reporting(){
 	 stp(0, infty, ms);
 	 while(1){
         cread(chan8,j);
-        func_1(200);
+        mbitcount(1000);
 	 	sdelay(100,ms);
 	 }
 }
@@ -137,7 +115,7 @@ task recieve_radio(){
 	 spriority(1);
 	 stp(0, infty, ms);
 	 while(1){
-        func_1(10);
+        mbitcount(50);
         cwrite(chan7,k);
 	 	sdelay(25,ms);
 	 }
@@ -149,7 +127,7 @@ task manage_radio(){
 	 stp(0, infty, ms);
 	 while(1){
         cread(chan7,l);
-        func_1(20);
+        mbitcount(100);
         cwrite(chan6,l);
 	 	sdelay(25,ms);
 	 }
@@ -161,7 +139,7 @@ task fail_safe_handling(){
 	 spriority(2);
 	 stp(0, infty, ms);
 	 while(1){
-        func_1(50);
+        mbitcount(250);
         cwrite(chan9,m);
 	 	sdelay(50,ms);
 	 }
@@ -175,7 +153,7 @@ task transmit_servos(){
 	 while(1){
         cread(chan5, n);
         cread(chan9, o);
-        func_1(30);
+        mbitcount(150);
 	 	sdelay(50,ms);
 	 }
 }

@@ -210,6 +210,7 @@ let rec print_delta_min_max delta_min delta_max delta_sup i =
         end *)
 
 let rec print_sm delta_max slist tlist =
+	let _ = uprint_endline (us "") in
 	 match slist with
 	 | ht :: rst -> if (List.exists (fun a -> a = (fst ht)) (Array.to_list delta_max))  then
 				begin
@@ -224,12 +225,11 @@ let rec print_sm delta_max slist tlist =
 			print_sm delta_max [] tlist
 	 | [] -> ()
 
-
 let rec print_small_m delta_min delta_max delta_sup i slist tlist =
-	 let _ = print_sm delta_max slist tlist in
-	 let ht = List.hd (List.rev slist) in
+	 let _ = print_sm delta_max slist tlist in () 
+	 (*let ht = List.hd (List.rev slist) in
          let _ = uprint_string (us "WCET Margin"); uprint_float (delta_max.(i-1)); uprint_endline (us "") in
-         let _ = List.iter (fun a -> uprint_string (us (List.nth tlist ((fst a) - 1)^(":"))); (uprint_int (snd a)); uprint_endline (us "")) (snd ht)  in ()
+         let _ = List.iter (fun a -> uprint_string (us (List.nth tlist ((fst a) - 1)^(":"))); (uprint_int (snd a)); uprint_endline (us "")) (snd ht)  in () *)
 
 
 (*let calculate_leeway l1 l2 =
@@ -447,8 +447,8 @@ let rec simulation_analysis_each_task i num_task klist olst limit_of_interest =
         let k = List.nth klist (i-1) in
         let l = List.nth limit_of_interest (i -1) in
         let mprime = calculate_misses_k llst k 0 0 (List.length llst) in
-	(*let _ = uprint_string (us "DEBUG - limit on m : calculated m"); (uprint_int limit_of_interest); uprint_string (us ":");  uprint_int mprime; uprint_endline (us "") in
-        *)if (mprime > l) then true else (simulation_analysis_each_task (i+1) num_task klist olst limit_of_interest)
+	(*let _ = uprint_string (us "DEBUG - calculated m:"); uprint_string (us ":");  uprint_int mprime; uprint_endline (us "") in *)
+        if (mprime > l) then true else (simulation_analysis_each_task (i+1) num_task klist olst limit_of_interest)
     else
         false
 
@@ -459,7 +459,7 @@ let rec simulation_binary_search low high num_task klist limit_of_interest epsil
         let _ = scale_input value in
         let _ = Sys.command "../timed-c-e2e-sched-analysis/scripts/simulate-pre-analysis.py --nptest ../timed-c-e2e-sched-analysis/build/nptest --jobs job.csv --action action.csv -t 60 -o simulation.csv --num-random-releases 20 -- -p pred.csv -c" in
         let joblist =  create_mk_analysis_csv "simulation.csv" in
-	(*let _ = uprint_string (us "DEBUG"); uprint_float value; uprint_endline (us "") in *)
+	let _ = uprint_string (us "DEBUG"); uprint_float value; uprint_endline (us "") in 
         let ret = simulation_analysis_each_task 1 num_task klist joblist limit_of_interest in
         if (ret = true) then
             simulation_binary_search low value num_task klist limit_of_interest epsilon
@@ -599,7 +599,7 @@ let sensitivity =
     let _ = uprint_string (us "Delta_sup :"); uprint_float (delta_sup); uprint_endline (us "") in
     let delta_inf = 0.0 in
     let epsilon = epsilon_resolution *. delta_sup in
-    let (m, _) = calculate_misses delta_sup klist num_task in
+    let (m, small) = calculate_misses delta_sup klist num_task in
     let delta_min_lst = Array.make (m+1)delta_sup  in
     let delta_max_lst = Array.make (m+1) delta_inf in
     let _ = delta_min_lst.(0) <- delta_inf in
@@ -608,7 +608,7 @@ let sensitivity =
     let _ = uprint_string (us "Epsilon Resolution :"); uprint_float (epsilon_resolution); uprint_endline (us"") in
     let _ = uprint_string (us "Calculated epsilon : "); uprint_float (epsilon); uprint_endline (us "") in
     let _ = uprint_string (us "Total number of calls to sensitivity analysis : "); uprint_int (!sa_time); uprint_endline (us"") in
-    print_delta_min_max delta_min delta_max delta_sup 0; print_small_m delta_min delta_max delta_sup (Array.length delta_max) (List.rev slist) tlist; ()
+   print_delta_min_max delta_min delta_max delta_sup 0; print_small_m delta_min delta_max delta_sup (Array.length delta_max) (small::slist) tlist; ()
 
 
 
