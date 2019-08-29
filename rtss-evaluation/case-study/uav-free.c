@@ -10,7 +10,7 @@ task lidar_sensor(){
     int a=1;
     stp(0, infty, ms);
 	while(1){
-        mbitcount(25);
+        mbitcount(8);
         sdelay(250, 50, ms);
 	 }
 }
@@ -21,7 +21,7 @@ task gps_signal(){
      int d=1;
      stp(0, infty, ms);
 	 while(1){
-        mbitcount(25);
+        mbitcount(8);
 	 	sdelay(250,ms);
 	 }
 }
@@ -31,7 +31,7 @@ task stabilization(){
      int h, i;
      stp(0, infty, ms);
 	 while(1){
-        mbitcount(5);
+        mbitcount(3);
         sdelay(50,ms);
 	 }
 }
@@ -40,7 +40,7 @@ task reporting(){
      int j;
      stp(0, infty, ms);
 	 while(1){
-        mbitcount(100);
+        mbitcount(20);
 	 	sdelay(100,ms);
 	 }
 }
@@ -48,7 +48,7 @@ task recieve_radio(){
      int k=1;
      stp(0, infty, ms);
 	 while(1){
-        mbitcount(5);
+        mbitcount(3);
 	 	sdelay(25,ms);
 	 }
 }
@@ -56,7 +56,7 @@ task manage_radio(){
      int l;
      stp(0, infty, ms);
 	 while(1){
-        mbitcount(10);
+        mbitcount(5);
 	 	sdelay(25,ms);
 	 }
 }
@@ -64,7 +64,7 @@ task manage_radio(){
 task fail_safe_handling(){
      stp(0, infty, ms);
 	 while(1){
-        mbitcount(25);
+        mbitcount(8);
 	 	sdelay(50,ms);
 	 }
 }
@@ -72,7 +72,7 @@ task fail_safe_handling(){
 task transmit_servos(){
      stp(0, infty, ms);
 	 while(1){
-        mbitcount(15);
+        mbitcount(6);
 	 	sdelay(50,ms);
 	 }
 }
@@ -82,9 +82,9 @@ task controller(){
   stp(0, infty, ms);
   while(1){
     stp(0, 250, ms);
-    mbitcount(10);
-    stp(0, 250,ms);
     mbitcount(5);
+    stp(0, 250,ms);
+    mbitcount(2);
     sdelay(250, ms);
 
   }
@@ -95,7 +95,7 @@ task particle_filter(){
      int c=1;
 	 stp(0, infty, ms);
 	 while(1){
-        mbitcount(300);
+        mbitcount(30);
 	 	stp(250,100,ms);
 	 }
 }
