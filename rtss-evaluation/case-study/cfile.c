@@ -49,7 +49,7 @@ task particle_filter(){
         cread(chan1, b);
         cwrite(chan2, c);
         func_1(600);
-	 	ftp(250,100,ms);
+	 	stp(250,100,ms);
 	 }
 }
 
