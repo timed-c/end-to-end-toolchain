@@ -105,15 +105,3 @@ Run sensitivity analysis
 
 where, trace-format is --param or --trace, epsilon is epsilon resolution, utilization_cap is the cap on system utilization and policy is either 0 for edf and 1 for RM. kfile is a csv file that list the name of a tasks, its k, and its limit of interest (task name,k,l),
 
-## The Format of the Output File
-Below is an example depicting M v/s WCET margins for a given input 
-
-	Misses 	WCET Margin
-	0		0.419789309955
-	3		0.508166006787
-	5		0.530260180995
-	7		0.59654270362
-	19		0.640731052036
-	22		0.662825226244
-	26		0.684919400452
-
