@@ -103,5 +103,10 @@ Run sensitivity analysis
 
 		<path-to-end-to-end-toolchain>/bin/sens <file> <trace-format> <kfile> <epsilon> <utilization_cap>  --util <policy>
 
-where, trace-format is --param or --trace, epsilon is epsilon resolution, utilization_cap is the cap on system utilization and policy is either 0 for edf and 1 for RM. kfile is a csv file that list the name of a tasks, its k, and its limit of interest (task name,k,l),
+where,
+ _trace-format_ is --param or --trace,
+ _epsilon_ is epsilon resolution, 
+ _utilization_cap_ is the cap on system utilization,
+ _policy_ is either 0 for edf and 1 for RM,
+ _kfile_ is a csv file that list the name of a tasks, its k, and its limit of interest (task name,k,l),
 
