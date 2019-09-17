@@ -225,12 +225,33 @@ let rec print_sm delta_max slist tlist =
 			print_sm delta_max [] tlist
 	 | [] -> ()
 
-let rec print_small_m delta_min delta_max delta_sup i slist tlist =
-	 let _ = print_sm delta_max slist tlist in () 
+let print_small_m delta_min delta_max delta_sup i slist tlist =
+    (*let _ = uprint_string (us "WCET Margin \t"); List.iter (uprint_string (us a)) tlist in*)
+	 let _ = print_sm delta_max slist tlist in ()
 	 (*let ht = List.hd (List.rev slist) in
          let _ = uprint_string (us "WCET Margin"); uprint_float (delta_max.(i-1)); uprint_endline (us "") in
          let _ = List.iter (fun a -> uprint_string (us (List.nth tlist ((fst a) - 1)^(":"))); (uprint_int (snd a)); uprint_endline (us "")) (snd ht)  in () *)
 
+let rec print_sm_new delta_max slist tlist =
+	 match slist with
+	 | ht :: rst -> if (List.exists (fun a -> a = (fst ht)) (Array.to_list delta_max))  then
+				begin
+					let _ = uprint_float (fst ht); uprint_string (us "\t | ") in
+                    let m = List.iter (fun a -> (uprint_string (us "\t"); uprint_int (snd a)); uprint_string (us  "\t")) (snd ht)  in
+                    let _ = uprint_endline (us "") in
+					print_sm_new delta_max rst tlist
+				end
+			else
+				 print_sm_new delta_max rst tlist
+	 | [ht] -> let _ = uprint_float (delta_max.(0)); uprint_string (us "\t") in
+                       let _ = List.iter (fun a -> (uprint_int (snd a)); uprint_string (us "")) (snd ht)  in
+			print_sm_new delta_max [] tlist
+	 | [] -> ()
+
+let rec print_small_m_new delta_min delta_max delta_sup i slist tlist =
+    let _ = uprint_string (us "WCET Margin \t |"); List.iter (fun a -> ((uprint_string (us a)); ( uprint_string (us " | ")))) tlist in
+    let _ = uprint_endline (us "") in
+	 let _ = print_sm_new delta_max (List.rev slist) tlist in ()
 
 (*let calculate_leeway l1 l2 =
     let lway = (float_of_string l1.dl) -. (float_of_string l2.wcct)   in
@@ -459,7 +480,7 @@ let rec simulation_binary_search low high num_task klist limit_of_interest epsil
         let _ = scale_input value in
         let _ = Sys.command "../timed-c-e2e-sched-analysis/scripts/simulate-pre-analysis.py --nptest ../timed-c-e2e-sched-analysis/build/nptest --jobs job.csv --action action.csv -t 60 -o simulation.csv --num-random-releases 20 -- -p pred.csv -c" in
         let joblist =  create_mk_analysis_csv "simulation.csv" in
-	let _ = uprint_string (us "DEBUG"); uprint_float value; uprint_endline (us "") in 
+	let _ = uprint_string (us "DEBUG"); uprint_float value; uprint_endline (us "") in
         let ret = simulation_analysis_each_task 1 num_task klist joblist limit_of_interest in
         if (ret = true) then
             simulation_binary_search low value num_task klist limit_of_interest epsilon
@@ -608,7 +629,11 @@ let sensitivity =
     let _ = uprint_string (us "Epsilon Resolution :"); uprint_float (epsilon_resolution); uprint_endline (us"") in
     let _ = uprint_string (us "Calculated epsilon : "); uprint_float (epsilon); uprint_endline (us "") in
     let _ = uprint_string (us "Total number of calls to sensitivity analysis : "); uprint_int (!sa_time); uprint_endline (us"") in
-   print_delta_min_max delta_min delta_max delta_sup 0; print_small_m delta_min delta_max delta_sup (Array.length delta_max) (small::slist) tlist; ()
+   (*print_delta_min_max delta_min delta_max delta_sup 0; print_small_m delta_min delta_max delta_sup (Array.length delta_max) (small::slist) tlist;*)
+    uprint_endline (us "\n*************************************************\nThe number of deadline misses (m) for each task\n**************************************************");
+    print_small_m_new delta_min delta_max delta_sup (Array.length delta_max) (small::slist) tlist; uprint_string (us
+    "\n***************************************\nSummary of weakly-hard constraint (M)\n***************************************");
+print_delta_min_max delta_min delta_max delta_sup 0;()
 
 
 
