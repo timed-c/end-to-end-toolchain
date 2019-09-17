@@ -9,6 +9,7 @@ case $key in
     -i|--init)
     PWD = $(pwd)
     echo $PWD
+    docker rm -f e2e
     docker run --name=e2e-docker -d -t e2e
     shift # past argument
     ;;
