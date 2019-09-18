@@ -251,7 +251,7 @@ let rec print_sm_new delta_max slist tlist =
 let rec print_small_m_new delta_min delta_max delta_sup i slist tlist =
     let _ = uprint_string (us "WCET Margin \t |"); List.iter (fun a -> ((uprint_string (us a)); ( uprint_string (us " | ")))) tlist in
     let _ = uprint_endline (us "") in
-	 let _ = print_sm_new delta_max (List.rev slist) tlist in ()
+	 let _ = print_sm_new delta_max (slist) tlist in ()
 
 (*let calculate_leeway l1 l2 =
     let lway = (float_of_string l1.dl) -. (float_of_string l2.wcct)   in
@@ -629,9 +629,9 @@ let sensitivity =
     let _ = uprint_string (us "Epsilon Resolution :"); uprint_float (epsilon_resolution); uprint_endline (us"") in
     let _ = uprint_string (us "Calculated epsilon : "); uprint_float (epsilon); uprint_endline (us "") in
     let _ = uprint_string (us "Total number of calls to sensitivity analysis : "); uprint_int (!sa_time); uprint_endline (us"") in
-   (*print_delta_min_max delta_min delta_max delta_sup 0; print_small_m delta_min delta_max delta_sup (Array.length delta_max) (small::slist) tlist;*)
-    uprint_endline (us "\n*************************************************\nThe number of deadline misses (m) for each task\n**************************************************");
-    print_small_m_new delta_min delta_max delta_sup (Array.length delta_max) (small::slist) tlist; uprint_string (us
+     print_delta_min_max delta_min delta_max delta_sup 0; print_small_m delta_min delta_max delta_sup (Array.length delta_max) (small::slist) tlist;
+    (*uprint_endline (us "\n*************************************************\nThe number of deadline misses (m) for each task\n**************************************************");
+    print_small_m_new delta_min delta_max delta_sup (Array.length delta_max) (small::slist) tlist;*) uprint_string (us
     "\n***************************************\nSummary of weakly-hard constraint (M)\n***************************************");
 print_delta_min_max delta_min delta_max delta_sup 0;()
 
