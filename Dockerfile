@@ -60,7 +60,7 @@ RUN apt-get update \
   && ln -s /usr/bin/python3 python \
   && pip3 install --upgrade pip
 
-COPY sensitivity-analysis/src/sensitivity.ml /opt/e2e/sensitivity-analysis/src/sensitivity.ml
+#COPY sensitivity-analysis/src/sensitivity.ml /opt/e2e/sensitivity-analysis/src/sensitivity.ml
 COPY profile-test /opt/e2e/profile-test
 
 # `opam config env`
