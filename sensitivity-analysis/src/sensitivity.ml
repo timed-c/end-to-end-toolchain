@@ -214,20 +214,22 @@ let rec print_sm delta_max slist tlist =
 	 match slist with
 	 | ht :: rst -> if (List.exists (fun a -> a = (fst ht)) (Array.to_list delta_max))  then
 				begin
-					let _ = uprint_string (us "WCET Margin"); uprint_float (fst ht); uprint_endline (us "") in
-					let _ = List.iter (fun a -> uprint_string (us (List.nth tlist ((fst a) - 1)^(":"))); (uprint_int (snd a)); uprint_endline (us "")) (snd ht)  in
+					let _ = uprint_string (us "************************ \nWCET Margin "); uprint_float (fst ht); uprint_endline (us "\n************************") in
+                     let _ = uprint_string (us "m"); uprint_string (us "\t"); uprint_endline (us "funtion name\n***********************\n") in
+                    let _ = List.iter (fun a -> (uprint_int (snd a)); uprint_string (us "\t"); uprint_string (us (List.nth tlist ((fst a) - 1))); uprint_endline (us "")) (snd ht)  in
 					print_sm delta_max rst tlist
 				end
 			else
 				 print_sm delta_max rst tlist
-	 | [ht] -> let _ = uprint_string (us "WCET Margin"); uprint_float (delta_max.(0)); uprint_endline (us "") in
-                       let _ = List.iter (fun a -> uprint_string (us (List.nth tlist ((fst a) - 1)^(":"))); (uprint_int (snd a)); uprint_endline (us "")) (snd ht)  in
+	 | [ht] -> let _ = uprint_string (us "************************ \n WCET Margin "); uprint_float (delta_max.(0)); uprint_endline (us "\n***********************") in
+                 let _ = uprint_string (us "m"); uprint_string (us "\t"); uprint_endline (us "funtion name \n***********************\n") in
+                       let _ = List.iter (fun a -> (uprint_int (snd a)); uprint_string (us "\t"); uprint_string (us (List.nth tlist ((fst a) - 1))); uprint_endline (us "")) (snd ht)  in
 			print_sm delta_max [] tlist
 	 | [] -> ()
 
 let print_small_m delta_min delta_max delta_sup i slist tlist =
     (*let _ = uprint_string (us "WCET Margin \t"); List.iter (uprint_string (us a)) tlist in*)
-	 let _ = print_sm delta_max slist tlist in ()
+	 let _ = print_sm delta_max (slist) tlist in ()
 	 (*let ht = List.hd (List.rev slist) in
          let _ = uprint_string (us "WCET Margin"); uprint_float (delta_max.(i-1)); uprint_endline (us "") in
          let _ = List.iter (fun a -> uprint_string (us (List.nth tlist ((fst a) - 1)^(":"))); (uprint_int (snd a)); uprint_endline (us "")) (snd ht)  in () *)
@@ -629,9 +631,9 @@ let sensitivity =
     let _ = uprint_string (us "Epsilon Resolution :"); uprint_float (epsilon_resolution); uprint_endline (us"") in
     let _ = uprint_string (us "Calculated epsilon : "); uprint_float (epsilon); uprint_endline (us "") in
     let _ = uprint_string (us "Total number of calls to sensitivity analysis : "); uprint_int (!sa_time); uprint_endline (us"") in
-     print_delta_min_max delta_min delta_max delta_sup 0; print_small_m delta_min delta_max delta_sup (Array.length delta_max) (small::slist) tlist;
+     (*print_delta_min_max delta_min delta_max delta_sup 0; *) print_small_m delta_min delta_max delta_sup (Array.length delta_max) (small::slist) tlist;
     (*uprint_endline (us "\n*************************************************\nThe number of deadline misses (m) for each task\n**************************************************");
-    print_small_m_new delta_min delta_max delta_sup (Array.length delta_max) (small::slist) tlist;*) uprint_string (us
+    print_small_m_new delta_min delta_max delta_sup (Array.length delta_max) (small::slist) tlist; *) uprint_string (us
     "\n***************************************\nSummary of weakly-hard constraint (M)\n***************************************");
 print_delta_min_max delta_min delta_max delta_sup 0;()
 
