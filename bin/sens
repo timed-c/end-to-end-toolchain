@@ -26,7 +26,7 @@ case $key in
         --param)
         docker exec -i -t e2e-docker ./remove.sh
         docker cp $PWD/$1 e2e-docker:/opt/e2e/project
-        docker cp cfile.c e2e-docker:/opt/e2e/project/uav-free.c
+        #docker cp cfile.c e2e-docker:/opt/e2e/project/uav-free.c
         docker cp $PWD/traces e2e-docker:/opt/e2e/project
         docker exec -i -t e2e-docker ./copy.sh /opt/e2e/project/traces/* /opt/e2e/project/
         docker exec -i -t e2e-docker /opt/e2e/ktc/bin/ktc --enable-ext5 $1 -I. -L. -w

@@ -1,20 +1,9 @@
- #include <stdio.h>
- #include <math.h>
- #include <stdlib.h>
- #include "cilktc-free.h"
+#include <stdio.h>
+#include <math.h>
+#include <stdlib.h>
+#include "cilktc.h"
 
 FILE dfile;
-
-
-task lidar_sensor(){
-    int a=1;
-    stp(0, infty, ms);
-	while(1){
-        mbitcount(8);
-        sdelay(250, 50, ms);
-	 }
-}
-
 
 
 task gps_signal(){
@@ -24,6 +13,23 @@ task gps_signal(){
         mbitcount(8);
 	 	sdelay(250,ms);
 	 }
+}
+
+
+task controller(){
+  int e, f, g=1;
+  stp(0, infty, ms);
+  while(1){
+    mbitcount(1);
+    stp(10, 250, ms);
+    mbitcount(1);
+    stp(10, 250, ms);
+    mbitcount(5);
+    stp(10, 250,ms);
+    mbitcount(3);
+    stp(220,250, ms);
+
+  }
 }
 
 
@@ -44,6 +50,7 @@ task reporting(){
 	 	sdelay(100,ms);
 	 }
 }
+
 task recieve_radio(){
      int k=1;
      stp(0, infty, ms);
@@ -69,20 +76,6 @@ task fail_safe_handling(){
 	 }
 }
 
-
-task controller(){
-  int e, f, g=1;
-  stp(0, infty, ms);
-  while(1){
-    stp(10, 250, ms);
-    mbitcount(5);
-    stp(10, 250,ms);
-    mbitcount(2);
-    stp(230,250, ms);
-
-  }
-}
-
 task transmit_servos(){
      stp(0, infty, ms);
 	 while(1){
@@ -102,9 +95,17 @@ task particle_filter(){
 	 }
 }
 
+task lidar_sensor(){
+    int a=1;
+    stp(0, infty, ms);
+	while(1){
+        mbitcount(8);
+        sdelay(250, 50, ms);
+	 }
+}
+
 
 int main(int argc, char* argv[]){
-     int z=1;
 	 gps_signal();
 	 controller();
 	 stabilization();

@@ -70,18 +70,22 @@ task fail_safe_handling(){
 }
 
 
+
 task controller(){
   int e, f, g=1;
   stp(0, infty, ms);
   while(1){
+    mbitcount(1);
     stp(10, 250, ms);
     mbitcount(5);
     stp(10, 250,ms);
-    mbitcount(2);
+    mbitcount(3);
     stp(230,250, ms);
 
   }
 }
+
+
 
 task transmit_servos(){
      stp(0, infty, ms);
@@ -112,10 +116,8 @@ int main(int argc, char* argv[]){
 	 recieve_radio();
 	 manage_radio();
 	 fail_safe_handling();
-	 transmit_servos();
-     particle_filter();
-     lidar_sensor();
+	 //transmit_servos();
+     //particle_filter();
+     //lidar_sensor();
 }
-
-
 
