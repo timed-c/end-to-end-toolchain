@@ -69,6 +69,20 @@ task fail_safe_handling(){
 	 }
 }
 
+
+task controller(){
+  int e, f, g=1;
+  stp(0, infty, ms);
+  while(1){
+    stp(10, 250, ms);
+    mbitcount(5);
+    stp(10, 250,ms);
+    mbitcount(2);
+    stp(230,250, ms);
+
+  }
+}
+
 task transmit_servos(){
      stp(0, infty, ms);
 	 while(1){
@@ -77,18 +91,6 @@ task transmit_servos(){
 	 }
 }
 
-task controller(){
-  int e, f, g=1;
-  stp(0, infty, ms);
-  while(1){
-    stp(0, 250, ms);
-    mbitcount(5);
-    stp(0, 250,ms);
-    mbitcount(2);
-    sdelay(250, ms);
-
-  }
-}
 
 task particle_filter(){
      int b;
@@ -101,13 +103,17 @@ task particle_filter(){
 }
 
 
- int main(int argc, char* argv[]){
+int main(int argc, char* argv[]){
      int z=1;
 	 gps_signal();
+	 controller();
 	 stabilization();
 	 reporting();
 	 recieve_radio();
 	 manage_radio();
 	 fail_safe_handling();
+	 transmit_servos();
+     particle_filter();
      lidar_sensor();
 }
+
