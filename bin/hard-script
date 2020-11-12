@@ -1,0 +1,23 @@
+#!/bin/bash
+file="$1"
+fname="$2"
+wcet="$3"
+freq="$4"
+otawa=0
+kta=1
+pwd
+#rm -r -f temp 
+#rm -r -f a.out 
+#mkdir temp 
+#python2 test.py $file $fname $wcet
+#PERL5LIB=~/.opam/system/lib/perl5:~/.opam/system/lib/perl5/App:~/.opam/system/lib/perl5/App/Cilly ./ktc --enable-ext4 --save-temps=temp $file -I../include -L/home/saranya/Dokument/e2e-toolchain/end-to-end-toolchain/bin -w -lmplogs -lbasicmath --link
+#cp a.out temp/
+#sudo ./a.out 3 50
+#if [$otawa == $wcet]
+#then 
+#    echo "otawa"
+#else 
+#    python2 make_trace.py $file 
+#fi
+#PERL5LIB=~/.opam/system/lib/perl5:~/.opam/system/lib/perl5/App:~/.opam/system/lib/perl5/App/Cilly ../ktc --enable-ext5 $1 -I../include -L../lib -w
+#/home/saranya/Dokument/e2e-toolchain/end-to-end-toolchain/np-schedulability-analysis/build/nptest -r job_edf.csv -c -a action.csv -p pred.csv -l 1800 

@@ -1,0 +1,17 @@
+#!/bin/bash
+
+file="$1"
+key="$2"
+wcetopt="$3"
+wcettool="$4"
+funcfile="$5"
+funcname="$6"
+freqopt="$7"
+frequency="$8"
+
+case $key in 
+		--posix-hard)
+				./hard-script $file $funcname $wcettool $frequeny
+		*)
+				echo "Not a valid option"
+esac
