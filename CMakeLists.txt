@@ -22,7 +22,7 @@ if (COLLECT_SCHEDULE_GRAPHS)
     add_compile_definitions(CONFIG_COLLECT_SCHEDULE_GRAPH)
 endif()
 
-set(TBB_LIB /opt/tbb44_20160128oss/lib/intel64/gcc4.4/libtbb.so)
+set(TBB_LIB /vagrant/tbb44_20160128oss/lib/intel64/gcc4.4/libtbb.so)
 set(JEMALLOC_LIB "jemalloc")
 set(TBB_ALLOC_LIB "tbbmalloc_proxy")
 

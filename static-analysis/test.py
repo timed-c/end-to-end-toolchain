@@ -150,7 +150,8 @@ def extract_code_fragment(stm):
 def get_wcet_kta(cf, filename, fnfp):
     debug_print("get_wcet", cf)
     #TODO check if cf[0] is a function
-    print(cf)
+    #print(cf)
+    print("get_wcet", filename)
     if len(cf)==1:
         funccall=cf[0]
         funcname = extract_function_name(cf[0])
@@ -175,13 +176,13 @@ def get_wcet_kta(cf, filename, fnfp):
         for i in range(len(arglist)): 
             arg=arg+"a"+str(i)+"=["+str(arglist[i])+","+str(arglist[i])+"]"
         #TODO change absolute path
-        print(arg)
-        exe=". /opt/mcb32tools/environment && /home/saranya/Dokument/kta/kta/bin/kta wcet "+ filename + funcname+ " -compile -args "+ arg
+        #print(arg)
+        exe=". /opt/mcb32tools/environment && /vagrant/kta/bin/kta wcet "+ filename + funcname+ " -compile -args "+ arg
     else: 
-        exe=". /opt/mcb32tools/environment && /home/saranya/Dokument/kta/kta/bin/kta wcet "+ filename + funcname+ " -compile"
-    print(exe)
+        exe=". /opt/mcb32tools/environment && /vagrant/kta/kta/bin/kta wcet "+ filename + funcname+ " -compile"
+    #print(exe)
     #exe= ". /opt/mcb32tools/environment && /home/saranya/Dokument/kta/kta/bin/kta exec "+filename+ " -compile -func " +funcname 
-    #print exe
+    print exe
     op= subprocess.Popen(exe, shell=True, stdout=subprocess.PIPE).stdout.read()
     oplist=op.split(" ")
     print op
@@ -190,7 +191,7 @@ def get_wcet_kta(cf, filename, fnfp):
 def get_wcet_otawa(cf, filename, fnfp):
     debug_print("get_wcet", cf)
     #TODO check if cf[0] is a function
-    print(cf)
+    #print(cf)
     if len(cf)==1:
         funccall=cf[0]
         funcname = extract_function_name(cf[0])
@@ -226,7 +227,7 @@ def task_to_formal_tfg(task,pset,fset, fname, wcet_tool):
         debug_print("i", i)
         tid=tid+1
         if is_timingpoint(task[i]):
-            print(i, task[i])
+            #print(i, task[i])
             tA = get_arrival_time(task[i])
             tD = get_deadline(task[i])
             tj= "NA"
@@ -237,11 +238,11 @@ def task_to_formal_tfg(task,pset,fset, fname, wcet_tool):
             if(is_htp(task[i]) == False):
                 hset.append(-1)
         else:
-            print(i, task[i:len(task)])
+            #print(i, task[i:len(task)])
             (clist,j, hard)=extract_code_fragment(task[i:len(task)])
             #TODO make better : do not include end of function as a cf
             debug_print("clist", clist)
-            print("j", j)
+            #print("j", j)
             if clist[0]!=" }\n":
                 #i=i+j
                 tB=0
@@ -304,12 +305,13 @@ for i in range(len(tasks)):
     (pset, fset, hset)=task_to_formal_tfg(tasks[i], [], [],funcfile, wcet_tool)
     tsk_name=(task_name(tasks[i])).replace(" ", "")
     #task_to_tfg(pset, fset, fp, tsk_name)
-    print(tsk_name)
+    #print(tsk_name)
     rhset=hset[::-1]
     wfile=open(tsk_name+".wcet", "w")
     for i in range(0,len(hset)):
-        wfile.write(str(i)+":"+str(hset[i])+"\n")
-    print("final result", tsk_name, hset)
+        if(hset[i] != -1):
+            wfile.write(str(i)+","+str(hset[i])+"\n")
+    #print("final result", tsk_name, hset)
 fp.close()
 #display_dot_file(dname)
 ifile.close()

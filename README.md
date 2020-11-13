@@ -21,6 +21,22 @@ References:
 ## Installing Timed C E2E toolchain
 The Timed C e2e toolchain is packed as an docker image. This makes the e2e toochain portable across different operating systems. This document describe how to install the e2e toolchain as a docker  image. This  docker container  is known to work on Ubuntu, Linux, and Windows machines.
 
+###Installing on Vagrant 
+1. Clone from the Timed C E2E repo
+		
+		git clone https://github.com/saranya-natarajan/end-to-end-toolchain.git
+		
+2. Enter the working directory  and fetch submodules
+	
+		cd end-to-end-toolchain
+		git submodule init
+		git submodule update
+If you get a error on update please use the below command
+		
+		git submodule update --force --recursive --init --remote 
+3. Go to parent directory 
+
+		vagrant up
 
 ### Installing Docker
 If the docker sofware is installed on your machine please skip this step. Otherwise, follow the instruction below

@@ -11,7 +11,9 @@ frequency="$8"
 
 case $key in 
 		--posix-hard)
-				./hard-script $file $funcname $wcettool $frequeny
+				/vagrant/bin/hard-script $1 $funcname $wcettool $frequeny
+				;;
 		*)
 				echo "Not a valid option"
+				;;
 esac
