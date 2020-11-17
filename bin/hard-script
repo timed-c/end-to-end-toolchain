@@ -10,8 +10,8 @@ rm -r -f temp
 rm -r -f a.out 
 mkdir temp 
 echo "$1"
-python2 /vagrant/static-analysis/test.py $1 $2 KTA
-/vagrant/ktc/bin/ktc --enable-ext4 --save-temps=temp $file -I../include -L/home/saranya/Dokument/e2e-toolchain/end-to-end-toolchain/bin -w -lmplogs -lbasicmath --link
+python2 /vagrant/static-analysis/interface_static_analysis_tool.py $1 $2 KTA
+/vagrant/ktc/bin/ktc --enable-ext4 --save-temps=temp $file -I../include -L/vagrant/bin -w -lmplogs -lbasicmath --link
 cp a.out temp/
 sudo ./a.out 3 50
 if [$otawa == $wcet]

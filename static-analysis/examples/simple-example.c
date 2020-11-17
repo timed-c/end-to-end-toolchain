@@ -1,8 +1,6 @@
 #include<stdio.h>
 #include<cilktc.h>
-#include "input.h"
 #include "func.c"
-#include "examples/nsichneu.c"
 
 FILE dfile;
 
@@ -17,7 +15,7 @@ task tsk_foo(){
 task tsk_bar(){
   stp(0, infty, ms);
   while(1){
-    NSicherNeu();
+    factcall(10);
     stp(10,10,ms);
   }
 }

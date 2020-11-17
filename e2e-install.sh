@@ -1,9 +1,14 @@
 #!/bin/sh
+git pull
+cd /vagrant
+git submodule init
+git submodule update
 echo "********Installing KTC********"
 sudo apt-get update && apt-get install -y ocaml ocaml-native-compilers opam m4
 opam init
 opam config env
 opam depext conf-m4.1
+opam install ocamlbuild
 opam install cil
 opam install yojson
 opam install csv
@@ -21,6 +26,7 @@ echo "********Installing CMAKE********"
 cd /vagrant
 wget https://cmake.org/files/v3.14/cmake-3.14.0-rc4.tar.gz
 tar -xzvf cmake-3.14.0-rc4.tar.gz
+rm cmake-3.14.0-rc4.tar.gz
 cd /vagrant/cmake-3.14.0-rc4/
 ./bootstrap
 make -j4
@@ -50,10 +56,27 @@ cd /vagrant
 git clone https://github.com/timed-c/kta.git
 cd /vagrant/kta 
 make
-sudo apt-get install ocamlbuild
 export KTA_WCET_RUNTIME_PATH=/vagrant/kta/runtime
-
-
-
-
-
+echo "********Installing OTAWA********"
+cd /vagrant/otawa 
+wget www.tracesgroup.net/otawa/packages/otawa-build-3.tgz
+tar -xvzf otawa-build-3.tgz
+rm -r otawa-build-3.tgz
+rm -r otawa-build-3.tgz.1
+wget http://www.tracesgroup.net/otawa/packages/otawa-install.py
+chmod 777 otawa-install.py
+sudo apt-get -y install libxml2-dev
+sudo apt-get -y install libxslt1-dev 
+sudo apt-get -y install flex bison
+./otawa-install.py -R /vagrant/otawa
+cd /vagrant/otawa/bin 
+chmod 777 otawa-install.py
+./otawa-install.py elm
+./otawa-install.py buddybdd
+./otawa-install.py otawa-lpc2138
+./otawa-install.py otawa-lp_solve5
+./otawa-install.py otawa-arm
+./otawa-install.py gel 
+./otawa-install.py otawa-tricore
+./otawa-install.py otawa
+./otawa-install.py orange
