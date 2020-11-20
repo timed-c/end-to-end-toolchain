@@ -9,6 +9,7 @@ task tsk_foo(){
   while(1){
     factcall(5);
     htp(10,10,ms);
+	foo2();
   }
 }
 
@@ -16,7 +17,7 @@ task tsk_bar(){
   stp(0, infty, ms);
   while(1){
     factcall(10);
-    stp(10,10,ms);
+    htp(10,10,ms);
   }
 }
 
