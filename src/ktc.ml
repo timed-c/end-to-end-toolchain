@@ -13,20 +13,20 @@ open Ustring.Op
 (* ---------------------------------------------------------------------*)
 (* The top text message *)
 let top_text =     
-  us"KTC - KTH's Timed C source-to-source compiler and end-to-end toolchain.\n" 
+  us"E2E - KTH's Timed C source-to-source compiler and end-to-end toolchain.\n" 
 
   
 (* ---------------------------------------------------------------------*)
 (* The main help menu that displays all available commands. *)
 let print_main_help() =
  top_text ^. us"\n" ^.
- us"usage: ktc <command> [<args>] [<options>] \n\n" ^.
+ us"usage: e2e <command> [<args>] [<options>] \n\n" ^.
  us"commands:\n" ^.
  us"  compile  Performs source-to-source transformation of Timed C program\n" ^.
  us"  wcet     Outputs the instrumented source-to-source transformed C program.\n" ^. 
  us"  help     Prints out help about commands.\n" ^.
  us"  sens     Performs sensitivity analysis.\n" ^.  
- us"Run 'ktc help <command>' to get help for a specific command.\n"
+ us"Run 'e2e help <command>' to get help for a specific command.\n"
  |> uprint_endline
 
     

@@ -12,7 +12,7 @@ native:
 	@rm -rf bin; mkdir bin 
 	@ocamlbuild -tag use_str -Is $(DIRS) ktc.native 
 	@rm -f ktc.native
-	@cd bin; cp ../_build/src/ktc.native ktc 
+	@cd bin; cp ../_build/src/ktc.native e2e 
 
 
 # Handling subtree for ext/ucamlib

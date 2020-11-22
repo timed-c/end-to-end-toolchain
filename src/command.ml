@@ -20,13 +20,18 @@ type compOpTypes =
   |Opkfile
   |Oppolicy
   |OputilizationCap
+  |OpRun
 
 let extra_options = 
    [(OpExec,     Uargs.No, us"--exec",     us"",
        us"Compiles the Timed C file and outputs the executable");
    (OpCompile,   Uargs.Str, us"--compiler",     us" <path_to_compiler>",
        us"Path to cross compiler.");
-   (OpFolder, Uargs.Str, us"--save", us"<path_to_temp_folder>", us"specify path to folder to save generated files")]
+   (OpRun,   Uargs.No, us"--run",     us"",
+       us"Compile and run");
+   (OpFolder, Uargs.Str, us"--save", us" <path_to_temp_folder>", us"specify path to folder to save generated files")]
+   
+
 
 (* ---------------------------------------------------------------------*)
 let get_timedc_filename ops args =
@@ -92,45 +97,71 @@ let compile_command args =
     let freertos = Uargs.has_op OpFreertos ops in
     let save =
     if Uargs.has_op OpFolder ops
-    then Uargs.str_op OpFolder ops |> Ustring.to_utf8
+    then let dir = Uargs.str_op OpFolder ops |> Ustring.to_utf8 in 
+         let dir_cmd = "[ ! -d "^dir^" ] && mkdir -p "^dir in 
+         let _ = Sys.command dir_cmd in
+         dir
     else "." in
-    let link = 
-            if Uargs.has_op OpExec ops 
-            then "--link" 
-            else " " in 
+    let compiler = 
+            if (not(Uargs.has_op OpCompile ops) && (Uargs.has_op OpPosix ops)) 
+            then "gcc " 
+            else (Uargs.str_op OpCompile ops |> Ustring.to_utf8) in 
+    let cilfile =  if save = "." 
+                    then (List.nth (String.split_on_char '.' (List.nth (List.rev (String.split_on_char '/' timedc_filename)) 0))0)^(".cil.c")
+                    else save^"/"^(List.nth (String.split_on_char '.' (List.nth (List.rev (String.split_on_char '/' timedc_filename)) 0))0)^(".cil.c") in 
     (if posix then
-            let bash_command = ("/vagrant/ktc/bin/ktc --enable-ext0 --save-temps="^(save)^" "^(timedc_filename)^(link)) in 
+            let bash_command = ("/vagrant/ktc/bin/ktc --enable-ext0 -w --save-temps="^(save)^" "^(timedc_filename)) in 
             let _ = Sys.command bash_command in ());
     (if freertos then
-            let bash_command = ("/vagrant/ktc/bin/ktc --enable-ext1 --save-temps="^(save)^" "^(timedc_filename)^(link)) in 
+            let bash_command = ("/vagrant/ktc/bin/ktc --enable-ext1 --save-temps="^(save)^" "^(timedc_filename)) in
             let _ = Sys.command bash_command in ());
-   us("\nFind generated file in "^save)
+   (if Uargs.has_op OpExec ops then
+        let bash_command = compiler^" "^cilfile^" /vagrant/ktc/timedc-lib/src/fprofile.c /vagrant/ktc/timedc-lib/src/cilktc_lib.c -I/vagrant/ktc/timedc-lib/src/ -lm -lpthread -lrt -w" in
+        (*let bash_command = compiler^" "^cilfile^" -lktc -lm -lpthread -lrt -w -L/vagrant/libs -no-pie -w" in*)
+           let _ = Sys.command bash_command in ());
+   (if Uargs.has_op OpRun ops then
+           let bash_command = compiler^" "^cilfile^" /vagrant/ktc/timedc-lib/src/fprofile.c /vagrant/ktc/timedc-lib/src/cilktc_lib.c -I/vagrant/ktc/timedc-lib/src/ -lm -lpthread -lrt -w" in
+           let _ = Sys.command bash_command in 
+           let _ = Sys.command "sudo ./a.out" in ());
+   us("")
 
 (* ---------------------------------------------------------------------*)
 let wcet_command args = 
-    let (ops, args, timedc_filename) = parse_ops_get_filename args compile_options in 
-    let trace_format = if Uargs.has_op OpFreertos ops  
+    let (ops, args, timedc_filename) = parse_ops_get_filename args wcet_options in 
+    let trace_format = if Uargs.has_op OpPosix ops  
                        then (if Uargs.has_op OpTrace ops 
-                             then " --enable-ext2" 
+                             then "--enable-ext2" 
                              else "--enable-ext4")
                         else (if Uargs.has_op OpTrace ops 
-                             then " --enable-ext3" 
+                             then "--enable-ext3" 
                              else "--enable-ext5") in
     let save = if Uargs.has_op OpFolder ops 
                then Uargs.str_op OpFolder ops |> Ustring.to_utf8
                else "." in
-    let link = 
-            if ((Uargs.has_op OpExec ops) && (Uargs.has_op OpPosix ops)) 
-            then "--link" 
-            else " " in 
+    let compiler = 
+            if (not(Uargs.has_op OpCompile ops) && (Uargs.has_op OpPosix ops)) 
+            then "gcc " 
+            else (Uargs.str_op OpCompile ops |> Ustring.to_utf8) in 
+    let cilfile =  if save = "." 
+                    then (List.nth (String.split_on_char '.' (List.nth (List.rev (String.split_on_char '/' timedc_filename)) 0))0)^(".cil.c")
+                    else save^"/"^(List.nth (String.split_on_char '.' (List.nth (List.rev (String.split_on_char '/' timedc_filename)) 0))0)^(".cil.c") in   
     let iter = string_of_int(
             if ((Uargs.has_op OpIter)) ops 
             then (Uargs.int_op OpIter ops) else
             100) in 
-    let bash_command = ("/vagrant/ktc/bin/ktc"^trace_format^"--save-temps="^(save)^" "^(timedc_filename)^(link)) in 
-    (*let _ = Sys.command bash_command  in*)
-    let _ = printf "%s" bash_command in
-    us("\nFind generated file in "^save)
+    let bash_command = ("/vagrant/ktc/bin/ktc "^trace_format^" --save-temps="^(save)^" "^(timedc_filename)^" -w") in 
+    let _ = Sys.command bash_command  in
+    (if Uargs.has_op OpExec ops then
+           let bash_command = (if Uargs.has_op OpTrace ops 
+            then compiler^" "^cilfile^" /vagrant/ktc/timedc-lib/src/fprofile.c /vagrant/ktc/timedc-lib/src/cilktc_lib.c -I/vagrant/ktc/timedc-lib/src/ -lm -lpthread -lrt -w -lplogs -L/vagrant/libs -no-pie"
+            else compiler^" "^cilfile^" /vagrant/ktc/timedc-lib/src/fprofile.c /vagrant/ktc/timedc-lib/src/cilktc_lib.c -I/vagrant/ktc/timedc-lib/src/ -lm -lpthread -lrt -w -lmplogs -L/vagrant/libs -no-pie") in 
+           let _ = Sys.command bash_command in ());
+   (if Uargs.has_op OpRun ops then
+           let bash_command = (if Uargs.has_op OpTrace ops 
+            then compiler^" "^cilfile^" /vagrant/ktc/timedc-lib/src/fprofile.c /vagrant/ktc/timedc-lib/src/cilktc_lib.c -I/vagrant/ktc/timedc-lib/src/ -lm -lpthread -lrt -w -lplogs -L/vagrant/libs -no-pie && sudo ./a.out "^iter
+            else compiler^" "^cilfile^" /vagrant/ktc/timedc-lib/src/fprofile.c /vagrant/ktc/timedc-lib/src/cilktc_lib.c -I/vagrant/ktc/timedc-lib/src/ -lm -lpthread -lrt -w -lmplogs -L/vagrant/libs -no-pie && rm -f *.ktc.trace && sudo ./a.out 3 "^iter) in 
+           let _ = Sys.command bash_command in ());
+   us("")
 
 
 (* ---------------------------------------------------------------------*)

@@ -19,7 +19,7 @@ References:
 
 
 ## Installing Timed C E2E toolchain
-The Timed C e2e toolchain is packed as an docker image. This makes the e2e toochain portable across different operating systems. This document describe how to install the e2e toolchain as a docker  image. This  docker container  is known to work on Ubuntu, Linux, and Windows machines.
+The Timed C e2e toolchain runs in a vagrant environment. This makes the e2e toochain portable across different operating systems. This document describe how to install the e2e toolchain as a docker  image. This  docker container  is known to work on Ubuntu, Linux, and Windows machines.
 
 ###Installing on Vagrant 
 1. Clone from the Timed C E2E repo
@@ -37,92 +37,117 @@ If you get a error on update please use the below command
 3. Go to parent directory 
 
 		vagrant up
-
-### Installing Docker
-If the docker sofware is installed on your machine please skip this step. Otherwise, follow the instruction below
-
-##### For Windows
-
-https://docs.docker.com/docker-for-windows/install/
-
-##### For Ubuntu
-
-https://docs.docker.com/install/linux/docker-ce/ubuntu/
-
-##### For Mac OS
-
-https://docs.docker.com/docker-for-mac/install/
-
-### Installing the Timed C E2E Docker  Image
-
-1. Clone from the Timed C E2E repo
 		
-		git clone https://github.com/saranya-natarajan/end-to-end-toolchain.git
+###Setting up e2e toolchain 
+1. SSH to vagrant environment using the below command
 		
-2. Enter the working directory  and fetch submodules
+		vagrant ssh
+		
+2. Go to the main vagrant directory using the below command
+
+		cd /vagrant
 	
-		cd end-to-end-toolchain
-		git submodule init
-		git submodule update
-If you get a error on update please use the below command
+3. Export path to e2e bin using the below command
+
+		export PATH=/vagrant/bin:$PATH
 		
-		git submodule update --force --recursive --init --remote 
-		
-3. Build the E2E docker image. This will take few minutes. 
-		
-		docker build --no-cache --tag=e2e .
+###Display e2e commands
 
-## Updating the Timed C E2E Toolchain
-Note : do this only after your initial installation is done successfully.
-
-1. Pull from the Timed C E2E repo
-
-		git pull
-
-3. Enter the working directory  and fetch update submodules
-
-		git submodule update
-
-2. Re-build the E2E docker image
-
-		<path-to-end-to-end-toolchain>/end2end --end
-		docker build --no-cache --tag=e2e .
-
-## Running the toolcahin
-
-Run the docker image 
+The list of available e2e commands is shown by typing
 	
-	<path-to-end-to-end-toolchain>/end2end --init
-	
-
-Compiling timed C code for freeRTOS platform.
-	
-		<path-to-end-to-end-toolchain>/bin/ktc <file.c> --freertos
+		e2e
 		
-Compiling timed C code for POSIX platform
+To get help for a command, write e2e help followed by the command. For example,
 
-		<path-to-end-to-end-toolchain>/bin/ktc <file.c> --posix
-		
-Compiling timed C code for profiling (complete timing trace). Here iter is the number of iteration. Output is cil.c file
-
-		<path-to-end-to-end-toolchain>/bin/ktc <file.c> --posix --timing-trace <iter>
-
-Compiling timed C code for profiling (only parameters). Here iter is the number of iteration. Output is cil.c file
-
-		<path-to-end-to-end-toolchain>/bin/ktc <file.c> --posix --timing-param <k> <iter>
+	kta help compile
 	
-Compile and run timed C code for profiling . Here iter is the number of iteration. Output is cil.c file
+will display all options accepted by compile, which performs source-to-source transformation of the input Timed C file.
 
-		<path-to-end-to-end-toolchain>/bin/ktc <file.c> --posix-run --timing-param <k> <iter>
-		
-Run sensitivity analysis
+###Compiling and executing a Timed C file 
 
-		<path-to-end-to-end-toolchain>/bin/sens <file> <trace-format> <kfile> <epsilon> <utilization_cap>  --util <policy>
+We will compile a simple TimedC program posix-example.c that is available in the directory /vagrant/examples. 
 
-where,
- _trace-format_ is --param or --trace,
- _epsilon_ is epsilon resolution, 
- _utilization_cap_ is the cap on system utilization,
- _policy_ is either 0 for edf and 1 for RM,
- _kfile_ is a csv file that list the name of a tasks, its k, and its limit of interest (task name,k,l),
+	e2e help compile
+which displays
+	
+	E2E - KTH's Timed C source-to-source compiler and end-to-end toolchain.
+
+	Usage: ktc compile [<files>] [<options>]
+
+	Description:
+  	Compile Timed C file to target specific C file.
+
+	Options:
+  	--posix                Compile Timed C code for POSIX compliant platform.
+  	--freertos             Compile Timed C code for freeRTOS platform
+  	--exec                 Compiles the Timed C file and outputs the executable
+  	--compiler <path_to_compiler>
+                         Path to cross compiler.
+  	--run                  Compile and run
+	--save <path_to_temp_folder>
+                         specify path to folder to save generated files
+
+If we run
+
+	e2e compile /vagrant/examples/posix-example.c --save temp --posix
+the tool will save the source-to-source transformed Timed C in temp/ folder.
+
+If we run
+
+	e2e compile /vagrant/examples/posix-example.c --save temp --posix --exec
+the tool will save the source-to-source transformed Timed C in temp/ folder and the executable a.out will be created in the current folder.
+
+If we run
+
+	e2e compile /vagrant/examples/posix-example.c --save temp --posix --run
+the tool will save the source-to-source transformed Timed C in temp/ folder and will run the executable.
+
+
+###Compiling and executing a Timed C file with profiling  
+
+We will compile a simple TimedC program profile-example.c that is available in the directory /vagrant/examples. 
+
+	e2e help wcet
+which displays
+	
+	E2E - KTH's Timed C source-to-source compiler and end-to-end toolchain.
+
+	Usage: e2e wcet [<files>] [<options>]
+
+	Description:
+  	Outputs instrumented C file for WCET computation.
+
+	Options:
+  	--posix                Compile Timed C code for POSIX compliant platform.
+  	--freertos             Compile Timed C code for freeRTOS platform
+  	--timing-param         Compile Timed C code for profiling (complete timing
+                         trace).
+  	--timing-trace         Compile Timed C code for profiling (only parameters).
+  	--static-analysis      Perform WCET computation of code fragments with hard
+                         deadline using the specified static analysis tool.
+                         Currently supported arguments are either OTAWA or
+                         KTA.
+  	--iter<value>          Number of iterations the instrumented program
+                         executes.
+  	--exec                 Compiles the Timed C file and outputs the executable
+  	--compiler <path_to_compiler>
+                         Path to cross compiler.
+  	--run                  Compile and run
+  	--save <path_to_temp_folder>
+                         specify path to folder to save generated files
+
+If we run
+
+	e2e wcet /vagrant/examples/profile-example.c --save temp --posix --timing-param
+the tool will save the source-to-source transformed instrumented Timed C in temp/ folder.
+
+If we run
+
+	e2e wcet /vagrant/examples/profile-example.c --save temp --posix --timing-param --exec
+the tool will save the source-to-source transformed instrumented Timed C in temp/ folder and the executable a.out will be created in the current folder.
+
+If we run
+
+	e2e wcet /vagrant/examples/profile-example.c --save temp --posix  --timing-param --run
+the tool will execute the file and produce traces. The traces are files ending with extension .ktc.trace
 
