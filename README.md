@@ -18,10 +18,10 @@ References:
     M. Nasri, G. Nelissen, and B. Brandenburg, [“A Response-Time Analysis for Non-Preemptive Job Sets under Global Scheduling”](http://drops.dagstuhl.de/opus/volltexte/2018/8994/pdf/LIPIcs-ECRTS-2018-9.pdf), Proceedings of the 30th Euromicro Conference on Real-Time Systems (ECRTS 2018), pp. 9:1–9:23, July 2018.
 
 
-## Installing Timed C E2E toolchain
+## Installing and Running Timed C E2E toolchain
 The Timed C e2e toolchain runs in a vagrant environment. This makes the e2e toochain portable across different operating systems. This document describe how to install the e2e toolchain as a docker  image. This  docker container  is known to work on Ubuntu, Linux, and Windows machines.
 
-###Installing on Vagrant 
+### Installing on Vagrant 
 1. Clone from the Timed C E2E repo
 		
 		git clone https://github.com/saranya-natarajan/end-to-end-toolchain.git
@@ -38,7 +38,7 @@ If you get a error on update please use the below command
 
 		vagrant up
 		
-###Setting up e2e toolchain 
+### Setting up e2e toolchain 
 1. SSH to vagrant environment using the below command
 		
 		vagrant ssh
@@ -51,7 +51,7 @@ If you get a error on update please use the below command
 
 		export PATH=/vagrant/bin:$PATH
 		
-###Display e2e commands
+### Display e2e commands
 
 The list of available e2e commands is shown by typing
 	
@@ -63,9 +63,9 @@ To get help for a command, write e2e help followed by the command. For example,
 	
 will display all options accepted by compile, which performs source-to-source transformation of the input Timed C file.
 
-###Compiling and executing a Timed C file 
+### Compiling and executing a Timed C file 
 
-We will compile a simple TimedC program posix-example.c that is available in the directory /vagrant/examples. 
+We will compile a simple TimedC program posix_example.c that is available in the directory /vagrant/examples. 
 
 	e2e help compile
 which displays
@@ -89,23 +89,23 @@ which displays
 
 If we run
 
-	e2e compile /vagrant/examples/posix-example.c --save temp --posix
+	e2e compile /vagrant/examples/posix_example.c --save temp --posix
 the tool will save the source-to-source transformed Timed C in temp/ folder.
 
 If we run
 
-	e2e compile /vagrant/examples/posix-example.c --save temp --posix --exec
+	e2e compile /vagrant/examples/posix_example.c --save temp --posix --exec
 the tool will save the source-to-source transformed Timed C in temp/ folder and the executable a.out will be created in the current folder.
 
 If we run
 
-	e2e compile /vagrant/examples/posix-example.c --save temp --posix --run
+	e2e compile /vagrant/examples/posix_example.c --save temp --posix --run
 the tool will save the source-to-source transformed Timed C in temp/ folder and will run the executable.
 
 
-###Compiling and executing a Timed C file with profiling  
+### Compiling and executing a Timed C file with profiling  
 
-We will compile a simple TimedC program profile-example.c that is available in the directory /vagrant/examples. 
+We will compile a simple TimedC program profile_example.c that is available in the directory /vagrant/examples. 
 
 	e2e help wcet
 which displays
@@ -138,16 +138,16 @@ which displays
 
 If we run
 
-	e2e wcet /vagrant/examples/profile-example.c --save temp --posix --timing-param
+	e2e wcet /vagrant/examples/profile_example.c --save temp --posix --timing-param
 the tool will save the source-to-source transformed instrumented Timed C in temp/ folder.
 
 If we run
 
-	e2e wcet /vagrant/examples/profile-example.c --save temp --posix --timing-param --exec
+	e2e wcet /vagrant/examples/profile_example.c --save temp --posix --timing-param --exec
 the tool will save the source-to-source transformed instrumented Timed C in temp/ folder and the executable a.out will be created in the current folder.
 
 If we run
 
-	e2e wcet /vagrant/examples/profile-example.c --save temp --posix  --timing-param --run
+	e2e wcet /vagrant/examples/profile_example.c --save temp --posix  --timing-param --run
 the tool will execute the file and produce traces. The traces are files ending with extension .ktc.trace
 

@@ -21,6 +21,7 @@ type compOpTypes =
   |Oppolicy
   |OputilizationCap
   |OpRun
+  |OpPath
 
 let extra_options = 
    [(OpExec,     Uargs.No, us"--exec",     us"",
@@ -55,15 +56,14 @@ let sens_options =
        us"Profiling was done with --timing-param");
    (OpStrace, Uargs.No,  us"--trace",  us"",
        us"Profiling was done with --timing-trace");
-
-   (OpEpsilon, Uargs.No,  us"--epsilon",  us"",
+   (OpEpsilon, Uargs.Str,  us"--epsilon",  us"",
        us"Epsilon resolution");
-   (OpUtil, Uargs.Int,  us"--util",  us"<value>",
-       us"Specifies dystem utilization cap");
-   (Oppolicy, Uargs.No,  us"--static-analysis",  us"",
+   (OpUtil, Uargs.Str,  us"--epsilon",  us"",
+       us"Epsilon resolution");
+   (Oppolicy, Uargs.Str,  us"--policy",  us"",
        us"Specified scheduling policy.\n
           RM for rate monotonic and EDF for earliest deadline first");
-   (Opkfile, Uargs.Int,  us"--kfile",  us"<path to file>",
+   (Opkfile, Uargs.Str,  us"--kfile",  us"<path to file>",
        us" Path to the csv file that list the name of the tasks, its k, and its limit of interest (task name,k,l)")]
 
 
@@ -166,8 +166,10 @@ let wcet_command args =
 
 (* ---------------------------------------------------------------------*)
 let sens_command args = 
-    let _ = uprint_string (us "sens option") in 
-    us "sens option"
+    (*let (ops, args, timedc_filename) = parse_ops_get_filename args wcet_options in *)
+    us ("Needs some bug fixing")
+
+
 
 (* ---------------------------------------------------------------------*)
 let help command toptext =

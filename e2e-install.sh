@@ -1,8 +1,4 @@
 #!/bin/sh
-git submodule init
-git pull
-git submodule init
-git submodule update
 cd /vagrant
 git submodule init
 git submodule update
@@ -26,24 +22,24 @@ cd /vagrant/sensitivity-analysis/
 eval $(opam config env) && make
 echo "********Sensitivity Analysis Install Complete********"
 echo "********Installing CMAKE********"
-#cd /vagrant
-#wget https://cmake.org/files/v3.14/cmake-3.14.0-rc4.tar.gz
-#tar -xzvf cmake-3.14.0-rc4.tar.gz
-#rm cmake-3.14.0-rc4.tar.gz
-#cd /vagrant/cmake-3.14.0-rc4/
-#./bootstrap
-#make -j4
-#make install
+cd /vagrant
+wget https://cmake.org/files/v3.14/cmake-3.14.0-rc4.tar.gz
+tar -xzvf cmake-3.14.0-rc4.tar.gz
+rm cmake-3.14.0-rc4.tar.gz
+cd /vagrant/cmake-3.14.0-rc4/
+./bootstrap
+make -j4
+make install
 echo "********CMAKE Install Complete********"
 echo "********Installing np-schedulability-analysis********"
-#cd /vagrant
-#cp -r /vagrant/tbb44_20160128oss/include/tbb /vagrant/np-schedulability-analysis/include/tbb
-#cp /vagrant/CMakeLists.txt /vagrant/np-schedulability-analysis/CMakeLists.txt
-#rm -r /vagrant/np-schedulability-analysis/build
-#mkdir /vagrant/np-schedulability-analysis/build
-#cd /vagrant/np-schedulability-analysis/build
-#/vagrant/cmake-3.14.0-rc4/bin/cmake -DUSE_JE_MALLOC=no -DUSE_TBB_MALLOC=no -S /vagrant/np-schedulability-analysis/ -B /vagrant/np-schedulability-analysis/build
-#make 
+cd /vagrant
+cp -r /vagrant/tbb44_20160128oss/include/tbb /vagrant/np-schedulability-analysis/include/tbb
+cp /vagrant/CMakeLists.txt /vagrant/np-schedulability-analysis/CMakeLists.txt
+rm -r /vagrant/np-schedulability-analysis/build
+mkdir /vagrant/np-schedulability-analysis/build
+cd /vagrant/np-schedulability-analysis/build
+/vagrant/cmake-3.14.0-rc4/bin/cmake -DUSE_JE_MALLOC=no -DUSE_TBB_MALLOC=no -S /vagrant/np-schedulability-analysis/ -B /vagrant/np-schedulability-analysis/build
+make 
 echo "********np-schedulability-analysis install Complete********"
 apt-get update \
   && apt-get install -y python3-pip python3-dev \
