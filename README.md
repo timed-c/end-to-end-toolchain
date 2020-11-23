@@ -151,3 +151,32 @@ If we run
 	e2e wcet /vagrant/examples/profile_example.c --save temp --posix  --timing-param --run
 the tool will execute the file and produce traces. The traces are files ending with extension .ktc.trace
 
+
+### Performing sensitivity analysis  
+
+We will perform sensitivity analysis for a Timed C with already generated trace in examples/example-sens 
+
+	e2e help sens
+which displays
+E2E - KTH's Timed C source-to-source compiler and end-to-end toolchain.
+
+	Usage: e2e sens [<files>] [<options>]
+
+	Description:
+  		Performs sensitivity analysis.
+
+	Options:
+  		--trace-format{param, trace}
+  							 Specifies timing format. Specify param if profiling was done with --timing-param. trace if profiling was done with --timing-trace.
+  		--epsilon            Epsilon resolution
+  		--util               Maximum utilization
+  		--policy{RM,EDF}     Specifies scheduling policy. RM for rate monotonic EDF for earliest deadline first
+ 		--kfile <filename>   Path to the csv file that list the name of the tasks,its k, and its limit of interest (task name,k,l)
+ 		
+Note that e2e sens command requires all the specified options. The traces and the Timed C file are required to be in the same folder. To perform sensitivity analysis for the above specified example we run 
+
+	e2e sens example.c --trace-format param --policy EDF --epsilon 0.05 --util 0.98 --kfile klist
+	
+Note that traces were obtained using --timing-param option. 
+
+

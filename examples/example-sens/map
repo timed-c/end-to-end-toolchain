@@ -1,0 +1,11 @@
+task,k
+lidar_sensor,1
+particle_filter,2
+gps_signal,3
+controller,4
+stabilization,5
+reporting,6
+recieve_radio,7
+manage_radio,8
+fail_safe_handling,9
+transmit_servos,10

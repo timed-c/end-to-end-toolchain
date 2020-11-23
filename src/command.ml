@@ -13,13 +13,11 @@ type compOpTypes =
   |OpTrace
   |OpStaticAnalysis
   |OpIter
-  |OpSparam
-  |OpStrace 
+  |OpFormat 
   |OpEpsilon
   |OpUtil
-  |Opkfile
-  |Oppolicy
-  |OputilizationCap
+  |OpKfile
+  |OpPolicy
   |OpRun
   |OpPath
 
@@ -52,21 +50,23 @@ let compile_options =
 
 (* ---------------------------------------------------------------------*)
 let sens_options =
-   [(OpSparam, Uargs.No,  us"--param",  us"",
-       us"Profiling was done with --timing-param");
-   (OpStrace, Uargs.No,  us"--trace",  us"",
-       us"Profiling was done with --timing-trace");
+   [(OpFormat, Uargs.Str,  us"--trace-format",  us"{param, trace}",
+       us"Specifies timing format. \n
+           param if profiling was done with --timing-param.\n
+           trace if profiling was done with --timing-trace.");
    (OpEpsilon, Uargs.Str,  us"--epsilon",  us"",
        us"Epsilon resolution");
-   (OpUtil, Uargs.Str,  us"--epsilon",  us"",
-       us"Epsilon resolution");
-   (Oppolicy, Uargs.Str,  us"--policy",  us"",
-       us"Specified scheduling policy.\n
-          RM for rate monotonic and EDF for earliest deadline first");
-   (Opkfile, Uargs.Str,  us"--kfile",  us"<path to file>",
+   (OpUtil, Uargs.Str,  us"--util",  us"",
+       us"Maximum utilization");
+   (OpPolicy, Uargs.Str,  us"--policy",  us"{RM,EDF}",
+       us"Specifies scheduling policy.\n
+          RM for rate monotonic \n
+          EDF for earliest deadline first"); 
+   (OpKfile, Uargs.Str,  us"--kfile",  us"<filename>",
        us" Path to the csv file that list the name of the tasks, its k, and its limit of interest (task name,k,l)")]
 
 
+(* ../../sensitivity-analysis/bin/sensitivity klist.csv 0.05 0.98 1 *)
 (* ---------------------------------------------------------------------*)
 let wcet_options =
    [(OpPosix, Uargs.No,  us"--posix",  us"",
@@ -126,6 +126,28 @@ let compile_command args =
    us("")
 
 (* ---------------------------------------------------------------------*)
+let sens_command args = 
+    let (ops, args, timedc_filename) = parse_ops_get_filename args sens_options in
+    let trace_format =  Uargs.str_op OpFormat ops |> Ustring.to_utf8 in
+    let ktc_opt = (if (trace_format = "param")   
+                 then "--enable-ext5" 
+                 else "--enable-ext3") in
+    let jobset_format =  Uargs.str_op OpPolicy ops |> Ustring.to_utf8 in
+    let jobset = (if (jobset_format = "EDF")   
+                 then "job_edf.csv" 
+                 else "job_fp.csv") in
+    let klist = Uargs.str_op OpKfile ops |> Ustring.to_utf8 in
+    let util = Uargs.str_op OpUtil ops |> Ustring.to_utf8 in
+    let epsilon = Uargs.str_op OpEpsilon ops |> Ustring.to_utf8 in
+    let bash_command = "/vagrant/ktc/bin/ktc "^(ktc_opt)^" "^(timedc_filename)^" -D _Float128=double -w" in
+    let _ = Sys.command bash_command in
+    let bash_command = "cp "^jobset^" job.csv && cp job.csv input && cp action.csv orginal_action" in 
+    let _ = Sys.command bash_command in 
+    let bash_command = "/vagrant/sensitivity-analysis/bin/sensitivity "^klist^" "^epsilon^" "^util^" 1" in
+    let _ = Sys.command bash_command in
+   us("")
+
+(* ---------------------------------------------------------------------*)
 let wcet_command args = 
     let (ops, args, timedc_filename) = parse_ops_get_filename args wcet_options in 
     let trace_format = if Uargs.has_op OpPosix ops  
@@ -149,7 +171,7 @@ let wcet_command args =
             if ((Uargs.has_op OpIter)) ops 
             then (Uargs.int_op OpIter ops) else
             100) in 
-    let bash_command = ("/vagrant/ktc/bin/ktc "^trace_format^" --save-temps="^(save)^" "^(timedc_filename)^" -w") in 
+    let bash_command = ("/vagrant/ktc/bin/ktc "^trace_format^" --save-temps="^(save)^" "^(timedc_filename)^" -D _Float128=double -w") in 
     let _ = Sys.command bash_command  in
     (if Uargs.has_op OpExec ops then
            let bash_command = (if Uargs.has_op OpTrace ops 
@@ -165,9 +187,9 @@ let wcet_command args =
 
 
 (* ---------------------------------------------------------------------*)
-let sens_command args = 
+(*let sens_command args = 
     (*let (ops, args, timedc_filename) = parse_ops_get_filename args wcet_options in *)
-    us ("Needs some bug fixing")
+    us ("Needs some bug fixing")*)
 
 
 
@@ -176,7 +198,7 @@ let help command toptext =
   (* Function that takes care of the string generation *)
   let pstr command desc options =     
     Some (toptext ^. us"\n" ^.
-    us"Usage: e2e" ^. us command ^. us" [<files>] [<options>]\n\n" ^.
+    us"Usage: e2e " ^. us command ^. us" [<files>] [<options>]\n\n" ^.
     us"Description:\n" ^. us desc ^. us"\n" ^.
     us"Options: \n" ^.
     Uargs.optionstext options)

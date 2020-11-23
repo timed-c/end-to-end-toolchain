@@ -448,7 +448,7 @@ let calculate_misses delta klist num_task  =
     (*let _ = uprint_endline (us "schedulability start\n") in*)
     (*let _ = if (ret_sim = 127) then exit 0 in*)
     (*let _ = if (ret == 127) then uprint_string (us "simulation timeout"); exit 0 in*)
-    let ret = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r job.csv -c -a action.csv -p pred.csv -l 1800 " in
+    let ret = Sys.command "/vagrant/np-schedulability-analysis/build/nptest -r job.csv -c -a action.csv -p pred.csv -l 1800 " in
     (*let _ = if (ret == 127) then uprint_string (us "schedulability timeout"); exit 0 in*)
     let _ = sa_time := !sa_time + 1 in
     (*let _ = uprint_int (!sa_time); uprint_string (us ",") in
@@ -480,7 +480,7 @@ let rec simulation_binary_search low high num_task klist limit_of_interest epsil
     if ((high -. low) > epsilon) then (
         let value = (low +. high) /. 2.0 in
         let _ = scale_input value in
-        let _ = Sys.command "../timed-c-e2e-sched-analysis/scripts/simulate-pre-analysis.py --nptest ../timed-c-e2e-sched-analysis/build/nptest --jobs job.csv --action action.csv -t 60 -o simulation.csv --num-random-releases 20 -- -p pred.csv -c" in
+        let _ = Sys.command "/vagrant/np-schedulability-analysis/scripts/simulate-pre-analysis.py --nptest /vagrant/np-schedulability-analysis/build/nptest --jobs job.csv --action action.csv -t 60 -o simulation.csv --num-random-releases 20 -- -p pred.csv -c" in
         let joblist =  create_mk_analysis_csv "simulation.csv" in
 	let _ = uprint_string (us "DEBUG"); uprint_float value; uprint_endline (us "") in
         let ret = simulation_analysis_each_task 1 num_task klist joblist limit_of_interest in
@@ -510,7 +510,7 @@ let rec simulation_analysis_cap_M sim_file num_task klist =
 
 let simulation scale_factor num_task klist limit_of_interest epsilon =
             let _ = scale_input scale_factor in
-            let rets = Sys.command "../timed-c-e2e-sched-analysis/scripts/simulate-pre-analysis.py --nptest ../timed-c-e2e-sched-analysis/build/nptest --jobs job.csv --action action.csv -t 60 -o simulation.csv --num-random-releases 100 -- -p pred.csv -c" in
+            let rets = Sys.command "/vagrant/np-schedulability-analysis/scripts/simulate-pre-analysis.py --nptest /vagrant/np-schedulability-analysis/build/nptest --jobs job.csv --action action.csv -t 60 -o simulation.csv --num-random-releases 100 -- -p pred.csv -c" in
             (*let _ = if (rets = 127) then uprint_string (us "simulation timeout"); exit 0 in*)
             (*let discardM = simulation_analysis_cap_M "simulation.csv" num_task klist in
             let _ = if (discardM = true) then exit 0 in *)
@@ -604,10 +604,11 @@ let sensitivity =
     let _ = uprint_string (us "Utilization : "); uprint_float (sys_util); uprint_endline (us"") in
     let delta_sup_cap = exp_util/.sys_util in
     let _ = uprint_string (us "Delta_sup_cap :"); uprint_float (delta_sup_cap); uprint_endline (us "") in
-    let delta_sup_sim  = simulation delta_sup_cap num_task klist limit_of_interest (epsilon_resolution *. delta_sup_cap) in
+    (*let delta_sup_sim  = simulation delta_sup_cap num_task klist limit_of_interest (epsilon_resolution *. delta_sup_cap) in *)
+    let delta_sup_sim = delta_sup_cap in
     let _ = uprint_string (us "Delta_sup_sim :"); uprint_float (delta_sup_sim); uprint_endline (us "") in
     let delta_sup = (if ((sys_util < exp_util) & (delta_sup_cap > 1.0)) then
-	 ( let ret = Sys.command "../timed-c-e2e-sched-analysis/build/nptest -r job.csv -c -a action.csv -p pred.csv -l 1800 " in
+	 ( let ret = Sys.command "/vagrant/np-schedulability-analysis/build/nptest -r job.csv -c -a action.csv -p pred.csv -l 1800 " in
 	  (*let _ = if (ret = 127) then exit 0 in*)
           (*let _ = (uprint_string (us "DEBUG : ")); (uprint_int ret) in*)
           let _ = sa_time := !sa_time + 1; uprint_string (us ",") in
