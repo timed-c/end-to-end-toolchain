@@ -19,56 +19,77 @@ References:
 
 
 ## Installing and Running Timed C E2E toolchain
-The Timed C e2e toolchain runs in a vagrant environment. This makes the e2e toochain portable across different operating systems. This document describe how to install the e2e toolchain as a docker  image. This  docker container  is known to work on Ubuntu, Linux, and Windows machines.
+The Timed C e2e toolchain runs in a Vagrant environment. This makes the e2e toochain portable across different operating systems. This document describe how to install the e2e toolchain using Vagrant. This Vagrant setup is known to work on Ubuntu, macOS, and Windows machines.
 
-### Installing on Vagrant 
-1. Clone from the Timed C E2E repo
+### Installation using Vagrant 
+1. **Install Vagrant** 
+	
+	Head over to the link below (Vagrant website) and follow the instructions to install Vagrant 
+			
+			https://www.vagrantup.com/docs/installation
+1. **Download Timed C E2E repo**
 		
+	Headover to the link below (E2E on github) and clone the E2E repository.
+	 
 		git clone https://github.com/saranya-natarajan/end-to-end-toolchain.git
 		
-2. Enter the working directory  and fetch submodules
+2. **Enter the working directory and fetch submodules**
 	
 		cd end-to-end-toolchain
 		git submodule init
 		git submodule update
-If you get a error on update please use the below command
+		
+   If you get a error on update please use the below command
 		
 		git submodule update --force --recursive --init --remote 
-3. Go to parent directory 
+		
+3. **Install E2E using Vagrant**
+	 
+	 Execute the following command. This usually takes a few minutes to complete. 
 
 		vagrant up
+	
 		
-### Setting up e2e toolchain 
-1. SSH to vagrant environment using the below command
+### Setup Timed C E2E toolchain using Vagrant 
+1. **SSH to the Vagrant environment** 
+		
+	Use the below command to work on the E2E toolchain environment. 
 		
 		vagrant ssh
-		
-2. Go to the main vagrant directory using the below command
+			
+2. **Export path to E2E** 
 
-		cd /vagrant
-	
-3. Export path to e2e bin using the below command
+	Use the following command to export path to e2e command. 
 
 		export PATH=/vagrant/bin:$PATH
 		
 ### Display e2e commands
 
-The list of available e2e commands is shown by typing
+1. **List all currently available e2e commands**
 	
-		e2e
+	Type the following on command-line. 
 		
-To get help for a command, write e2e help followed by the command. For example,
-
-	kta help compile
+		e2e
+	This will display the following 
 	
-will display all options accepted by compile, which performs source-to-source transformation of the input Timed C file.
+		E2E - KTH's Timed C source-to-source compiler and end-to-end toolchain.
 
-### Compiling and executing a Timed C file 
+		usage: e2e <command> [<args>] [<options>]
 
-We will compile a simple TimedC program posix_example.c that is available in the directory /vagrant/examples. 
+		commands:
+  		compile  Performs source-to-source transformation of Timed C program
+  		wcet     Outputs the instrumented source-to-source transformed C program.
+  		help     Prints out help about commands.
+  		sens     Performs sensitivity analysis.
+		Run 'e2e help <command>' to get help for a specific command.
+		
+To get help for a command, use `e2e help <command>`. For example, `kta help compile` will display all options accepted by compile command.
 
-	e2e help compile
-which displays
+### Using e2e command for compiling and executing  a Timed C file 
+
+We will compile a simple Timed C program `posix_example.c` available in `/vagrant/examples` folder. 
+
+We start with explaning the `e2e compile` command. Typing `e2e help compile` displays the following 
 	
 	E2E - KTH's Timed C source-to-source compiler and end-to-end toolchain.
 
@@ -80,35 +101,34 @@ which displays
 	Options:
   	--posix                Compile Timed C code for POSIX compliant platform.
   	--freertos             Compile Timed C code for freeRTOS platform
-  	--exec                 Compiles the Timed C file and outputs the executable
+  	--exec                 Compiles the Timed C file and outputs the executable.
   	--compiler <path_to_compiler>
-                         Path to cross compiler.
-  	--run                  Compile and run
+                           Path to cross compiler.
+  	--run                  Compile and run.
 	--save <path_to_temp_folder>
-                         specify path to folder to save generated files
+                           Specify path to folder to save generated files.
 
-If we run
+To compile `posix_example.c` we run the following command. Note that the tool will save the source-to-source transformed Timed C in `temp/`  (as temp is given as arguement to the `--save` option) 
 
 	e2e compile /vagrant/examples/posix_example.c --save temp --posix
-the tool will save the source-to-source transformed Timed C in temp/ folder.
 
-If we run
 
-	e2e compile /vagrant/examples/posix_example.c --save temp --posix --exec
-the tool will save the source-to-source transformed Timed C in temp/ folder and the executable a.out will be created in the current folder.
+To compile and generate executable we run the following command with `--exec` option. The toolchain will create `a.out` in the current folder.
 
-If we run
+	e2e compile /vagrant/examples/posix_example.c --posix --exec
+
+
+To compile and run `posix_example.c` we execute the following command with `--run` option. Note that the use of option `--save` will save the source-to-source transformed Timed C in `temp/`.
 
 	e2e compile /vagrant/examples/posix_example.c --save temp --posix --run
-the tool will save the source-to-source transformed Timed C in temp/ folder and will run the executable.
 
 
-### Compiling and executing a Timed C file with profiling  
 
-We will compile a simple TimedC program profile_example.c that is available in the directory /vagrant/examples. 
+### Using e2e for compiling and executing a Timed C file with profiling  
 
-	e2e help wcet
-which displays
+We will compile a simple Timed C program `profile_example.c` available in `/vagrant/examples` folder. 
+
+We start with explaning the `e2e wcet` command. Typing `e2e help wcet` displays
 	
 	E2E - KTH's Timed C source-to-source compiler and end-to-end toolchain.
 
@@ -118,46 +138,41 @@ which displays
   	Outputs instrumented C file for WCET computation.
 
 	Options:
-  	--posix                Compile Timed C code for POSIX compliant platform.
-  	--freertos             Compile Timed C code for freeRTOS platform
-  	--timing-param         Compile Timed C code for profiling (complete timing
-                         trace).
-  	--timing-trace         Compile Timed C code for profiling (only parameters).
-  	--static-analysis      Perform WCET computation of code fragments with hard
-                         deadline using the specified static analysis tool.
-                         Currently supported arguments are either OTAWA or
-                         KTA.
-  	--iter<value>          Number of iterations the instrumented program
-                         executes.
-  	--exec                 Compiles the Timed C file and outputs the executable
+  	--posix                Generate instrumented code for POSIX compliant platform.
+  	--freertos             Generate instrumented code for freeRTOS platform.
+  	--timing-param         Complete timing traces is generated on execution of timing trace.
+  	--timing-trace         Traces are generated with parameters.
+  	--static-analysis {KTA, OTAWA} 
+  						   Perform WCET computation of code fragments with hard deadline using the specified static analysis tool. Currently supported arguments are either OTAWA or KTA.
+  	--iter <value>         Number of iterations the instrumented program executes.
+  	--exec                 Compiles the Timed C file and outputs the executable.
   	--compiler <path_to_compiler>
-                         Path to cross compiler.
-  	--run                  Compile and run
+                           Path to cross compiler.
+  	--run                  Compile and run.
   	--save <path_to_temp_folder>
-                         specify path to folder to save generated files
+                          Specify path to folder to save generated files
 
-If we run
+To compile and generate instrumented code using a buffer based implementation of  e2e. We execute the following command with `--timing-param` option. Note that the use of option `--save` will save the source-to-source transformed Timed C in `temp/`.
+
 
 	e2e wcet /vagrant/examples/profile_example.c --save temp --posix --timing-param
-the tool will save the source-to-source transformed instrumented Timed C in temp/ folder.
 
-If we run
+To compile and generate the  instrumented executable of `profile_example.c` using a buffer based implementation of e2e, we execute the following command with `--exec` option. The toolchain will create `a.out` in the current folder.
 
-	e2e wcet /vagrant/examples/profile_example.c --save temp --posix --timing-param --exec
-the tool will save the source-to-source transformed instrumented Timed C in temp/ folder and the executable a.out will be created in the current folder.
+	e2e wcet /vagrant/examples/profile_example.c --posix --timing-param --exec
 
-If we run
 
-	e2e wcet /vagrant/examples/profile_example.c --save temp --posix  --timing-param --run
-the tool will execute the file and produce traces. The traces are files ending with extension .ktc.trace
+To generate measurement-based trace of `profile_example.c`, we execute the following command with `--run` option. The generated traces with extension `*.ktc.trace` and are saved in the current directory 
+
+	e2e wcet /vagrant/examples/profile_example.c --posix  --timing-param --run
 
 
 ### Performing sensitivity analysis  
 
-We will perform sensitivity analysis for a Timed C with already generated trace in examples/example-sens 
+We will perform sensitivity analysis of the `example.c`available in `/vagrant/examples/example-sens` folder. Note that the traces for this file is available in the same directory. 
 
-	e2e help sens
-which displays
+We start with explaning the `e2e sens` command. Typing `e2e help sense` displays
+
 E2E - KTH's Timed C source-to-source compiler and end-to-end toolchain.
 
 	Usage: e2e sens [<files>] [<options>]
@@ -173,7 +188,7 @@ E2E - KTH's Timed C source-to-source compiler and end-to-end toolchain.
   		--policy{RM,EDF}     Specifies scheduling policy. RM for rate monotonic EDF for earliest deadline first
  		--kfile <filename>   Path to the csv file that list the name of the tasks,its k, and its limit of interest (task name,k,l)
  		
-Note that e2e sens command requires all the specified options. The traces and the Timed C file are required to be in the same folder. To perform sensitivity analysis for the above specified example we run 
+Note that e2e sens command requires all the specified options. The traces and the Timed C file are required to be in the same folder. To perform sensitivity analysis of the specified example we run 
 
 	e2e sens example.c --trace-format param --policy EDF --epsilon 0.05 --util 0.98 --kfile klist
 	
