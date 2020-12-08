@@ -44,6 +44,9 @@ let get_timedc_filename ops args =
 let compile_options =
    [(OpPosix, Uargs.No,  us"--posix",  us"",
        us"Compile Timed C code for POSIX compliant platform.");
+    (OpStaticAnalysis, Uargs.StrList,  us"--static-analysis",  us"",
+       us"Perform WCET computation of code fragments with hard deadline using the specified static analysis tool.\n
+          Currently supported arguments are either OTAWA or KTA.");
    (OpFreertos, Uargs.No,  us"--freertos",  us"",
        us"Compile Timed C code for freeRTOS platform")]
    @ extra_options 
@@ -77,9 +80,6 @@ let wcet_options =
        us"Compile Timed C code for profiling (complete timing trace).");
    (OpTrace, Uargs.No,  us"--timing-trace",  us"",
        us"Compile Timed C code for profiling (only parameters).");
-   (OpStaticAnalysis, Uargs.No,  us"--static-analysis",  us"",
-       us"Perform WCET computation of code fragments with hard deadline using the specified static analysis tool.\n
-          Currently supported arguments are either OTAWA or KTA.");
    (OpIter, Uargs.Int,  us"--iter",  us"<value>",
        us"Number of iterations the instrumented program executes.")]
    @ extra_options 
@@ -91,7 +91,7 @@ let parse_ops_get_filename args options =
     (ops, args, timedc_filename)
 
 (* ---------------------------------------------------------------------*)
-let compile_command args = 
+let compile_command args =
     let (ops, args, timedc_filename) = parse_ops_get_filename args compile_options in 
     let posix = Uargs.has_op OpPosix ops in
     let freertos = Uargs.has_op OpFreertos ops in
@@ -102,6 +102,17 @@ let compile_command args =
          let _ = Sys.command dir_cmd in
          dir
     else "." in
+    let stwcet = if Uargs.has_op OpStaticAnalysis ops 
+               then List.map (fun a -> Ustring.to_utf8 a) (Uargs.strlist_op OpStaticAnalysis ops)
+               else [] in
+    (*let tool = List.nth stwcet 0 in
+    let funcname = List.nth stwcet 1 in
+    let _ = printf "%s %s" tool funcname in
+    let _ = exit 0 in *)
+    let _ = printf "len %d" (List.length stwcet) in
+    let _ = if ((List.length stwcet) > 1) then 
+             (let htp_compatiable = Wcet.main_wcet timedc_filename (List.nth stwcet 0) (List.nth stwcet 1) in
+              if (htp_compatiable == false) then ((printf "Hard deadline can not be guaranteed"); exit 0)) in 
     let compiler = 
             if (not(Uargs.has_op OpCompile ops) && (Uargs.has_op OpPosix ops)) 
             then "gcc " 

@@ -10,7 +10,7 @@ all:    native
 # Compile native version.
 native:
 	@rm -rf bin; mkdir bin 
-	@ocamlbuild -tag use_str -Is $(DIRS) ktc.native 
+	@ocamlbuild -use-ocamlfind -pkgs 'csv' -tag use_str -Is $(DIRS) ktc.native 
 	@rm -f ktc.native
 	@cd bin; cp ../_build/src/ktc.native e2e 
 

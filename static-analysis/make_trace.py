@@ -92,7 +92,7 @@ def write_bcet(kfile, word):
     kfile.write(",")
 
 def write_jitter(kfile, word):
-    kfile.write("0")
+    kfile.write("3000")
     kfile.write(",")
 
 def write_abort(kfile, word):
@@ -105,16 +105,16 @@ def write_dst(kfile, word):
 
 def write_wcet(kfile, word, wname_path, wname):
     if os.path.isfile(wname_path) == False:
-        print(wname_path, "  does not exists")
+        #print(wname_path, "  does not exists")
         kfile.write(word[2])
     else: 
         dst = word[5].replace('\n', '')
         wfile=open(wname, "r")
         wline=wfile.readlines()
         for i in range(0, len(wline)):
-            elem = wline[i].split(",")
-            print(elem)
-            print(dst[0])
+            elem = wline[i].split(":")
+            #print(elem)
+            #print(dst[0])
             if elem[0]==dst:
                 wcet=int(elem[1])
                 kfile.write(str(wcet))
@@ -132,26 +132,26 @@ tsk_name=[]
 for i in range(0,len(tasks)):
     tsk_name.append((task_name(tasks[i])).replace(" ", ""))
 for i in range(0,len(tsk_name)):
-    print(tsk_name[i])
+    #print(tsk_name[i])
     wname = tsk_name[i]+".wcet"
     tname = tsk_name[i]+(".ktc.trace")
     wname_path="./"+wname;
-    tname_path="./temp/"+tname
+    tname_path="./"+tname
     if os.path.isfile(tname_path) == False:
         sys.exit("Error: trace file for "+tname+" does not exist")
     tname_opt="ktc_"+tname
     rname="temp_"+tname
-    exe = "cp temp/"+tname+" "+tname_opt
+    exe = "cp "+tname+" "+tname_opt
     op= subprocess.Popen(exe, shell=True, stdout=subprocess.PIPE).stdout.read()
-    print(exe)
+    #print(exe)
     tfile=open(tname_opt, "r")
     kfile=open(rname, "w")
     tline=tfile.readlines()
-    print(tline)
+    #print(tline)
     kfile.write(tline[0])
     for j in range(1,len(tline)):
         word=(tline[j]).split(",")
-        print(word)
+        #print(word)
         write_src(kfile, word)
         write_bcet(kfile, word)
         write_wcet(kfile, word, wname_path, wname)
@@ -160,3 +160,6 @@ for i in range(0,len(tsk_name)):
         write_dst(kfile, word)
     kfile.close()
     tfile.close()
+    cmd= 'cp '+rname+' '+tname 
+    subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE).stdout.read()
+
