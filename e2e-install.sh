@@ -55,7 +55,9 @@ cd /vagrant
 git clone https://github.com/timed-c/kta.git
 cd /vagrant/kta 
 make
-export KTA_WCET_RUNTIME_PATH=/vagrant/kta/runtime
+#export KTA_WCET_RUNTIME_PATH=/vagrant/kta/runtime
+# PERL5LIB="/root/.opam/system/lib/perl5"
+export PATH="/root/.opam/system/lib/perl5:$PATH"
 echo "********Installing OTAWA********"
 cd /vagrant/otawa 
 wget www.tracesgroup.net/otawa/packages/otawa-build-3.tgz

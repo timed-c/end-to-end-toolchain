@@ -4,7 +4,7 @@ import os
 import sys
 
 def read_file(): 
-    file = open("ktc_wcet_file.txt","r") 
+    file = open("ktc_wcet_file_1.txt","r") 
     return file.readlines()
     file.close()
 
