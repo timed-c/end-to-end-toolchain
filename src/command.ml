@@ -44,9 +44,9 @@ let get_timedc_filename ops args =
 let compile_options =
    [(OpPosix, Uargs.No,  us"--posix",  us"",
        us"Compile Timed C code for POSIX compliant platform.");
-    (OpStaticAnalysis, Uargs.StrList,  us"--static-analysis",  us"",
+    (OpStaticAnalysis, Uargs.StrList,  us"--static-analysis",  us"{KTA, OTAWA} <name of file>",
        us"Perform WCET computation of code fragments with hard deadline using the specified static analysis tool.\n
-          Currently supported arguments are either OTAWA or KTA.");
+          Currently supported arguments are either OTAWA or KTA. Here, <name of file> is the file containing definition of function with hard deadline");
    (OpFreertos, Uargs.No,  us"--freertos",  us"",
        us"Compile Timed C code for freeRTOS platform")]
    @ extra_options 

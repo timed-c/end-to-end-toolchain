@@ -164,7 +164,7 @@ void main(int argc, char *argv[]){
     int policy;
     int mul;
     if(argc < 8){
-        printf("Error: input parameters missing \nExpected input parameters are number-of-task, no-of-frames, range-of-offset, (small, large, mix), fname, kind, and policy\n");
+        printf("Error: input parameters missing \nExpected input parameters are number-of-task, no-of-frames, range-of-offset, (small, large, mix), kind, and policy\n");
         return;
     }
     task = atoi(argv[1]);

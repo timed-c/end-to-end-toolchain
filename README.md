@@ -101,12 +101,16 @@ We start with explaning the `e2e compile` command. Typing `e2e help compile` dis
 	Options:
   	--posix                Compile Timed C code for POSIX compliant platform.
   	--freertos             Compile Timed C code for freeRTOS platform
+  	--static-analysis {KTA, OTAWA} <name of file> 
+  						   Perform WCET computation of code fragments with hard deadline using the specified static analysis tool. Currently supported arguments are either OTAWA or KTA. Here, <name of file> is the file containing definition of function with hard deadline.
+
   	--exec                 Compiles the Timed C file and outputs the executable.
   	--compiler <path_to_compiler>
                            Path to cross compiler.
   	--run                  Compile and run.
 	--save <path_to_temp_folder>
                            Specify path to folder to save generated files.
+                       
 
 To compile `posix_example.c` we run the following command. Note that the tool will save the source-to-source transformed Timed C in `temp/`  (as temp is given as arguement to the `--save` option) 
 
@@ -121,6 +125,10 @@ To compile and generate executable we run the following command with `--exec` op
 To compile and run `posix_example.c` we execute the following command with `--run` option. Note that the use of option `--save` will save the source-to-source transformed Timed C in `temp/`.
 
 	e2e compile /vagrant/examples/posix_example.c --save temp --posix --run
+	
+To compile a Timed C code with hard deadline we  use the Timed C example in `examples/example-htp/htp_example.c` we execute the following command with `--static-analysis` option. Note that the use of option `--static-analysis` takes the tool and the function definition of the code-fragment with hard deadline. 
+
+ 	e2e compile /vagrant/examples/example-htp/htp_example.c --save temp --posix --static-analysis KTA nsichneu.c
 
 
 
@@ -142,9 +150,7 @@ We start with explaning the `e2e wcet` command. Typing `e2e help wcet` displays
   	--freertos             Generate instrumented code for freeRTOS platform.
   	--timing-param         Complete timing traces is generated on execution of timing trace.
   	--timing-trace         Traces are generated with parameters.
-  	--static-analysis {KTA, OTAWA} 
-  						   Perform WCET computation of code fragments with hard deadline using the specified static analysis tool. Currently supported arguments are either OTAWA or KTA.
-  	--iter <value>         Number of iterations the instrumented program executes.
+ 	--iter <value>         Number of iterations the instrumented program executes.
   	--exec                 Compiles the Timed C file and outputs the executable.
   	--compiler <path_to_compiler>
                            Path to cross compiler.

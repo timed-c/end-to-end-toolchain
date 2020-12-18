@@ -105,11 +105,15 @@ let main_wcet timedcfile tool funcfile =
    let tool = Sys.argv.(2) in
    let funcfile = Sys.argv.(3) in*)
    let _ = Sys.command ("/vagrant/ktc/bin/ktc --enable-ext0 -w "^timedcfile) in 
-   let _ = Sys.command ("python /vagrant/static-analysis/calculate_wcet.py "^tool^" "^funcfile) in
+   let exe = "python /vagrant/static-analysis/calculate_wcet.py "^tool^" "^funcfile in
+   (*let _ = Sys.command ("python /vagrant/static-analysis/calculate_wcet.py "^tool^" "^funcfile) in*)
+   let _ = printf "%s" exe in
+   let _ = Sys.command exe in
+   let _ = Sys.command exe in 
    let _ = Sys.command ("python /vagrant/static-analysis/make_trace.py "^timedcfile) in 
    let _ = Sys.command ("/vagrant/ktc/bin/ktc --enable-ext5 "^timedcfile^" -D _Float128=double -w") in
    let _ = Sys.command ("/vagrant/np-schedulability-analysis/build/nptest -r job_edf.csv -c -a action.csv -p pred.csv -l 1800") in
-   let _ = Sys.command ("rm *.csv") in
+  (* let _ = Sys.command ("rm *.csv") in*)
    let _ = Sys.command ("rm *.dot") in
    let _ = Sys.command ("rm *.json") in
    let misses = make_task_kind_list () in 

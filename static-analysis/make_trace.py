@@ -114,9 +114,9 @@ def write_wcet(kfile, word, wname_path, wname):
         for i in range(0, len(wline)):
             elem = wline[i].split(":")
             #print(elem)
-            #print(dst[0])
+           # print(dst[0])
             if elem[0]==dst:
-                wcet=int(elem[1])
+                wcet=int(int(elem[1])/80)
                 kfile.write(str(wcet))
             else: 
                 kfile.write(word[2])
