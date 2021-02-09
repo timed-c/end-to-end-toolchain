@@ -45,7 +45,9 @@ for i in range(len(flst)):
         exe="/vagrant/otawa/bin/mkff wcet_main > wcet_main.ff"
         op= subprocess.Popen(exe, shell=True, stdout=subprocess.PIPE).stdout.read()
         print(exe)
-        input("Please modify the flow file and PRESS ENTER TO CONTINUE")
+        exe = "sed -i 's/?/10/g' wcet_main.ff"
+        op= subprocess.Popen(exe, shell=True, stdout=subprocess.PIPE).stdout.read()
+        #input("Please modify the flow file and PRESS ENTER TO CONTINUE")
         #op= subprocess.Popen(exe, shell=True, stdout=subprocess.PIPE).stdout.read()
         exe="/vagrant/otawa/bin/owcet -s generic wcet_main"
         print(exe)

@@ -92,7 +92,7 @@ def write_bcet(kfile, word):
     kfile.write(",")
 
 def write_jitter(kfile, word):
-    kfile.write("3000")
+    kfile.write("356")
     kfile.write(",")
 
 def write_abort(kfile, word):
@@ -116,7 +116,7 @@ def write_wcet(kfile, word, wname_path, wname):
             #print(elem)
            # print(dst[0])
             if elem[0]==dst:
-                wcet=int(int(elem[1])/80)
+                wcet=int(int(elem[1])/900)
                 kfile.write(str(wcet))
             else: 
                 kfile.write(word[2])
