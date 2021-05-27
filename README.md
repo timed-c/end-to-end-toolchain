@@ -61,6 +61,7 @@ The Timed C e2e toolchain runs in a Vagrant environment. This makes the e2e tooc
 		
 		cd /vagrant 
 		sh ktc-install.sh
+		cd /vagrant/ktc
 		eval $(opam config env) && make
 		cd ..
 
