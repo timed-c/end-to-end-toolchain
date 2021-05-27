@@ -56,12 +56,20 @@ The Timed C e2e toolchain runs in a Vagrant environment. This makes the e2e tooc
 	Use the below command to work on the E2E toolchain environment. 
 		
 		vagrant ssh
-			
-2. **Export path to E2E** 
+
+2. **Install KTC** 
+		
+		cd /vagrant 
+		sh ktc-install.sh
+		eval $(opam config env) && make
+		cd ..
+
+3. **Export path to E2E** 
 
 	Use the following command to export path to e2e command. 
 
 		export PATH=/vagrant/bin:$PATH
+
 		
 ### Display e2e commands
 
@@ -126,9 +134,9 @@ To compile and run `posix_example.c` we execute the following command with `--ru
 
 	e2e compile /vagrant/examples/posix_example.c --save temp --posix --run
 	
-To compile a Timed C code with hard deadline we  use the Timed C example in `examples/example-htp/htp_example.c` we execute the following command with `--static-analysis` option. Note that the use of option `--static-analysis` takes the tool and the function definition of the code-fragment with hard deadline. 
+<!--- To compile a Timed C code with hard deadline we  use the Timed C example in `examples/example-htp/htp_example.c` we execute the following command with `--static-analysis` option. Note that the use of option `--static-analysis` takes the tool and the function definition of the code-fragment with hard deadline. 
 
- 	e2e compile /vagrant/examples/example-htp/htp_example.c --save temp --posix --static-analysis KTA nsichneu.c
+ 	e2e compile /vagrant/examples/example-htp/htp_example.c --save temp --posix --static-analysis KTA nsichneu.c --->
 
 
 
