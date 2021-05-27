@@ -136,32 +136,32 @@ let compile_command args =
             let bash_command = ("/vagrant/ktc/bin/ktc --enable-ext1 --save-temps="^(save)^" -D _Float128=double "^(timedc_filename)) in
             let _ = Sys.command bash_command in ());
    (if Uargs.has_op OpExec ops then
-        let bash_command = compiler^" "^cilfile^" /vagrant/ktc/timedc-lib/src/fprofile.c /vagrant/ktc/timedc-lib/src/cilktc_lib.c -I/vagrant/ktc/timedc-lib/src/  -L/vagrant/mbench/lib/ -lbitcount -lqsort -lm -lpthread -lrt -w" in
+        let bash_command = compiler^" "^cilfile^" /vagrant/ktc/timedc-lib/src/fprofile.c /vagrant/ktc/timedc-lib/src/cilktc_lib.c -I/vagrant/ktc/timedc-lib/src/  -L/vagrant/libs/ -lbitcount -lqsort -lm -lpthread -lrt -w" in
         (*let bash_command = compiler^" "^cilfile^" -lktc -lm -lpthread -lrt -w -L/vagrant/libs -no-pie -w" in*)
            let _ = Sys.command bash_command in ());
    (if ((Uargs.has_op OpRun ops) && (not(Uargs.has_op OpRuntime ops))) then
-           let bash_command = compiler^" "^cilfile^" /vagrant/ktc/timedc-lib/src/fprofile.c /vagrant/ktc/timedc-lib/src/cilktc_lib.c -I/vagrant/ktc/timedc-lib/src/  -L/vagrant/mbench/lib/ -lbitcount -lqsort -lm -lpthread -lrt -w" in
+           let bash_command = compiler^" "^cilfile^" /vagrant/ktc/timedc-lib/src/fprofile.c /vagrant/ktc/timedc-lib/src/cilktc_lib.c -I/vagrant/ktc/timedc-lib/src/  -L/vagrant/libs/ -lbitcount -lqsort -lm -lpthread -lrt -w" in
            let _ = Sys.command bash_command in 
            let _ = Sys.command "sudo ./a.out" in ());
    (if ((Uargs.has_op OpRuntime ops) && (Uargs.has_op OpRun ops)) then
-           let bash_command = compiler^" "^cilfile^" /vagrant/ktc/timedc-lib/src/fprofile.c /vagrant/ktc/timedc-lib/src/cilktc_lib.c /vagrant/ktc/timedc-lib/src/runtime_profile.c -I/vagrant/ktc/timedc-lib/src/ -L/vagrant/mbench/lib/ -lbitcount -lqsort -lm -lpthread -lrt -w" in
+           let bash_command = compiler^" "^cilfile^" /vagrant/ktc/timedc-lib/src/fprofile.c /vagrant/ktc/timedc-lib/src/cilktc_lib.c /vagrant/ktc/timedc-lib/src/runtime_profile.c -I/vagrant/ktc/timedc-lib/src/ -L/vagrant/libs/ -lbitcount -lqsort -lm -lpthread -lrt -w" in
            let _ = Sys.command bash_command in 
            let _ = Sys.command "sudo ./a.out" in 
-           let bash_command = compiler^" "^cilfile^" /vagrant/ktc/timedc-lib/src/fprofile.c /vagrant/ktc/timedc-lib/src/cilktc_lib.c /vagrant/ktc/timedc-lib/src/runtime.c -I/vagrant/ktc/timedc-lib/src/ -L/vagrant/mbench/lib/ -lbitcount -lqsort -lm -lpthread -lrt -w" in
+           let bash_command = compiler^" "^cilfile^" /vagrant/ktc/timedc-lib/src/fprofile.c /vagrant/ktc/timedc-lib/src/cilktc_lib.c /vagrant/ktc/timedc-lib/src/runtime.c -I/vagrant/ktc/timedc-lib/src/ -L/vagrant/libs/ -lbitcount -lqsort -lm -lpthread -lrt -w" in
            let _ = Sys.command bash_command in
            let _ = Sys.command "sudo ./a.out" in ());
      (if ((Uargs.has_op OpRuntime ops) && (Uargs.has_op OpExec ops)) then
-           let bash_command = compiler^" "^cilfile^" /vagrant/ktc/timedc-lib/src/fprofile.c /vagrant/ktc/timedc-lib/src/cilktc_lib.c /vagrant/ktc/timedc-lib/src/runtime.c -I/vagrant/ktc/timedc-lib/src/ -L/vagrant/mbench/lib/ -lbitcount -lqsort  -lm -lpthread -lrt -w" in
+           let bash_command = compiler^" "^cilfile^" /vagrant/ktc/timedc-lib/src/fprofile.c /vagrant/ktc/timedc-lib/src/cilktc_lib.c /vagrant/ktc/timedc-lib/src/runtime.c -I/vagrant/ktc/timedc-lib/src/ -L/vagrant/libs/ -lbitcount -lqsort  -lm -lpthread -lrt -w" in
            let _ = Sys.command bash_command in
            let _ = Sys.command "sudo ./a.out" in ());
    (if ((Uargs.has_op OpRuntime ops)) then
-           let bash_command = compiler^" "^cilfile^" /vagrant/ktc/timedc-lib/src/fprofile.c /vagrant/ktc/timedc-lib/src/cilktc_lib.c /vagrant/ktc/timedc-lib/src/runtime.c -I/vagrant/ktc/timedc-lib/src/ -L/vagrant/mbench/lib/ -lbitcount -lqsort  -lm -lpthread -lrt -w" in 
+           let bash_command = compiler^" "^cilfile^" /vagrant/ktc/timedc-lib/src/fprofile.c /vagrant/ktc/timedc-lib/src/cilktc_lib.c /vagrant/ktc/timedc-lib/src/runtime.c -I/vagrant/ktc/timedc-lib/src/ -L/vagrant/libs/ -lbitcount -lqsort  -lm -lpthread -lrt -w" in 
            let _ = Sys.command bash_command in ());
    (if ((Uargs.has_op OpRuntimeparam ops)) then
-           let bash_command = compiler^" "^cilfile^" /vagrant/ktc/timedc-lib/src/fprofile.c /vagrant/ktc/timedc-lib/src/cilktc_lib.c /vagrant/ktc/timedc-lib/src/runtime_profile.c -I/vagrant/ktc/timedc-lib/src/  -L/vagrant/mbench/lib/ -lbitcount -lqsort -lm -lpthread -lrt -w" in 
+           let bash_command = compiler^" "^cilfile^" /vagrant/ktc/timedc-lib/src/fprofile.c /vagrant/ktc/timedc-lib/src/cilktc_lib.c /vagrant/ktc/timedc-lib/src/runtime_profile.c -I/vagrant/ktc/timedc-lib/src/  -L/vagrant/libs/ -lbitcount -lqsort -lm -lpthread -lrt -w" in 
            let _ = Sys.command bash_command in ());
     (if ((Uargs.has_op OpTesting ops)) then
-           let bash_command = compiler^" "^cilfile^" -D _Float128=double /vagrant/ktc/timedc-lib/src/fprofile.c /vagrant/ktc/timedc-lib/src/cilktc_lib.c /vagrant/ktc/timedc-lib/src/runtime-tpbt.c -I/vagrant/ktc/timedc-lib/src/  -L/vagrant/mbench/lib/ -lbitcount -lqsort -lm -lpthread -lrt -w" in 
+           let bash_command = compiler^" "^cilfile^" -D _Float128=double /vagrant/ktc/timedc-lib/src/fprofile.c /vagrant/ktc/timedc-lib/src/cilktc_lib.c /vagrant/ktc/timedc-lib/src/runtime-tpbt.c -I/vagrant/ktc/timedc-lib/src/  -L/vagrant/libs/ -lbitcount -lqsort -lm -lpthread -lrt -w" in 
            let _ = Sys.command bash_command in ());
    us("")
 
