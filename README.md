@@ -24,15 +24,14 @@ The Timed C e2e toolchain runs in a Vagrant environment. This makes the e2e tooc
 ### Installation using Vagrant 
 1. **Install Vagrant** 
 	
-	Head over to the link below (Vagrant website) and follow the instructions to install Vagrant 
+	Go to the link below (Vagrant website) and follow the instructions to install Vagrant 
 			
 			https://www.vagrantup.com/docs/installation
 1. **Download Timed C E2E repo**
 		
-	Headover to the link below (E2E on github) and clone the E2E repository.
+	Go to the link below (E2E on github) and clone the E2E repository.
 	 
-		https://github.com/timed-c/end-to-end-toolchain.git
-		
+		https://github.com/timed-c/end-to-end-toolchain.git		
 2. **Enter the working directory and fetch submodules**
 	
 		cd end-to-end-toolchain
@@ -100,25 +99,27 @@ We will compile a simple Timed C program `posix_example.c` available in `/vagran
 
 We start with explaning the `e2e compile` command. Typing `e2e help compile` displays the following 
 	
-	E2E - KTH's Timed C source-to-source compiler and end-to-end toolchain.
+		E2E - KTH's Timed C source-to-source compiler and end-to-end toolchain.	
 
-	Usage: ktc compile [<files>] [<options>]
+		Usage: e2e compile [<files>] [<options>]
 
-	Description:
-  	Compile Timed C file to target specific C file.
+		Description:
+  			Compile Timed C file to target specific C file.
 
-	Options:
-  	--posix                Compile Timed C code for POSIX compliant platform.
-  	--freertos             Compile Timed C code for freeRTOS platform
-  	--static-analysis {KTA, OTAWA} <name of file> 
-  						   Perform WCET computation of code fragments with hard deadline using the specified static analysis tool. Currently supported arguments are either OTAWA or KTA. Here, <name of file> is the file containing definition of function with hard deadline.
-
-  	--exec                 Compiles the Timed C file and outputs the executable.
-  	--compiler <path_to_compiler>
-                           Path to cross compiler.
-  	--run                  Compile and run.
-	--save <path_to_temp_folder>
-                           Specify path to folder to save generated files.
+		Options:
+  			--posix                Compile Timed C code for POSIX compliant platform.
+  			--static-analysis{KTA, OTAWA} <name of file>  
+  								   Perform WCET computation of code fragments with hard deadline using the specified static analysis tool. Currently supported arguments are either OTAWA or KTA. Here, <name of file> is the file containing definition of function with hard deadline
+  			--freertos             Compile Timed C code for freeRTOS platform
+  			--exec                 Compiles the Timed C file and outputs the executable
+  			--compiler <path_to_compiler>
+                                   Path to cross compiler.
+  			--run                  Compile and run
+  			--runtime              Compile and run with runtime monitoring
+  			--runtime-calculation  Compile and generate executable to compute execution time for runtime monitoring
+  			--save <path_to_temp_folder>
+                                   Specify path to folder to save generated files
+ 			--testing              Only supports testing log generation for runtime monitoring
                        
 
 To compile `posix_example.c` we run the following command. Note that the tool will save the source-to-source transformed Timed C in `temp/`  (as temp is given as arguement to the `--save` option) 
